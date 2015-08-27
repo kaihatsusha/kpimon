@@ -1,3 +1,3 @@
 <?php
-$this->title = Yii::t('xx', 'Active Users On Sites');
+$this->title = 'Active Users On Sites';
 ?>

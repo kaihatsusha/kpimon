@@ -133,8 +133,8 @@ $user = Yii::$app->user->identity;
 							'icon'=>'<i class="fa fa-bar-chart-o"></i>',
 						],
 						[
-							'label'=>Yii::t('common', 'Memcache'),
-							'url'=>['/memcache/index'],
+							'label'=>Yii::t('fin.menuLeft', 'Account'),
+							'url'=>['/fin/account/index'],
 							'icon'=>'<i class="fa fa-files-o"></i>',
 						]
 					]
