@@ -3,12 +3,12 @@ namespace app\modules\fin\controllers;
 
 use yii\web\Controller;
 use app\models\FinAccount;
-use \app\models\extended\FinAccount01I00;
-use \app\models\extended\FinAccount02I00;
-use \app\models\extended\FinAccount03I00;
-use \app\models\extended\FinAccount04I00;
-use \app\models\extended\FinAccount05I00;
-use \app\models\extended\FinAccount06I00;
+use app\models\extended\FinAccount01I00;
+use app\models\extended\FinAccount02I00;
+use app\models\extended\FinAccount03I00;
+use app\models\extended\FinAccount04I00;
+use app\models\extended\FinAccount05I00;
+use app\models\extended\FinAccount06I00;
 
 class AccountController extends Controller {
 	public function actionIndex() {

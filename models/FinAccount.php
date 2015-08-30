@@ -1,7 +1,7 @@
 <?php
 namespace app\models;
 
-use \app\components\MasterValueUtils;
+use app\components\MasterValueUtils;
 
 /**
  * This is the model class for table "fin_account".

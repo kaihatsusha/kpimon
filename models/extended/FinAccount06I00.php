@@ -1,7 +1,7 @@
 <?php
 namespace app\models\extended;
 
-use \app\models\FinAccount;
+use app\models\FinAccount;
 
 class FinAccount06I00 extends FinAccount {
 	protected function initialize() {
