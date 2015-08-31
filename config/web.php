@@ -9,6 +9,7 @@ $config = [
     'components' => require(__DIR__ . '/components.php'),
 	'modules'=>  require(__DIR__ . '/modules.php'),
     'params' => $params,
+	'timeZone' => 'Asia/Ho_Chi_Minh',
 ];
 
 if (YII_ENV_DEV) {

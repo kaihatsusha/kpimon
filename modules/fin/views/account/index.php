@@ -5,7 +5,6 @@
 	$this->title = Yii::t('fin.account', 'Personal Accounts List');
 	// for render
 	$rowindex = 0;
-	new Exception(\Yii::t('DateTimeUtils', 'No date format is supported'))
 ?>
 
 <div class="row"><div class="col-xs-12"><div class="box">
@@ -17,10 +16,9 @@
 			<th style="text-align: center">#</th>
 			<th style="text-align: center"><?= Yii::t('fin.grid', 'Name'); ?></th>
 			<th style="text-align: center" colspan="2"><?= Yii::t('fin.grid', 'Opening Deposit'); ?></th>
-			<th style="text-align: center"><?= Yii::t('fin.grid', 'Date'); ?></th>
-			<th style="text-align: center"><?= Yii::t('fin.grid', 'Days'); ?></th>
+			<th style="text-align: center" colspan="2"><span class="label label-info"><?= DateTimeUtils::createFromTimestamp($minClosingTimestamp, DateTimeUtils::FM_VIEW_DATE); ?></span></th>
 			<th style="text-align: center" colspan="2"><?= Yii::t('fin.grid', 'Closing Deposit'); ?></th>
-			<th style="text-align: center" colspan="2"><?= DateTimeUtils::formatNow(DateTimeUtils::FM_VIEW_DATE); ?></th>
+			<th style="text-align: center" colspan="2"><span class="label label-info"><?= DateTimeUtils::formatNow(DateTimeUtils::FM_VIEW_DATE); ?></span></th>
 			<th style="text-align: center" colspan="2"><?= Yii::t('fin.grid', 'Interest'); ?></th>
 		</tr>
 		<?php foreach($arrDeposits as $deposits): ?>
@@ -34,27 +32,25 @@
 				<td class="danger" style="text-align: right"><?= NumberUtils::format($deposits->opening_balance); ?></td>
 				<td class="success" style="text-align: center"><?= DateTimeUtils::formatDateTimeFromDB($deposits->closing_date, DateTimeUtils::FM_VIEW_DATE); ?></td>
 				<td class="success" style="text-align: center"><?= $deposits->closing_diff; ?></td>
-				<td class="success" style="text-align: right">*</td>
-				<td class="success" style="text-align: right">*</td>
+				<td class="success" style="text-align: right"><?= NumberUtils::format($deposits->closing_interest); ?></td>
+				<td class="success" style="text-align: right"><?= NumberUtils::format($deposits->closing_balance); ?></td>
 				<td class="danger" style="text-align: center"><?= $deposits->now_diff; ?></td>
 				<td class="danger" style="text-align: center"><?= ($deposits->closing_diff - $deposits->now_diff); ?></td>
-				<td class="danger" style="text-align: right">*</td>
-				<td class="danger" style="text-align: right">*</td>
+				<td class="danger" style="text-align: right"><?= NumberUtils::format($deposits->now_interest); ?></td>
+				<td class="danger" style="text-align: right"><?= NumberUtils::format($deposits->now_interest + $deposits->opening_balance); ?></td>
 			</tr>
 		<?php endforeach; ?>
 		<tr class="warning">
 			<th style="text-align: center">#</th>
 			<th></th>
 			<th></th>
-			<th style="text-align: right"><?= Yii::t('fin.grid', 'Opening Deposit'); ?></th>
-			<th style="text-align: center"><?= Yii::t('fin.grid', 'Date'); ?></th>
-			<th></th>
-			<th style="text-align: right"><?= Yii::t('fin.grid', 'Closing Deposit'); ?></th>
-			<th style="text-align: right"><?= Yii::t('fin.grid', 'Closing Deposit'); ?></th>
-			<th></th>
-			<th></th>
-			<th style="text-align: right"><?= Yii::t('fin.grid', 'Interest'); ?></th>
-			<th style="text-align: right"><?= Yii::t('fin.grid', 'Interest'); ?></th>
+			<th style="text-align: right"><?= NumberUtils::format($sumDeposits['opening_balance']); ?></th>
+			<th style="text-align: right" colspan="2"><?= NumberUtils::format($sumDeposits['closing_interest_unit']); ?></th>
+			<th style="text-align: right"><?= NumberUtils::format($sumDeposits['closing_interest']); ?></th>
+			<th style="text-align: right"><?= NumberUtils::format($sumDeposits['closing_balance']); ?></th>
+			<th style="text-align: right" colspan="2"><?= NumberUtils::format($sumDeposits['now_interest_unit']); ?></th>
+			<th style="text-align: right"><?= NumberUtils::format($sumDeposits['now_interest']); ?></th>
+			<th style="text-align: right"><?= NumberUtils::format($sumDeposits['now_interest'] + $sumDeposits['opening_balance']); ?></th>
 		</tr>
 	</tbody></table></div>
 </div></div></div>

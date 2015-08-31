@@ -85,5 +85,29 @@ class DateTimeUtils {
 		$dt = new \DateTime();
 		return $dt->format($format);
 	}
+	
+	/**
+	 * parse datetime from String
+	 * @param type $datetime
+	 * @param type $informat
+	 * @param type $outformat
+	 * @return mixed String/DateTime
+	 */
+	public static function parse($datetime, $informat, $outformat = null) {
+		$dt = \DateTime::createFromFormat($informat, $datetime);
+		return is_null($outformat) ? $dt : $dt->format($outformat);
+	}
+	
+	/**
+	 * create datetime from Timestamp
+	 * @param type $timestamp
+	 * @param type $outformat
+	 * @return mixed String/DateTime
+	 */
+	public static function createFromTimestamp($timestamp, $outformat = null) {
+		$dt = new \DateTime();
+		$dt->setTimestamp($timestamp);
+		return is_null($outformat) ? $dt : $dt->format($outformat);
+	}
 }
 ?>
