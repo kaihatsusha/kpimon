@@ -12,6 +12,7 @@ class FinAccount04I00 extends FinAccount {
 	public $now_diff = null;
 	public $now_interest_unit = null;
 	public $now_interest = null;
+	public $result_interest = null;
 	
 	protected function initialize() {
 		$oTime = DateTimeUtils::getDateTimeFromDB($this->opening_date);
@@ -34,6 +35,9 @@ class FinAccount04I00 extends FinAccount {
 		} else {
 			$this->now_interest = $this->closing_interest + NumberUtils::getInterest($this->closing_balance, $this->noterm_interest_rate, NumberUtils::NUM_ROUND, $delta);
 		}
+		
+		// result
+		$this->result_interest = $this->opening_balance - $this->capital;
 	}
 }
 ?>
