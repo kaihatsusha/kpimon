@@ -130,12 +130,38 @@ $user = Yii::$app->user->identity;
 						[
 							'label'=>Yii::t('common', 'Home'), 
 							'url'=>['/site/index'], 
-							'icon'=>'<i class="fa fa-bar-chart-o"></i>',
+							'icon'=>'<i class="fa fa-bar-chart-o"></i>'
 						],
 						[
 							'label'=>Yii::t('fin.menuLeft', 'Account'),
 							'url'=>['/fin/account/index'],
 							'icon'=>'<i class="fa fa-files-o"></i>',
+						],
+						[
+							'label'=>Yii::t('fin.menuLeft', 'Payment'),
+							'url'=>['#'],
+							'icon'=>'<i class="fa fa-edit"></i>',
+							'right-icon'=>'<i class="fa fa-angle-left pull-right"></i>',
+							'items'=>[
+								[
+									'label'=>Yii::t('fin.menuLeft', 'List'),
+									'url'=>['/fin/payment/index'],
+									'icon'=>'<i class="fa fa-circle-o"></i>'
+								]
+							]
+						],
+						[
+							'label'=>Yii::t('fin.menuLeft', 'Deposit'),
+							'url'=>['#'],
+							'icon'=>'<i class="fa fa-bank"></i>',
+							'right-icon'=>'<i class="fa fa-angle-left pull-right"></i>',
+							'items'=>[
+								[
+									'label'=>Yii::t('fin.menuLeft', 'List'),
+									'url'=>['/fin/deposit/index'],
+									'icon'=>'<i class="fa fa-circle-o"></i>'
+								]
+							]
 						]
 					]
                     
