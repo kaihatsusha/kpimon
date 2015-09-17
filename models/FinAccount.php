@@ -1,6 +1,7 @@
 <?php
 namespace app\models;
 
+use Yii;
 use app\components\MasterValueUtils;
 
 /**
@@ -48,24 +49,24 @@ class FinAccount extends \yii\db\ActiveRecord {
      */
     public function attributeLabels() {
         return [
-            'account_id' => 'Account ID',
-            'account_name' => 'Account Name',
-            'account_type' => 'Account Type',
-            'bank_id' => 'Bank ID',
-            'opening_date' => 'Opening Date',
-            'closing_date' => 'Closing Date',
-            'opening_balance' => 'Opening Balance',
-            'closing_balance' => 'Closing Balance',
-            'noterm_interest_rate' => 'Noterm Interest Rate',
-            'term_interest_rate' => 'Term Interest Rate',
-            'interest_method' => 'Interest Method',
-            'capital' => 'Capital',
-			'order_num' => 'Order Num',
-            'delete_flag' => 'Delete Flag',
+            'account_id' => Yii::t('fin.models', 'Account ID'),
+            'account_name' => Yii::t('fin.models', 'Account Name'),
+            'account_type' => Yii::t('fin.models', 'Account Type'),
+            'bank_id' => Yii::t('fin.models', 'Bank ID'),
+            'opening_date' => Yii::t('fin.models', 'Opening Date'),
+            'closing_date' => Yii::t('fin.models', 'Closing Date'),
+            'opening_balance' => Yii::t('fin.models', 'Opening Balance'),
+            'closing_balance' => Yii::t('fin.models', 'Closing Balance'),
+            'noterm_interest_rate' => Yii::t('fin.models', 'Noterm Interest Rate'),
+            'term_interest_rate' => Yii::t('fin.models', 'Term Interest Rate'),
+            'interest_method' => Yii::t('fin.models', 'Interest Method'),
+            'capital' => Yii::t('fin.models', 'Capital'),
+			'order_num' => Yii::t('fin.models', 'Order Num'),
+            'delete_flag' => Yii::t('fin.models', 'Delete Flag'),
         ];
     }
 	
-	protected function initialize() {
+	public function initialize() {
 		// do nothing
 	}
 	
@@ -99,7 +100,6 @@ class FinAccount extends \yii\db\ActiveRecord {
 		foreach ($this->getTableSchema()->columns as $column) {
 			$result->{$column->name} = $this->{$column->name};
 		}
-		$result->initialize();
 		return $result;
 	}
 }

@@ -6,7 +6,7 @@ use app\models\FinAccount;
 class FinAccount03I00 extends FinAccount {
 	public $now_balance = null;
 	
-	protected function initialize() {
+	public function initialize() {
 		$this->closing_balance = $this->opening_balance;
 		$this->now_balance = $this->opening_balance;
 	}

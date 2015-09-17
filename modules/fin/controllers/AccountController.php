@@ -29,6 +29,7 @@ class AccountController extends Controller {
 		$arrFinAccount = FinAccount::find()->where(['delete_flag'=>0])->orderBy('order_num')->all();
 		foreach ($arrFinAccount as $finAccount) {
 			$instance = $finAccount->instance();
+			$instance->initialize();
 			if (($instance instanceof FinAccount01I00) || $instance instanceof FinAccount02I00) {
 				// add instance TM or ATM
 				$arrTmAtm[] = $instance;
