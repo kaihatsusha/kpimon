@@ -20,20 +20,13 @@ use Yii;
 class FinAccountEntry extends \yii\db\ActiveRecord {
 	const SCENARIO_CREATE = 'create';
 	
+	public static $_PHP_FM_SHORTDATE = 'Y-m-d';
+	
     /**
      * @inheritdoc
      */
     public static function tableName() {
         return 'fin_account_entry';
-    }
-	
-	/**
-	 * @inheritdoc
-	 */
-	public function scenarios() {
-		$scenarios = parent::scenarios();
-		$scenarios[self::SCENARIO_CREATE] = ['entry_date', 'entry_value'];
-		return $scenarios;
     }
 	
     /**
@@ -45,7 +38,8 @@ class FinAccountEntry extends \yii\db\ActiveRecord {
             [['entry_value', 'account_source', 'account_target', 'entry_status'], 'integer'],
             [['description'], 'string'],
             [['delete_flag'], 'string', 'max' => 1],
-			[['entry_date', 'entry_value'], 'required', 'on'=>self::SCENARIO_CREATE],
+			[['entry_date', 'entry_value'], 'required', 'on'=>[self::SCENARIO_CREATE]],
+			[['entry_date'], 'date', 'format'=> 'php:' . self::$_PHP_FM_SHORTDATE, 'on'=>[self::SCENARIO_CREATE]],
         ];
     }
 

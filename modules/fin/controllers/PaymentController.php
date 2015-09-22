@@ -1,7 +1,11 @@
 <?php
 namespace app\modules\fin\controllers;
 
+use Yii;
 use yii\web\Controller;
+use app\components\DateTimeUtils;
+use app\components\ModelUtils;
+use app\models\FinAccount;
 use app\models\FinAccountEntry;
 
 class PaymentController extends Controller {
@@ -11,7 +15,23 @@ class PaymentController extends Controller {
 	
 	public function actionCreate() {
 		$model = new FinAccountEntry();
-		return $this->render('create', ['model'=>$model]);
+		$phpFmShortDate = DateTimeUtils::getPhpDateFormat();
+		$arrFinAccount = ModelUtils::getArrData(FinAccount::find(), 'account_id', 'account_name', ['delete_flag'=>0, 'account_type'=>[1,2,3,5]], 'account_type, order_num');
+		//var_dump($arrFinAccount);
+		
+		// populate model attributes with user inputs
+		$model->load(Yii::$app->request->post());
+		
+		// init value
+		FinAccountEntry::$_PHP_FM_SHORTDATE = $phpFmShortDate;
+		$model->scenario = FinAccountEntry::SCENARIO_CREATE;
+		if (empty($model->entry_date)) {
+			$model->entry_date = DateTimeUtils::formatNow($phpFmShortDate);
+		}
+		//$model->validate();
+		//var_dump($model->hasErrors(),Yii::$app->request->post());
+		
+		return $this->render('create', ['model'=>$model, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount]);
 	}
 	
 	public function actionUpdate() {
