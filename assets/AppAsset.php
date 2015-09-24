@@ -30,5 +30,6 @@ class AppAsset extends AssetBundle
 		'app\assets\AdminLte',
         'app\assets\Html5shiv',
 		'app\assets\AngularAsset',
+        //'app\assets\FcsaNumberAsset',
     ];
 }

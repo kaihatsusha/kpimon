@@ -43,8 +43,8 @@
 				<?php echo $form->field($model, 'description')->textarea(); ?>
 			</div>
 			<div class="form-group">
-				<?php echo Html::submitButton(Yii::t('button', 'Back'), ['class'=>'btn btn-primary', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_BACK]); ?>
-				<?php echo Html::submitButton(Yii::t('button', 'Save'), ['class'=>'btn btn-primary', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_CONFIRM]); ?>
+				<?php echo Html::submitButton(Yii::t('button', 'Back'), ['class'=>'btn btn-default', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_BACK]); ?>
+				<?php echo Html::submitButton(Yii::t('button', 'Save'), ['class'=>'btn btn-info', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_CONFIRM]); ?>
 			</div>
 		</div></div>
 	<?php ActiveForm::end(); ?></div>
