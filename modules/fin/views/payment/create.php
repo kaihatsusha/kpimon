@@ -2,31 +2,31 @@
 	use yii\bootstrap\ActiveForm;
 	use yii\helpers\Html;
 	use yii\jui\DatePicker;
+	use app\components\MasterValueUtils;
 	
 	$this->title = Yii::t('fin.payment', 'Create Payment');
 ?>
-<div class="row"><div class="col-xs-12"><div class="box">
-	<div class="box-header">
+<?php if(Yii::$app->session->hasFlash(MasterValueUtils::FLASH_ERROR)): ?><div class="alert alert-error">
+	<?php echo Yii::$app->session->getFlash(MasterValueUtils::FLASH_ERROR); ?>
+</div><?php endif; ?>
+<div class="box box-default">
+	<div class="box-header with-border">
 		<h3 class="box-title"><?= Yii::t('fin.form', 'Input Values'); ?></h3>
 	</div>
 	<div id="finPaymentCreateForm" class="box-body"><?php $form = ActiveForm::begin(['requiredCssClass' => 'form-group-required']); ?>
-		<div class="col-md-6">
+		<div class="row"><div class="col-md-12">
 			<?php echo $form->field($model, 'entry_date')->widget(DatePicker::className(), [
 				'inline'=>false, 'dateFormat'=>'php:' . $phpFmShortDate, 'options'=>[
 					'class'=>'form-control'
 				]
 			]); ?>
 			<?php echo $form->field($model, 'account_source')->dropDownList($arrFinAccount, ['prompt'=>'']); ?>
-		</div>
-		<div class="col-md-6">
-			<?php echo $form->field($model, 'entry_value')->textInput(['type'=>'number']); ?>
 			<?php echo $form->field($model, 'account_target')->dropDownList($arrFinAccount, ['prompt'=>'']); ?>
-		</div>
-		<div class="col-md-12">
-			<?php echo $form->field($model, 'description')->textarea(['rows'=>6]); ?>
+			<?php echo $form->field($model, 'entry_value')->textInput(['type'=>'number']); ?>
+			<?php echo $form->field($model, 'description')->textarea(['rows'=>3]); ?>
 			<div class="form-group">
-				<?php echo Html::submitButton(Yii::t('button', 'Confirm'), ['class' => 'btn btn-primary']); ?>
+				<?php echo Html::submitButton(Yii::t('button', 'Confirm'), ['class'=>'btn btn-primary', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_INPUT]); ?>
 			</div>
-		</div>
+		</div></div>
 	<?php ActiveForm::end(); ?></div>
-</div></div></div>
+</div>

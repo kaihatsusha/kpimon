@@ -39,6 +39,8 @@ class FinAccountEntry extends \yii\db\ActiveRecord {
             [['description'], 'string'],
             [['delete_flag'], 'string', 'max' => 1],
 			[['entry_date', 'entry_value'], 'required', 'on'=>[self::SCENARIO_CREATE]],
+			[['account_source', 'account_target'], 'default', 'value'=>0, 'on'=>[self::SCENARIO_CREATE]],
+			[['account_source'], 'validateSourceRelatedTarget', 'on'=>[self::SCENARIO_CREATE]],
 			[['entry_date'], 'date', 'format'=> 'php:' . self::$_PHP_FM_SHORTDATE, 'on'=>[self::SCENARIO_CREATE]],
         ];
     }
@@ -60,4 +62,21 @@ class FinAccountEntry extends \yii\db\ActiveRecord {
             'delete_flag' => Yii::t('fin.models', 'Delete Flag'),
         ];
     }
+	
+	/**
+	 * validate Source Related Target
+	 */
+	public function validateSourceRelatedTarget() {
+		if ($this->account_source == 0 && $this->account_target == 0) {
+			$this->addError('account_source', Yii::t('fin.models', 'Account Source and Account Target must not be empty at the same time.'));
+			$this->addError('account_target', Yii::t('fin.models', 'Account Source and Account Target must not be empty at the same time.'));
+			return false;
+		}
+		if ($this->account_source == $this->account_target) {
+			$this->addError('account_source', Yii::t('fin.models', 'Account Source must be different to Account Target.'));
+			$this->addError('account_target', Yii::t('fin.models', 'Account Target must be different to Account Source.'));
+			return false;
+		}
+		return true;
+	}
 }
