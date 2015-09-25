@@ -13,15 +13,15 @@
 		<h3 class="box-title"><?= Yii::t('fin.account', 'Time Deposits'); ?></h3>
 	</div>
 	<div class="box-body table-responsive no-padding"><table class="table table-bordered"><tbody>
-		<tr class="warning">
-			<th style="text-align: center">#</th>
-			<th style="text-align: center"><?= Yii::t('fin.grid', 'Name'); ?></th>
-			<th style="text-align: center" colspan="2"><?= Yii::t('fin.grid', 'Opening Deposit'); ?></th>
-			<th style="text-align: center" colspan="2"><span class="label label-info"><?= DateTimeUtils::createFromTimestamp($minClosingTimestamp, DateTimeUtils::FM_VIEW_DATE); ?></span></th>
-			<th style="text-align: center" colspan="2"><?= Yii::t('fin.grid', 'Closing Deposit'); ?></th>
-			<th style="text-align: center" colspan="2"><span class="label label-info"><?= $viewToday; ?></span></th>
-			<th style="text-align: center" colspan="2"><?= Yii::t('fin.grid', 'Interest'); ?></th>
-			<th style="text-align: center" colspan="2"><?= Yii::t('fin.grid', 'Result'); ?></th>
+		<tr>
+			<th class="warning" style="text-align: center">#</th>
+			<th class="warning" style="text-align: center"><?= Yii::t('fin.grid', 'Name'); ?></th>
+			<th class="danger" style="text-align: center" colspan="2"><?= Yii::t('fin.grid', 'Opening Deposit'); ?></th>
+			<th class="success" style="text-align: center" colspan="2"><span class="label label-info"><?= DateTimeUtils::createFromTimestamp($minClosingTimestamp, DateTimeUtils::FM_VIEW_DATE); ?></span></th>
+			<th class="success" style="text-align: center" colspan="2"><?= Yii::t('fin.grid', 'Closing Deposit'); ?></th>
+			<th class="danger" style="text-align: center" colspan="2"><span class="label label-info"><?= $viewToday; ?></span></th>
+			<th class="danger" style="text-align: center" colspan="2"><?= Yii::t('fin.grid', 'Interest'); ?></th>
+			<th class="success" style="text-align: center" colspan="2"><?= Yii::t('fin.grid', 'Result'); ?></th>
 		</tr>
 		<?php foreach($arrDeposits as $deposits): ?>
 			<?php
@@ -44,19 +44,18 @@
 				<td class="success" style="text-align: right"><?= NumberUtils::format($deposits->result_interest); ?></td>
 			</tr>
 		<?php endforeach; ?>
-		<tr class="warning">
-			<th style="text-align: center">#</th>
-			<th></th>
-			<th></th>
-			<th style="text-align: right"><?= NumberUtils::format($sumDeposits['opening_balance']); ?></th>
-			<th style="text-align: right" colspan="2"><?= NumberUtils::format($sumDeposits['closing_interest_unit']); ?></th>
-			<th style="text-align: right"><?= NumberUtils::format($sumDeposits['closing_interest']); ?></th>
-			<th style="text-align: right"><?= NumberUtils::format($sumDeposits['closing_balance']); ?></th>
-			<th style="text-align: right" colspan="2"><?= NumberUtils::format($sumDeposits['now_interest_unit']); ?></th>
-			<th style="text-align: right"><?= NumberUtils::format($sumDeposits['now_interest']); ?></th>
-			<th style="text-align: right"><?= NumberUtils::format($sumDeposits['now_interest'] + $sumDeposits['opening_balance']); ?></th>
-			<th style="text-align: right"><?= NumberUtils::format($sumDeposits['capital']); ?></th>
-			<th style="text-align: right"><?= NumberUtils::format($sumDeposits['result_interest']); ?></th>
+		<tr>
+			<th class="warning" style="text-align: center">#</th>
+			<th class="warning"></th>
+			<th class="danger" style="text-align: right" colspan="2"><?= NumberUtils::format($sumDeposits['opening_balance']); ?></th>
+			<th class="success" style="text-align: right" colspan="2"><?= NumberUtils::format($sumDeposits['closing_interest_unit']); ?></th>
+			<th class="success" style="text-align: right"><?= NumberUtils::format($sumDeposits['closing_interest']); ?></th>
+			<th class="success" style="text-align: right"><?= NumberUtils::format($sumDeposits['closing_balance']); ?></th>
+			<th class="danger" style="text-align: right" colspan="2"><?= NumberUtils::format($sumDeposits['now_interest_unit']); ?></th>
+			<th class="danger" style="text-align: right"><?= NumberUtils::format($sumDeposits['now_interest']); ?></th>
+			<th class="danger" style="text-align: right"><?= NumberUtils::format($sumDeposits['now_interest'] + $sumDeposits['opening_balance']); ?></th>
+			<th class="success" style="text-align: right"><?= NumberUtils::format($sumDeposits['capital']); ?></th>
+			<th class="success" style="text-align: right"><?= NumberUtils::format($sumDeposits['result_interest']); ?></th>
 		</tr>
 	</tbody></table></div>
 </div></div></div>

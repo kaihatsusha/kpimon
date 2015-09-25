@@ -1,10 +1,10 @@
 <?php
 namespace app\modules\fin\controllers;
 
-use yii\web\Controller;
+use app\controllers\MobiledetectController;
 use app\models\FinAccount;
 
-class DepositController extends Controller {
+class DepositController extends MobiledetectController {
 	public function actionIndex() {
 		$arrDeposits = [];
 		

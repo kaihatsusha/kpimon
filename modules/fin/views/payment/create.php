@@ -3,6 +3,7 @@
 	use yii\helpers\Html;
 	use yii\jui\DatePicker;
 	use app\components\MasterValueUtils;
+	use app\components\ModelUtils;
 	
 	$this->title = Yii::t('fin.payment', 'Create Payment');
 ?>
@@ -15,17 +16,18 @@
 	</div>
 	<div id="finPaymentCreateForm" class="box-body"><?php $form = ActiveForm::begin(['requiredCssClass' => 'form-group-required']); ?>
 		<div class="row"><div class="col-md-12" ng-app="myAngularApp" ng-controller="myAngularCtrl">
-			<?php echo $form->field($model, 'entry_date')->widget(DatePicker::className(), [
+			<?= $form->field($model, 'entry_date')->widget(DatePicker::className(), [
 				'inline'=>false, 'dateFormat'=>'php:' . $phpFmShortDate, 'options'=>[
-					'class'=>'form-control'
+					'class'=>'form-control', 'ng-model'=>'mdModel.entry_date'
 				]
 			]); ?>
-			<?php echo $form->field($model, 'account_source')->dropDownList($arrFinAccount, ['prompt'=>'']); ?>
-			<?php echo $form->field($model, 'account_target')->dropDownList($arrFinAccount, ['prompt'=>'']); ?>
-			<?php echo $form->field($model, 'entry_value')->textInput(['type'=>'number', 'ng-model'=>'firstName']); ?>
-			<?php echo $form->field($model, 'description')->textarea(['rows'=>3]); ?>
+			<?= $form->field($model, 'account_source')->dropDownList($arrFinAccount, ['prompt'=>'', 'ng-model'=>'mdModel.account_source']); ?>
+			<?= $form->field($model, 'account_target')->dropDownList($arrFinAccount, ['prompt'=>'', 'ng-model'=>'mdModel.account_target']); ?>
+			<?= $form->field($model, 'entry_value')->textInput(['type'=>'number', 'ng-model'=>'mdModel.entry_value']); ?>
+			<?= $form->field($model, 'description')->textarea(['rows'=>3, 'ng-model'=>'mdModel.description']); ?>
 			<div class="form-group">
-				<?php echo Html::submitButton(Yii::t('button', 'Confirm'), ['class'=>'btn btn-info', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_INPUT]); ?>
+				<?= Html::button(Yii::t('button', 'Reset'), ['class'=>'btn btn-default', 'ng-click'=>'fnReset()']); ?>
+				<?= Html::submitButton(Yii::t('button', 'Confirm'), ['class'=>'btn btn-info', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_INPUT]); ?>
 			</div>
 		</div></div>
 	<?php ActiveForm::end(); ?></div>
@@ -33,7 +35,12 @@
 <script type="text/javascript">
 var myAngularApp = angular.module('myAngularApp', []);
 myAngularApp.controller('myAngularCtrl', function($scope) {
-    //$scope.firstName = 10500;
-    //$scope.lastName = "Doe";
+    $scope.mdMaster = <?php echo ModelUtils::toJsonHtmlEncode($model); ?>;
+	$scope.mdMaster.entry_value = isNaN(parseInt($scope.mdMaster.entry_value)) ? 0 : parseInt($scope.mdMaster.entry_value);
+	$scope.fnReset = function() {
+		$scope.mdModel = angular.copy($scope.mdMaster);
+		$('#finaccountentry-entry_date').datepicker('setDate', $scope.mdMaster.entry_date);
+	};
+	$scope.fnReset();
 });
 </script>

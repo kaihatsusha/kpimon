@@ -1,8 +1,8 @@
 <?php
 namespace app\modules\fin\controllers;
 
-use yii\web\Controller;
 use app\components\DateTimeUtils;
+use app\controllers\MobiledetectController;
 use app\models\FinAccount;
 use app\models\extended\FinAccount01I00;
 use app\models\extended\FinAccount02I00;
@@ -11,7 +11,7 @@ use app\models\extended\FinAccount04I00;
 use app\models\extended\FinAccount05I00;
 use app\models\extended\FinAccount06I00;
 
-class AccountController extends Controller {
+class AccountController extends MobiledetectController {
 	public function actionIndex() {
 		$arrDeposits = [];
 		$sumDeposits = ['opening_balance'=>0, 'closing_interest_unit'=>0, 'closing_interest'=>0, 'closing_balance'=>0,

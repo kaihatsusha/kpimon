@@ -7,7 +7,10 @@ return [
 	'cache' => [
 		'class' => 'yii\caching\FileCache',
 	],
-	'memCache' => [
+	'devicedetect' => [
+		'class' => 'alexandernst\devicedetect\DeviceDetect'
+	],
+	/*'memCache' => [
 		'class' => 'app\components\MemCache',
 		'servers' => [
 			[
@@ -15,7 +18,7 @@ return [
 				'port' => 11211,
 			],
 		],
-	],
+	],*/
 	'user' => [
 		'identityClass' => 'app\models\User',
 		'loginUrl'=>['site/login'],

@@ -2,6 +2,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "fin_account_entry".
@@ -38,10 +39,10 @@ class FinAccountEntry extends \yii\db\ActiveRecord {
             [['entry_value', 'account_source', 'account_target', 'entry_status'], 'integer'],
             [['description'], 'string'],
             [['delete_flag'], 'string', 'max' => 1],
-			[['entry_date', 'entry_value'], 'required', 'on'=>[self::SCENARIO_CREATE]],
-			[['account_source', 'account_target'], 'default', 'value'=>0, 'on'=>[self::SCENARIO_CREATE]],
-			[['account_source'], 'validateSourceRelatedTarget', 'on'=>[self::SCENARIO_CREATE]],
-			[['entry_date'], 'date', 'format'=> 'php:' . self::$_PHP_FM_SHORTDATE, 'on'=>[self::SCENARIO_CREATE]],
+			[['entry_date', 'entry_value'], 'required', 'on' => [self::SCENARIO_CREATE]],
+			[['account_source', 'account_target'], 'default', 'value' => 0, 'on' => [self::SCENARIO_CREATE]],
+			[['account_source'], 'validateSourceRelatedTarget', 'on' => [self::SCENARIO_CREATE]],
+			[['entry_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [self::SCENARIO_CREATE]],
         ];
     }
 
@@ -62,6 +63,22 @@ class FinAccountEntry extends \yii\db\ActiveRecord {
             'delete_flag' => Yii::t('fin.models', 'Delete Flag'),
         ];
     }
+	
+	/**
+     * @inheritdoc
+     */
+	public function behaviors() {
+		return [
+			'timestamp' => [
+				'class' => 'yii\behaviors\TimestampBehavior',
+				'attributes' => [
+					\yii\db\ActiveRecord::EVENT_BEFORE_INSERT => ['create_date', 'update_date'],
+					\yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => ['update_date'],
+				],
+				'value' => new Expression('NOW()'),
+			],
+		];
+	}
 	
 	/**
 	 * validate Source Related Target

@@ -2,14 +2,14 @@
 namespace app\modules\fin\controllers;
 
 use Yii;
-use yii\web\Controller;
 use app\components\DateTimeUtils;
 use app\components\ModelUtils;
 use app\components\MasterValueUtils;
+use app\controllers\MobiledetectController;
 use app\models\FinAccount;
 use app\models\FinAccountEntry;
 
-class PaymentController extends Controller {
+class PaymentController extends MobiledetectController {
 	public function actionIndex() {
 		return $this->render('index');
 	}
@@ -49,7 +49,7 @@ class PaymentController extends Controller {
 				if ($isValid) {
 					$result = $this->createPayment($model);
 					if ($result === true) {
-						Yii::$app->session->setFlash(MasterValueUtils::FLASH_SUCCESS, Yii::t('common', '{record} has been saved successfully.', ['{record}'=>Yii::t('fin.models', 'Payment')]));
+						Yii::$app->session->setFlash(MasterValueUtils::FLASH_SUCCESS, Yii::t('common', '{record} has been saved successfully.', ['record'=>Yii::t('fin.models', 'Payment')]));
 						Yii::$app->getResponse()->redirect(array('fin/payment/index'));
 					} else {
 						Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, $result);
@@ -96,7 +96,7 @@ class PaymentController extends Controller {
 			}
 		} catch(\Exception $e) {
 			$save = false;
-			$message = Yii::t('common', 'Unable to save {record}.', ['{record}'=>Yii::t('fin.models', 'Payment')]);
+			$message = Yii::t('common', 'Unable to save {record}.', ['record'=>Yii::t('fin.models', 'Payment')]);
 		}
 		
 		// end transaction
