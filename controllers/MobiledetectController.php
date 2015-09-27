@@ -10,6 +10,12 @@ class MobiledetectController extends Controller {
 		$isTablet = $devicedetect->isTablet();
 		$mobileTpl = $isMobile && !$isTablet;
 		
+		// detect and change layout
+		if ($mobileTpl) {
+			$this->layout = '@app/views/layouts/sp_main';
+		}
+		
+		// detect and render view
 		$detectView = ($mobileTpl ? 'sp_' : '') . $view;
 		$detectPath = parent::getViewPath() . "/$detectView.php";
 		

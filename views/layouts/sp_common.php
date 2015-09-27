@@ -8,14 +8,14 @@ use yii\helpers\Url;
 use yii\widgets\Breadcrumbs;
 $user = Yii::$app->user->identity;
 ?>
-<?php $this->beginContent('@app/views/layouts/base.php'); ?>
+<?php $this->beginContent('@app/views/layouts/sp_base.php'); ?>
     <div class="wrapper">
         <!-- header logo: style can be found in header.less -->
         <header class="main-header">
-            <a href="<?php echo Url::to(['/site/index']) ?>" class="logo">
+            <?php /*<a href="<?php echo Url::to(['/site/index']) ?>" class="logo">
                 <!-- Add the class icon to your logo image or logo icon to add the margining -->
                 <?php echo Yii::$app->name ?>
-            </a>
+            </a> */?>
             <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top" role="navigation">
                 <!-- Sidebar toggle button-->
@@ -104,9 +104,9 @@ $user = Yii::$app->user->identity;
         </header>
         <!-- Left side column. contains the logo and sidebar -->
         <?php echo app\widgets\main\MainSidebarWidget::widget(['user'=>$user]); ?>
-
+        
         <!-- Right side column. Contains the navbar and content of the page -->
-        <aside class="content-wrapper">
+        <aside class="content-wrapper content-wrapper-sp">
             <!-- Content Header (Page header) -->
             <section class="content-header">
                 <h1>

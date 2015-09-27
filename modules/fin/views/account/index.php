@@ -14,8 +14,8 @@
 	</div>
 	<div class="box-body table-responsive no-padding"><table class="table table-bordered"><tbody>
 		<tr>
-			<th class="warning" style="text-align: center">#</th>
-			<th class="warning" style="text-align: center"><?= Yii::t('fin.grid', 'Name'); ?></th>
+			<th class="info" style="text-align: center">#</th>
+			<th class="info" style="text-align: center"><?= Yii::t('fin.grid', 'Name'); ?></th>
 			<th class="danger" style="text-align: center" colspan="2"><?= Yii::t('fin.grid', 'Opening Deposit'); ?></th>
 			<th class="success" style="text-align: center" colspan="2"><span class="label label-info"><?= DateTimeUtils::createFromTimestamp($minClosingTimestamp, DateTimeUtils::FM_VIEW_DATE); ?></span></th>
 			<th class="success" style="text-align: center" colspan="2"><?= Yii::t('fin.grid', 'Closing Deposit'); ?></th>
@@ -45,8 +45,8 @@
 			</tr>
 		<?php endforeach; ?>
 		<tr>
-			<th class="warning" style="text-align: center">#</th>
-			<th class="warning"></th>
+			<th class="info" style="text-align: center">#</th>
+			<th class="info"></th>
 			<th class="danger" style="text-align: right" colspan="2"><?= NumberUtils::format($sumDeposits['opening_balance']); ?></th>
 			<th class="success" style="text-align: right" colspan="2"><?= NumberUtils::format($sumDeposits['closing_interest_unit']); ?></th>
 			<th class="success" style="text-align: right"><?= NumberUtils::format($sumDeposits['closing_interest']); ?></th>
