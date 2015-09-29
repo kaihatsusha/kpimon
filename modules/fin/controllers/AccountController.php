@@ -12,6 +12,22 @@ use app\models\extended\FinAccount05I00;
 use app\models\extended\FinAccount06I00;
 
 class AccountController extends MobiledetectController {
+	public $defaultAction = 'index';
+	
+	public function behaviors() {
+		return [
+			'access' => [
+				'class' => \yii\filters\AccessControl::className(),
+				'only' => ['index'],
+				'rules' => [
+					[
+						'allow' => true, 'roles' => ['@']
+					]
+				]
+			]
+		];
+    }
+	
 	public function actionIndex() {
 		$arrDeposits = [];
 		$sumDeposits = ['opening_balance'=>0, 'closing_interest_unit'=>0, 'closing_interest'=>0, 'closing_balance'=>0,

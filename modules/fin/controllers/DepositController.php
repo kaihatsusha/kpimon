@@ -5,6 +5,22 @@ use app\controllers\MobiledetectController;
 use app\models\FinAccount;
 
 class DepositController extends MobiledetectController {
+	public $defaultAction = 'index';
+	
+	public function behaviors() {
+		return [
+			'access' => [
+				'class' => \yii\filters\AccessControl::className(),
+				'only' => ['index'],
+				'rules' => [
+					[
+						'allow' => true, 'roles' => ['@']
+					]
+				]
+			]
+		];
+    }
+	
 	public function actionIndex() {
 		$arrDeposits = [];
 		

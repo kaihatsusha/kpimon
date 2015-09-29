@@ -19,7 +19,12 @@ use yii\db\Expression;
  * @property string $delete_flag
  */
 class FinAccountEntry extends \yii\db\ActiveRecord {
+	const SCENARIO_LIST = 'list';
 	const SCENARIO_CREATE = 'create';
+	const SCENARIO_UPDATE = 'update';
+	
+	public $entry_date_from = null;
+	public $entry_date_to = null;
 	
 	public static $_PHP_FM_SHORTDATE = 'Y-m-d';
 	
@@ -53,6 +58,8 @@ class FinAccountEntry extends \yii\db\ActiveRecord {
         return [
             'entry_id' => Yii::t('fin.models', 'Entry ID'),
             'entry_date' => Yii::t('fin.models', 'Entry Date'),
+			'entry_date_from' => Yii::t('fin.models', 'Entry Date From'),
+			'entry_date_to' => Yii::t('fin.models', 'Entry Date To'),
             'entry_value' => Yii::t('fin.models', 'Entry Value'),
             'account_source' => Yii::t('fin.models', 'Account Source'),
             'account_target' => Yii::t('fin.models', 'Account Target'),

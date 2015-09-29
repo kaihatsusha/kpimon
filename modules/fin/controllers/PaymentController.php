@@ -10,8 +10,50 @@ use app\models\FinAccount;
 use app\models\FinAccountEntry;
 
 class PaymentController extends MobiledetectController {
+	public $defaultAction = 'index';
+	
+	public function behaviors() {
+		return [
+			'access' => [
+				'class' => \yii\filters\AccessControl::className(),
+				'only' => ['index', 'create', 'update'],
+				'rules' => [
+					[
+						'allow' => true, 'roles' => ['@']
+					]
+				]
+			]
+		];
+    }
+	
 	public function actionIndex() {
-		return $this->render('index');
+		$searchModel = new FinAccountEntry();
+		$phpFmShortDate = DateTimeUtils::getPhpDateFormat();
+		$arrFinAccount = ModelUtils::getArrData(FinAccount::find(), 'account_id', 'account_name', ['delete_flag'=>0], 'account_type, order_num');
+		
+		// submit data
+		$postData = Yii::$app->request->post();
+		
+		// populate model attributes with user inputs
+		$searchModel->load($postData);
+		
+		// init value
+		if (Yii::$app->request->getIsGet()) {
+			$today = new \DateTime();
+			$searchModel->entry_date_to = $today->format($phpFmShortDate);
+			$lastMonth = DateTimeUtils::subDateTime($today, 'P1M');
+			//$lastMonth->set
+			var_dump($xx);die();
+			$searchModel->entry_date = DateTimeUtils::formatNow($phpFmShortDate);
+		}
+		FinAccountEntry::$_PHP_FM_SHORTDATE = $phpFmShortDate;
+		$searchModel->scenario = FinAccountEntry::SCENARIO_LIST;
+		var_dump($searchModel);
+		
+		// render GUI
+		$renderData = ['searchModel'=>$searchModel, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount];
+		
+		return $this->render('index', $renderData);
 	}
 	
 	public function actionCreate() {

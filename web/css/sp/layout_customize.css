@@ -13,3 +13,7 @@
 .content-wrapper-sp .box-body {
 	padding: 10px 4px 10px 4px;
 }
+
+.content-wrapper-sp .alert {
+	padding: 6px 4px 6px 4px;
+}

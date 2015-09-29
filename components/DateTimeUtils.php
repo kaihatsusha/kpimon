@@ -109,10 +109,10 @@ class DateTimeUtils {
 	 * @param String $format
 	 * @return DateTime
 	 */
-	public static function getNow($format) {
+	/*public static function getNow($format) {
 		$dt = self::formatNow($format);
 		return \DateTime::createFromFormat($format, $dt);
-	}
+	}*/
 	
 	/**
 	 * get Now as String
@@ -146,6 +146,107 @@ class DateTimeUtils {
 		$dt = new \DateTime();
 		$dt->setTimestamp($timestamp);
 		return is_null($outformat) ? $dt : $dt->format($outformat);
+	}
+	
+	/**
+	 * clone a DateTime
+	 * @param type $datetime Integer or DateTime
+	 * @return type DateTime
+	 * @throws Exception
+	 */
+	public static function cloneDateTime($datetime) {
+		$result = new \DateTime();
+		$error = false;
+		
+		$type = gettype($datetime);
+		switch ($type) {
+			case 'integer':
+				$result->setTimestamp($datetime);
+				break;
+			case 'object':
+				if ($datetime instanceof \DateTime) {
+					$result->setTimestamp($datetime->getTimestamp());
+				} else {
+					$error = true;
+				}
+				break;
+			default:
+				$error = true;
+				break;
+		}
+		
+		if ($error) {
+			throw new Exception(Yii::t('DateTimeUtils', 'Unknown type'));
+		}
+		return $result;
+	}
+	
+	/**
+	 * create a DateTime with sub data
+	 * @param mixed $datetime integer(recommended) OR DateTime
+	 * @param DateInterval $interval EX: P10D
+	 * @param string $format if you want to return a string, you should use this
+	 * @return mixed string OR DateTime base on '$format' - the new date time with sub data
+	 * @throws CException
+	 */
+	public static function subDateTime($datetime, $interval, $format=null) {
+		$result = self::cloneDateTime($datetime);
+		$error = false;
+		
+		$type = gettype($interval);
+		switch ($type) {
+			case 'object':
+				if ($interval instanceof \DateInterval) {
+					$result->sub($interval);
+				} else {
+					$error = true;
+				}
+				break;
+			case 'string':
+				$intervalObj = new \DateInterval($interval);
+				$result->sub($intervalObj);
+				break;
+			default:
+				$error = true;
+				break;
+		}
+		
+		if ($error) {
+			throw new Exception(Yii::t('DateTimeUtils', 'Unknown type'));
+		}
+		return (null == $format) ? $result : $result->format($format);
+	}
+	
+	/**
+	 * create a DateTime with add data
+	 * @param mixed $datetime integer(recommended) OR DateTime
+	 * @param DateInterval $interval EX: P10D
+	 * @param string $format if you want to return a string, you should use this
+	 * @return mixed string OR DateTime base on '$format' - the new date time with add data
+	 * @throws CException
+	 */
+	public static function addDateTime($datetime, $interval, $format=null) {
+		$result = self::cloneDateTime($datetime);
+		$error = false;
+		
+		$type = gettype($interval);
+		switch ($type) {
+			case 'object':
+				if ($interval instanceof \DateInterval) {
+					$result->add($interval);
+				} else {
+					$error = true;
+				}
+				break;
+			default:
+				$error = true;
+				break;
+		}
+		
+		if ($error) {
+			throw new Exception(Yii::t('DateTimeUtils', 'Unknown type'));
+		}
+		return (null == $format) ? $result : $result->format($format);
 	}
 }
 ?>

@@ -1,7 +1,7 @@
 <?php
 	use app\components\MasterValueUtils;
 	
-	//$this->title = Yii::t('fin.payment', 'Payments List');
+	$this->title = Yii::t('fin.payment', 'Payments List');
 ?>
 <?php if(Yii::$app->session->hasFlash(MasterValueUtils::FLASH_SUCCESS)): ?><div class="alert alert-success">
 	<?php echo Yii::$app->session->getFlash(MasterValueUtils::FLASH_SUCCESS); ?>
