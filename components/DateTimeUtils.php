@@ -9,6 +9,7 @@ class DateTimeUtils {
 	const FM_DB_DATE = 'Y-m-d';
 	const FM_DB_TIME = 'H:i:s';
     const FM_DEV_DATETIME = 'Ymd His';
+	const FM_DEV_YM = 'Ym';
     const FM_DEV_DATE = 'Ymd';
     const FM_DEV_TIME = 'His';
 	const FM_VIEW_DATE = 'Y-m-d';
@@ -106,13 +107,19 @@ class DateTimeUtils {
 	
 	/**
 	 * get Now as DateTime
-	 * @param String $format
+	 * @param String $informat
+	 * @param String $outformat
 	 * @return DateTime
 	 */
-	/*public static function getNow($format) {
-		$dt = self::formatNow($format);
-		return \DateTime::createFromFormat($format, $dt);
-	}*/
+	public static function getNow($informat, $outformat) {
+		$dt = new \DateTime();
+		if (is_null($informat) || is_null($outformat)) {
+			return $dt;
+		}
+		
+		$dtf = $dt->format($informat);
+		return \DateTime::createFromFormat($outformat, $dtf);
+	}
 	
 	/**
 	 * get Now as String
@@ -186,11 +193,12 @@ class DateTimeUtils {
 	 * @param mixed $datetime integer(recommended) OR DateTime
 	 * @param DateInterval $interval EX: P10D
 	 * @param string $format if you want to return a string, you should use this
+	 * @param boolean $nochange
 	 * @return mixed string OR DateTime base on '$format' - the new date time with sub data
 	 * @throws CException
 	 */
-	public static function subDateTime($datetime, $interval, $format=null) {
-		$result = self::cloneDateTime($datetime);
+	public static function subDateTime($datetime, $interval, $format = null, $nochange = true) {
+		$result = ($nochange || gettype($datetime) == 'integer') ? self::cloneDateTime($datetime) : $datetime;
 		$error = false;
 		
 		$type = gettype($interval);
@@ -222,11 +230,12 @@ class DateTimeUtils {
 	 * @param mixed $datetime integer(recommended) OR DateTime
 	 * @param DateInterval $interval EX: P10D
 	 * @param string $format if you want to return a string, you should use this
+	 * @param boolean $nochange
 	 * @return mixed string OR DateTime base on '$format' - the new date time with add data
 	 * @throws CException
 	 */
-	public static function addDateTime($datetime, $interval, $format=null) {
-		$result = self::cloneDateTime($datetime);
+	public static function addDateTime($datetime, $interval, $format = null, $nochange = true) {
+		$result = ($nochange || gettype($datetime) == 'integer') ? self::cloneDateTime($datetime) : $datetime;
 		$error = false;
 		
 		$type = gettype($interval);

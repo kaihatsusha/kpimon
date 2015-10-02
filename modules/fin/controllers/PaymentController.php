@@ -29,7 +29,9 @@ class PaymentController extends MobiledetectController {
 	public function actionIndex() {
 		$searchModel = new FinAccountEntry();
 		$phpFmShortDate = DateTimeUtils::getPhpDateFormat();
-		$arrFinAccount = ModelUtils::getArrData(FinAccount::find(), 'account_id', 'account_name', ['delete_flag'=>0], 'account_type, order_num');
+		$arrFinAccount = ModelUtils::getArrData(FinAccount::find()->select(['account_id', 'account_name'])
+				->where(['delete_flag'=>0])->andWhere(['<>', 'account_type', 6])
+				->orderBy('account_type, order_num'), 'account_id', 'account_name');
 		
 		// submit data
 		$postData = Yii::$app->request->post();
@@ -41,17 +43,20 @@ class PaymentController extends MobiledetectController {
 		if (Yii::$app->request->getIsGet()) {
 			$today = new \DateTime();
 			$searchModel->entry_date_to = $today->format($phpFmShortDate);
-			$lastMonth = DateTimeUtils::subDateTime($today, 'P1M');
-			//$lastMonth->set
-			var_dump($xx);die();
-			$searchModel->entry_date = DateTimeUtils::formatNow($phpFmShortDate);
+			$lastMonth = DateTimeUtils::getNow(DateTimeUtils::FM_DEV_YM . '01', DateTimeUtils::FM_DEV_DATE);
+			DateTimeUtils::subDateTime($lastMonth, 'P1M', null, false);
+			$searchModel->entry_date_from = $lastMonth->format($phpFmShortDate);
+			$searchModel->entry_date_to = DateTimeUtils::formatNow($phpFmShortDate);
 		}
 		FinAccountEntry::$_PHP_FM_SHORTDATE = $phpFmShortDate;
 		$searchModel->scenario = FinAccountEntry::SCENARIO_LIST;
-		var_dump($searchModel);
 		
+		// query for dataprovider
+		$dataQuery = FinAccountEntry::find();
+		
+		//var_dump($searchModel);
 		// render GUI
-		$renderData = ['searchModel'=>$searchModel, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount];
+		$renderData = ['searchModel'=>$searchModel, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount, 'dataQuery'=>$dataQuery];
 		
 		return $this->render('index', $renderData);
 	}
@@ -59,7 +64,9 @@ class PaymentController extends MobiledetectController {
 	public function actionCreate() {
 		$model = new FinAccountEntry();
 		$phpFmShortDate = DateTimeUtils::getPhpDateFormat();
-		$arrFinAccount = ModelUtils::getArrData(FinAccount::find(), 'account_id', 'account_name', ['delete_flag'=>0, 'account_type'=>[1,2,3,5]], 'account_type, order_num');
+		$arrFinAccount = ModelUtils::getArrData(FinAccount::find()->select(['account_id', 'account_name'])
+				->where(['delete_flag'=>0, 'account_type'=>[1,2,3,5]])
+				->orderBy('account_type, order_num'), 'account_id', 'account_name');
 		
 		// submit data
 		$postData = Yii::$app->request->post();

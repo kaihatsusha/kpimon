@@ -40,7 +40,7 @@ class FinAccountEntry extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['entry_date', 'create_date', 'update_date'], 'safe'],
+            [['entry_date', 'entry_date_from', 'entry_date_to', 'create_date', 'update_date'], 'safe'],
             [['entry_value', 'account_source', 'account_target', 'entry_status'], 'integer'],
             [['description'], 'string'],
             [['delete_flag'], 'string', 'max' => 1],
