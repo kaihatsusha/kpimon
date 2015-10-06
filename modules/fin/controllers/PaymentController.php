@@ -52,7 +52,12 @@ class PaymentController extends MobiledetectController {
 		$searchModel->scenario = FinAccountEntry::SCENARIO_LIST;
 		
 		// query for dataprovider
-		$dataQuery = FinAccountEntry::find();
+		$dataQuery = null;
+		if ($searchModel->validate()) {
+			$dataQuery = FinAccountEntry::find();
+		} else {
+			$dataQuery = FinAccountEntry::find()->where(['entry_id'=>-1]);
+		}
 		
 		//var_dump($searchModel);
 		// render GUI

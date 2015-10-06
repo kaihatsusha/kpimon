@@ -14,11 +14,27 @@ class MasterValueUtils {
 	const FLASH_SUCCESS = 'success';
 	const FLASH_ERROR = 'error';
 	
+	const CSS_COLOR_EVEN = 'info';		// row % 2 == 0
+	const CSS_COLOR_ODD = 'success';	// row % 2 == 1
+	
 	const MV_FIN_ACCOUNT_TYPE_CASH = 1;			// Cash
 	const MV_FIN_ACCOUNT_TYPE_CURRENT = 2;		// Current account
 	const MV_FIN_ACCOUNT_TYPE_CREDIT = 3;		// Credit card
 	const MV_FIN_ACCOUNT_TYPE_TIME_DEPOSIT = 4;	// Time deposits
 	const MV_FIN_ACCOUNT_TYPE_ADVANCE = 5;		// Advances
 	const MV_FIN_ACCOUNT_TYPE_OIR = 6;			// Other internal receivables
+	
+	const MV_FIN_ENTRY_TYPE_SIMPLE = 1;		// Simple
+	const MV_FIN_ENTRY_TYPE_DEPOSIT = 2;	// Internet
+	const MV_FIN_ENTRY_TYPE_INTERNET = 3;	// Internet
+	
+	/**
+	 * get color of a row
+	 * @param Number $index
+	 * @return String
+	 */
+	public static function getColorRow($index) {
+		return ($index % 2 == 0) ? self::CSS_COLOR_EVEN : self::CSS_COLOR_ODD;
+	}
 }
 ?>
