@@ -43,6 +43,26 @@
 						'label'=>Yii::t('fin.menuLeft', 'List'),
 						'url'=>['/fin/payment/index'],
 						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('fin.menuLeft', 'Create'),
+						'url'=>['/fin/payment/create'],
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('fin.menuLeft', 'View'),
+						'url'=>['/fin/payment/view'],
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('fin.menuLeft', 'Edit'),
+						'url'=>['/fin/payment/update'],
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('fin.menuLeft', 'Copy'),
+						'url'=>['/fin/payment/copy'],
+						'icon'=>'<i class="fa fa-circle-o"></i>'
 					]
 				]
 			],

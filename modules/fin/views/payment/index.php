@@ -2,6 +2,7 @@
 	use yii\bootstrap\ActiveForm;
 	use yii\data\ActiveDataProvider;
 	use yii\grid\GridView;
+	use yii\helpers\BaseUrl;
 	use yii\helpers\Html;
 	use yii\jui\DatePicker;
 	use yii\widgets\Pjax;
@@ -42,7 +43,6 @@
 				<?= $form->field($searchModel, 'account_target')->dropDownList($arrFinAccount, ['prompt'=>'']); ?>
 			</div>
 			<div class="col-xs-12"><div class="form-group">
-				<?= Html::a(Yii::t('button', 'Create'), ['/fin/payment/create'], ['class'=>'btn btn-info']) ?>
 				<?= Html::submitButton(Yii::t('button', 'Search'), ['class'=>'btn btn-info', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_INPUT]); ?>
 			</div></div>
 		</div>
@@ -62,7 +62,7 @@
 					'headerOptions'=>['style'=>'text-align: center'],
 					'footerOptions'=>['style'=>'text-align: right', 'colspan'=>3],
 					'contentOptions'=>function($model, $key, $index) {
-						return ['style'=>'text-align: center', 'class'=>MasterValueUtils::getColorRow($index)];
+						return ['style'=>'vertical-align: middle; text-align: center', 'class'=>MasterValueUtils::getColorRow($index)];
 					},
 					'value'=>function($model, $key) {
 						return $key;
@@ -75,7 +75,7 @@
 					'headerOptions'=>['style'=>'text-align: center'],
 					'footerOptions'=>['colspan'=>0],
 					'contentOptions'=>function($model, $key, $index) {
-						return ['style'=>'text-align: center', 'class'=>MasterValueUtils::getColorRow($index)];
+						return ['style'=>'vertical-align: middle; text-align: center', 'class'=>MasterValueUtils::getColorRow($index)];
 					},
 					'value'=>function($model) {
 						return str_pad($model->entry_id, 6, '0', STR_PAD_LEFT);
@@ -89,7 +89,7 @@
 					'headerOptions'=>['style'=>'text-align: center'],
 					'footerOptions'=>['colspan'=>0],
 					'contentOptions'=>function($model, $key, $index) {
-						return ['style'=>'text-align: center', 'class'=>MasterValueUtils::getColorRow($index)];
+						return ['style'=>'vertical-align: middle; text-align: center', 'class'=>MasterValueUtils::getColorRow($index)];
 					},
 					'format'=>['date', $phpFmShortDateGui]
 				],
@@ -98,7 +98,7 @@
 					'headerOptions'=>['style'=>'text-align: center'],
 					'footerOptions'=>['style'=>'text-align: right', 'colspan'=>2],
 					'contentOptions'=>function($model, $key, $index) {
-						return ['style'=>'text-align: left', 'class'=>MasterValueUtils::getColorRow($index)];
+						return ['style'=>'vertical-align: middle; text-align: left', 'class'=>MasterValueUtils::getColorRow($index)];
 					},
 					'value'=>function($model) use ($arrFinAccount) {
 						return isset($arrFinAccount[$model->account_target]) ? $arrFinAccount[$model->account_target] : '';
@@ -111,7 +111,7 @@
 					'headerOptions'=>['style'=>'text-align: center'],
 					'footerOptions'=>['colspan'=>0],
 					'contentOptions'=>function($model, $key, $index) {
-						return ['style'=>'text-align: right', 'class'=>MasterValueUtils::getColorRow($index)];
+						return ['style'=>'vertical-align: middle; text-align: right', 'class'=>MasterValueUtils::getColorRow($index)];
 					},
 					'value'=>function($model) {
 						$amount = $model->account_target == 0 ? '' : NumberUtils::format($model->entry_value);
@@ -123,7 +123,7 @@
 					'headerOptions'=>['style'=>'text-align: center'],
 					'footerOptions'=>['style'=>'text-align: right', 'colspan'=>2],
 					'contentOptions'=>function($model, $key, $index) {
-						return ['style'=>'text-align: left', 'class'=>MasterValueUtils::getColorRow($index)];
+						return ['style'=>'vertical-align: middle; text-align: left', 'class'=>MasterValueUtils::getColorRow($index)];
 					},
 					'value'=>function($model) use ($arrFinAccount) {
 						return isset($arrFinAccount[$model->account_source]) ? $arrFinAccount[$model->account_source] : '';
@@ -135,7 +135,7 @@
 					'headerOptions'=>['style'=>'text-align: center'],
 					'footerOptions'=>['colspan'=>0],
 					'contentOptions'=>function($model, $key, $index) {
-						return ['style'=>'text-align: right', 'class'=>MasterValueUtils::getColorRow($index)];
+						return ['style'=>'vertical-align: middle; text-align: right', 'class'=>MasterValueUtils::getColorRow($index)];
 					},
 					'value'=>function($model) {
 						$amount = $model->account_source == 0 ? '' : NumberUtils::format($model->entry_value);
@@ -148,7 +148,7 @@
 					'headerOptions'=>['style'=>'text-align: center'],
 					'footerOptions'=>['style'=>'text-align: right', 'colspan'=>2],
 					'contentOptions'=>function($model, $key, $index) {
-						return ['style'=>'text-align: left', 'class'=>MasterValueUtils::getColorRow($index)];
+						return ['style'=>'vertical-align: middle; text-align: left', 'class'=>MasterValueUtils::getColorRow($index)];
 					},
 					'enableSorting'=>false
 				],
@@ -158,24 +158,34 @@
 					'headerOptions'=>['style'=>'text-align: center'],
 					'footerOptions'=>['colspan'=>0],
 					'contentOptions'=>function($model, $key, $index) {
-						return ['style'=>'text-align: center', 'class'=>MasterValueUtils::getColorRow($index)];
+						return ['style'=>'vertical-align: middle; text-align: center', 'class'=>MasterValueUtils::getColorRow($index)];
 					},
 					'format'=>'raw',
 					'value'=>function($model, $key, $index) {
 						$btnClass = MasterValueUtils::getColorRow($index);
+						$lblView = Yii::t('button', 'View');
+						$lblEdit = Yii::t('button', 'Edit');
+						$lblCopy = Yii::t('button', 'Copy');
+						$urlView = $urlEdit = '#';
+						$urlCopy = false;
+						if ($model->entry_status == MasterValueUtils::MV_FIN_ENTRY_TYPE_SIMPLE) {
+							$urlView = BaseUrl::toRoute(['payment/view', 'id'=>$model->entry_id]);
+							$urlEdit = BaseUrl::toRoute(['payment/update', 'id'=>$model->entry_id]);
+							$urlCopy = BaseUrl::toRoute(['payment/copy', 'id'=>$model->entry_id]);
+						}
+						
 						$html = '<div class="btn-group">';
-						$html .= '<button type="button" class="btn btn-' . $btnClass . '">' . Yii::t('button', 'View') . '</button>';
-						$html .= '<button type="button" class="btn btn-' . $btnClass . ' dropdown-toggle" data-toggle="dropdown">
-                        <span class="caret"></span>
-                        <span class="sr-only">Toggle Dropdown</span>
-                      </button>
-                      <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Action</a></li>
-                        <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
-                        <li><a href="#">Separated link</a></li>
-                      </ul>
-                    </div>';
+						$html .= Html::a($lblEdit, [$urlEdit], ['class'=>'btn btn-' . $btnClass]);
+						$html .= '<button type="button" class="btn btn-' . $btnClass . ' dropdown-toggle" data-toggle="dropdown">';
+						$html .= '<span class="caret"></span><span class="sr-only">Toggle Dropdown</span>';
+						$html .= '</button>';
+						$html .= '<ul class="dropdown-menu" role="menu">';
+						$html .= '<li><a href="' . $urlView . '">' . $lblView . '</a></li>';
+						if ($urlCopy) {
+							$html .= '<li><a href="' . $urlCopy . '">' . $lblCopy . '</a></li>';
+						}
+						$html .= '</ul></div>';
+						
 						return $html;
 					}
 				]

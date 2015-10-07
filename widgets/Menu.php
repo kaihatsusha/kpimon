@@ -57,7 +57,6 @@ class Menu extends \yii\widgets\Menu
 
         if (isset($item['url'])) {
             $template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
-
             return strtr($template, [
                 '{badge}'=> isset($item['badge'])
                     ? Html::tag('small', $item['badge'], $item['badgeOptions'])

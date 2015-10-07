@@ -16,7 +16,7 @@ class PaymentController extends MobiledetectController {
 		return [
 			'access' => [
 				'class' => \yii\filters\AccessControl::className(),
-				'only' => ['index', 'create', 'update'],
+				'only' => ['index', 'view', 'create', 'update', 'copy'],
 				'rules' => [
 					[
 						'allow' => true, 'roles' => ['@']
@@ -64,6 +64,11 @@ class PaymentController extends MobiledetectController {
 		$renderData = ['searchModel'=>$searchModel, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount, 'dataQuery'=>$dataQuery];
 		
 		return $this->render('index', $renderData);
+	}
+	
+	public function actionView($id) {
+		var_dump($id);
+		return $this->render('view');
 	}
 	
 	public function actionCreate() {
