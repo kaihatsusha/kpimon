@@ -67,7 +67,10 @@
                         	<?php $rowindex++; ?>
                         	<tr>
 								<td style="text-align: center; vertical-align: middle;"><?= $rowindex; ?></td>
-								<td style="text-align: left; vertical-align: middle;"><?= $deposits->account_name; ?></td>
+								<td style="text-align: right; vertical-align: middle;">
+									<?= NumberUtils::format($deposits->closing_interest_unit); ?><br/>
+									<?= $deposits->account_name; ?>
+								</td>
 								<td style="text-align: right; vertical-align: middle;">
 									<?= $deposits->closing_diff; ?> <?= Yii::t('fin.grid', '(days)'); ?><br/>
 									<?= DateTimeUtils::formatDateTimeFromDB($deposits->closing_date, DateTimeUtils::FM_VIEW_DATE); ?></td>
@@ -107,7 +110,10 @@
                         	<?php $rowindex++; ?>
                         	<tr>
 								<td style="text-align: center; vertical-align: middle;"><?= $rowindex; ?></td>
-								<td style="text-align: left; vertical-align: middle;"><?= $deposits->account_name; ?></td>
+								<td style="text-align: right; vertical-align: middle;">
+									<?= NumberUtils::format($deposits->now_interest_unit); ?><br/>
+									<?= $deposits->account_name; ?>
+								</td>
 								<td style="text-align: right; vertical-align: middle;">
 									<?= Yii::t('fin.grid', 'Left'); ?> : <?= $deposits->now_diff; ?><br/>
 									<?= Yii::t('fin.grid', 'Remain'); ?> : <?= ($deposits->closing_diff - $deposits->now_diff); ?>

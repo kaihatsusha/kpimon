@@ -17,3 +17,17 @@
 .content-wrapper-sp .alert {
 	padding: 6px 4px 6px 4px;
 }
+
+.content-wrapper-sp .box-body-notool {
+	border-radius: 0 0 3px 3px;
+	padding: 10px 4px 10px 4px;
+}
+
+.content-wrapper-sp .box-body-notool::before,
+.content-wrapper-sp .box-body-notool::after, {
+	clear: both; content: " "; display: table;
+}
+
+.content-wrapper-sp .pagination-bottom {
+	margin: 0;
+}

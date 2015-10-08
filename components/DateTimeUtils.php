@@ -106,6 +106,17 @@ class DateTimeUtils {
 	}
 	
 	/**
+	 * get datetime from database
+	 * @param string $datetime: value from database (EX: Y-m-d)
+	 * @param string $format: new format
+	 * @return mixed string OR DateTime
+	 */
+	public static function formatDateFromDB($datetime, $format) {
+		$dt = \DateTime::createFromFormat(self::FM_DB_DATE, $datetime);
+		return $dt->format($format);
+	}
+	
+	/**
 	 * get Now as DateTime
 	 * @param String $informat
 	 * @param String $outformat

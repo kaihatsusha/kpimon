@@ -8,7 +8,7 @@
 	$viewToday = DateTimeUtils::formatNow(DateTimeUtils::FM_VIEW_DATE);
 ?>
 
-<div class="row"><div class="col-xs-12"><div class="box">
+<div class="row"><div class="col-md-12"><div class="box">
 	<div class="box-header">
 		<h3 class="box-title"><?= Yii::t('fin.account', 'Time Deposits'); ?></h3>
 	</div>

@@ -20,13 +20,13 @@
 	<?php echo Yii::$app->session->getFlash(MasterValueUtils::FLASH_ERROR); ?>
 </div><?php endif; ?>
 
-<div class="row"><div class="col-xs-12"><div class="box">
+<div class="row"><div class="col-md-12"><div class="box">
 	<div class="box-header with-border">
 		<h3 class="box-title"><?= Yii::t('fin.payment', 'Transaction'); ?></h3>
 	</div>
 	<div class="box-body"><?php $form = ActiveForm::begin(['requiredCssClass' => 'form-group-required']); ?>
 		<div class="row">
-			<div class="col-xs-6">
+			<div class="col-md-6">
 				<?= $form->field($searchModel, 'entry_date_from')->widget(DatePicker::className(), [
 					'inline'=>false, 'dateFormat'=>$phpFmShortDateGui, 'options'=>[
 						'class'=>'form-control'
@@ -34,7 +34,7 @@
 				]); ?>
 				<?= $form->field($searchModel, 'account_source')->dropDownList($arrFinAccount, ['prompt'=>'']); ?>
 			</div>
-			<div class="col-xs-6">
+			<div class="col-md-6">
 				<?= $form->field($searchModel, 'entry_date_to')->widget(DatePicker::className(), [
 					'inline'=>false, 'dateFormat'=>$phpFmShortDateGui, 'options'=>[
 						'class'=>'form-control'
@@ -42,7 +42,7 @@
 				]); ?>
 				<?= $form->field($searchModel, 'account_target')->dropDownList($arrFinAccount, ['prompt'=>'']); ?>
 			</div>
-			<div class="col-xs-12"><div class="form-group">
+			<div class="col-md-12"><div class="form-group">
 				<?= Html::submitButton(Yii::t('button', 'Search'), ['class'=>'btn btn-info', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_INPUT]); ?>
 			</div></div>
 		</div>
@@ -60,13 +60,13 @@
 				[
 					'label'=>Yii::t('fin.grid', 'No.'),
 					'headerOptions'=>['style'=>'text-align: center'],
-					'footerOptions'=>['style'=>'text-align: right', 'colspan'=>3],
+					'footerOptions'=>['style'=>'text-align: right', 'colspan'=>2],
 					'contentOptions'=>function($model, $key, $index) {
 						return ['style'=>'vertical-align: middle; text-align: center', 'class'=>MasterValueUtils::getColorRow($index)];
 					},
 					'value'=>function($model, $key, $index, $column) {
-						//var_dump($column->grid->dataProvider);
-						return $key;
+						$pagination = $column->grid->dataProvider->pagination;
+						return $pagination->page * $pagination->pageSize + $index + 1;
 					},
 					'footer'=>Yii::t('fin.grid', 'Total')
 				],
@@ -80,19 +80,18 @@
 					},
 					'value'=>function($model) {
 						return str_pad($model->entry_id, 6, '0', STR_PAD_LEFT);
-					},
-					'footer'=>false
+					}
 				],
 				[
-					'class'=>DataColumn::className(),
 					'attribute'=>'entry_date',
 					'label'=>Yii::t('fin.grid', 'Transaction Date'),
 					'headerOptions'=>['style'=>'text-align: center'],
-					'footerOptions'=>['colspan'=>0],
+					'footerOptions'=>['style'=>'text-align: right'],
 					'contentOptions'=>function($model, $key, $index) {
 						return ['style'=>'vertical-align: middle; text-align: center', 'class'=>MasterValueUtils::getColorRow($index)];
 					},
-					'format'=>['date', $phpFmShortDateGui]
+					'format'=>['date', $phpFmShortDateGui],
+					'footer'=>NumberUtils::format($sumEntryValue['entry_target'] - $sumEntryValue['entry_source'])
 				],
 				[
 					'label'=>Yii::t('fin.grid', 'Debit Account'),
@@ -152,8 +151,7 @@
 					'contentOptions'=>function($model, $key, $index) {
 						return ['style'=>'vertical-align: middle; text-align: left', 'class'=>MasterValueUtils::getColorRow($index)];
 					},
-					'enableSorting'=>false,
-					'footer'=>NumberUtils::format($sumEntryValue['entry_target'] - $sumEntryValue['entry_source'])
+					'enableSorting'=>false
 				],
 				[
 					'label'=>Yii::t('fin.grid', 'Action'),
@@ -193,4 +191,4 @@
 			]
 		]); ?><?php Pjax::end(); ?></div>
 	<?php ActiveForm::end(); ?></div>
-</div></div>
+</div></div></div>
