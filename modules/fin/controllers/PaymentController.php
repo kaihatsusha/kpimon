@@ -2,6 +2,7 @@
 namespace app\modules\fin\controllers;
 
 use Yii;
+use yii\db\Query;
 use app\components\DateTimeUtils;
 use app\components\ModelUtils;
 use app\components\MasterValueUtils;
@@ -10,6 +11,7 @@ use app\models\FinAccount;
 use app\models\FinAccountEntry;
 
 class PaymentController extends MobiledetectController {
+	public $objectId = false;
 	public $defaultAction = 'index';
 	
 	public function behaviors() {
@@ -51,23 +53,46 @@ class PaymentController extends MobiledetectController {
 		FinAccountEntry::$_PHP_FM_SHORTDATE = $phpFmShortDate;
 		$searchModel->scenario = FinAccountEntry::SCENARIO_LIST;
 		
+		// sum Debit Amount & Credit Amount
+		$sumEntryValue = false;
 		// query for dataprovider
 		$dataQuery = null;
 		if ($searchModel->validate()) {
-			$dataQuery = FinAccountEntry::find();
+			$dataQuery = FinAccountEntry::find()->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+			$sumEntryQuery = (new Query())->select(['SUM(IF(account_source > 0, entry_value, 0)) AS entry_source', 'SUM(IF(account_target > 0, entry_value, 0)) AS entry_target']);
+			$sumEntryQuery->from('fin_account_entry')->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+			
+			if (!empty($searchModel->entry_date_from)) {
+				$dataQuery->andWhere(['>=', 'entry_date', $searchModel->entry_date_from]);
+				$sumEntryQuery->andWhere(['>=', 'entry_date', $searchModel->entry_date_from]);
+			}
+			if (!empty($searchModel->entry_date_to)) {
+				$dataQuery->andWhere(['<=', 'entry_date', $searchModel->entry_date_to]);
+				$sumEntryQuery->andWhere(['<=', 'entry_date', $searchModel->entry_date_to]);
+			}
+			if ($searchModel->account_source > 0) {
+				$dataQuery->andWhere(['=', 'account_source', $searchModel->account_source]);
+				$sumEntryQuery->andWhere(['=', 'account_source', $searchModel->account_source]);
+			}
+			if ($searchModel->account_target > 0) {
+				$dataQuery->andWhere(['=', 'account_target', $searchModel->account_target]);
+				$sumEntryQuery->andWhere(['=', 'account_target', $searchModel->account_target]);
+			}
+			$dataQuery->orderBy('entry_date DESC, update_date DESC');
+			$sumEntryValue = $sumEntryQuery->createCommand()->queryOne();
 		} else {
 			$dataQuery = FinAccountEntry::find()->where(['entry_id'=>-1]);
 		}
 		
-		//var_dump($searchModel);
 		// render GUI
-		$renderData = ['searchModel'=>$searchModel, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount, 'dataQuery'=>$dataQuery];
+		$renderData = ['searchModel'=>$searchModel, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount, 'dataQuery'=>$dataQuery, 'sumEntryValue'=>$sumEntryValue];
 		
 		return $this->render('index', $renderData);
 	}
 	
 	public function actionView($id) {
 		var_dump($id);
+		$this->objectId = $id;
 		return $this->render('view');
 	}
 	

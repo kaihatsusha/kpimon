@@ -64,7 +64,8 @@
 					'contentOptions'=>function($model, $key, $index) {
 						return ['style'=>'vertical-align: middle; text-align: center', 'class'=>MasterValueUtils::getColorRow($index)];
 					},
-					'value'=>function($model, $key) {
+					'value'=>function($model, $key, $index, $column) {
+						//var_dump($column->grid->dataProvider);
 						return $key;
 					},
 					'footer'=>Yii::t('fin.grid', 'Total')
@@ -94,31 +95,6 @@
 					'format'=>['date', $phpFmShortDateGui]
 				],
 				[
-					'label'=>Yii::t('fin.grid', 'Credit Account'),
-					'headerOptions'=>['style'=>'text-align: center'],
-					'footerOptions'=>['style'=>'text-align: right', 'colspan'=>2],
-					'contentOptions'=>function($model, $key, $index) {
-						return ['style'=>'vertical-align: middle; text-align: left', 'class'=>MasterValueUtils::getColorRow($index)];
-					},
-					'value'=>function($model) use ($arrFinAccount) {
-						return isset($arrFinAccount[$model->account_target]) ? $arrFinAccount[$model->account_target] : '';
-					},
-					'footer'=>$phpFmShortDateGui
-				],
-				[
-					'class'=>DataColumn::className(),
-					'label'=>Yii::t('fin.grid', 'Credit Amount'),
-					'headerOptions'=>['style'=>'text-align: center'],
-					'footerOptions'=>['colspan'=>0],
-					'contentOptions'=>function($model, $key, $index) {
-						return ['style'=>'vertical-align: middle; text-align: right', 'class'=>MasterValueUtils::getColorRow($index)];
-					},
-					'value'=>function($model) {
-						$amount = $model->account_target == 0 ? '' : NumberUtils::format($model->entry_value);
-						return $amount;
-					}
-				],
-				[
 					'label'=>Yii::t('fin.grid', 'Debit Account'),
 					'headerOptions'=>['style'=>'text-align: center'],
 					'footerOptions'=>['style'=>'text-align: right', 'colspan'=>2],
@@ -127,7 +103,8 @@
 					},
 					'value'=>function($model) use ($arrFinAccount) {
 						return isset($arrFinAccount[$model->account_source]) ? $arrFinAccount[$model->account_source] : '';
-					}
+					},
+					'footer'=>NumberUtils::format($sumEntryValue['entry_source'])
 				],
 				[
 					'class'=>DataColumn::className(),
@@ -143,20 +120,44 @@
 					}
 				],
 				[
-					'attribute'=>'description',
-					'label'=>Yii::t('fin.grid', 'Description'),
+					'label'=>Yii::t('fin.grid', 'Credit Account'),
 					'headerOptions'=>['style'=>'text-align: center'],
 					'footerOptions'=>['style'=>'text-align: right', 'colspan'=>2],
 					'contentOptions'=>function($model, $key, $index) {
 						return ['style'=>'vertical-align: middle; text-align: left', 'class'=>MasterValueUtils::getColorRow($index)];
 					},
-					'enableSorting'=>false
+					'value'=>function($model) use ($arrFinAccount) {
+						return isset($arrFinAccount[$model->account_target]) ? $arrFinAccount[$model->account_target] : '';
+					},
+					'footer'=>NumberUtils::format($sumEntryValue['entry_target'])
 				],
 				[
 					'class'=>DataColumn::className(),
-					'label'=>Yii::t('fin.grid', 'Action'),
+					'label'=>Yii::t('fin.grid', 'Credit Amount'),
 					'headerOptions'=>['style'=>'text-align: center'],
 					'footerOptions'=>['colspan'=>0],
+					'contentOptions'=>function($model, $key, $index) {
+						return ['style'=>'vertical-align: middle; text-align: right', 'class'=>MasterValueUtils::getColorRow($index)];
+					},
+					'value'=>function($model) {
+						$amount = $model->account_target == 0 ? '' : NumberUtils::format($model->entry_value);
+						return $amount;
+					}
+				],
+				[
+					'attribute'=>'description',
+					'label'=>Yii::t('fin.grid', 'Description'),
+					'headerOptions'=>['style'=>'text-align: center'],
+					'footerOptions'=>['style'=>'text-align: right'],
+					'contentOptions'=>function($model, $key, $index) {
+						return ['style'=>'vertical-align: middle; text-align: left', 'class'=>MasterValueUtils::getColorRow($index)];
+					},
+					'enableSorting'=>false,
+					'footer'=>NumberUtils::format($sumEntryValue['entry_target'] - $sumEntryValue['entry_source'])
+				],
+				[
+					'label'=>Yii::t('fin.grid', 'Action'),
+					'headerOptions'=>['style'=>'text-align: center'],
 					'contentOptions'=>function($model, $key, $index) {
 						return ['style'=>'vertical-align: middle; text-align: center', 'class'=>MasterValueUtils::getColorRow($index)];
 					},

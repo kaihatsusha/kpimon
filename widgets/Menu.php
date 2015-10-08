@@ -38,14 +38,24 @@ class Menu extends \yii\widgets\Menu
      * @var string
      */
     public $parentRightIcon = '<i class="fa fa-angle-left pull-right"></i>';
-
+	
+	private $objectId;
+	
+	/**
+     * Renders the menu.
+     */
+    public function run() {
+		$controller = \Yii::$app->controller;
+		$this->objectId = isset($controller->objectId) ? $controller->objectId : false;
+		
+		parent::run();
+	}
+	
     /**
      * @inheritdoc
      */
-    protected function renderItem($item)
-    {
+    protected function renderItem($item) {
         $item['badgeOptions'] = isset($item['badgeOptions']) ? $item['badgeOptions'] : [];
-
         if (!ArrayHelper::getValue($item, 'badgeOptions.class')) {
             $bg = isset($item['badgeBgClass']) ? $item['badgeBgClass'] : $this->badgeBgClass;
             $item['badgeOptions']['class'] = $this->badgeClass.' '.$bg;
@@ -56,6 +66,14 @@ class Menu extends \yii\widgets\Menu
         }
 
         if (isset($item['url'])) {
+			$requireId = isset($item['requireId']) && $item['requireId'] === true;
+			if ($requireId) {
+				if ($this->objectId === false) {
+					return '';
+				}
+				$item['url']['id'] = $this->objectId;
+			}
+			
             $template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
             return strtr($template, [
                 '{badge}'=> isset($item['badge'])

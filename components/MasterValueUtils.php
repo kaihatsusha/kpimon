@@ -28,6 +28,9 @@ class MasterValueUtils {
 	const MV_FIN_ENTRY_TYPE_DEPOSIT = 2;	// Internet
 	const MV_FIN_ENTRY_TYPE_INTERNET = 3;	// Internet
 	
+	const MV_FIN_FLG_DELETE_TRUE = 1;	// is deleted
+	const MV_FIN_FLG_DELETE_FALSE = 0;	// not delete
+	
 	/**
 	 * get color of a row
 	 * @param Number $index

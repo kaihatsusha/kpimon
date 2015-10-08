@@ -94,7 +94,7 @@ class SiteController extends \yii\web\Controller
         return $this->goHome();
     }
 
-    public function actionSignup()
+    public function actionSignups()
     {
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post())) {

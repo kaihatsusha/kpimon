@@ -52,16 +52,19 @@
 					[
 						'label'=>Yii::t('fin.menuLeft', 'View'),
 						'url'=>['/fin/payment/view'],
+						'requireId'=>true,
 						'icon'=>'<i class="fa fa-circle-o"></i>'
 					],
 					[
 						'label'=>Yii::t('fin.menuLeft', 'Edit'),
 						'url'=>['/fin/payment/update'],
+						'requireId'=>true,
 						'icon'=>'<i class="fa fa-circle-o"></i>'
 					],
 					[
 						'label'=>Yii::t('fin.menuLeft', 'Copy'),
 						'url'=>['/fin/payment/copy'],
+						'requireId'=>true,
 						'icon'=>'<i class="fa fa-circle-o"></i>'
 					]
 				]
