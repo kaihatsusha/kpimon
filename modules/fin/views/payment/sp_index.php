@@ -9,10 +9,15 @@
 	use app\components\DateTimeUtils;
 	use app\components\MasterValueUtils;
 	use app\components\NumberUtils;
-	use app\components\yii2grid\DataColumn;
 	
 	$this->title = Yii::t('fin.payment', 'Payments List');
 	$phpFmShortDateGui = 'php:' . $phpFmShortDate;
+	
+	$htmlFooterCreditDebit = '';
+	$htmlFooterCreditDebit .= '<span class="label label-danger pull-left">' . NumberUtils::format($sumEntryValue['entry_source']) . '</span>';
+	$htmlFooterCreditDebit .= '<span class="label label-success pull-right">' . NumberUtils::format($sumEntryValue['entry_target'] - $sumEntryValue['entry_source']) . '</span>';
+	
+	$htmlFooterDate = '<span class="label label-info pull-left">' . NumberUtils::format($sumEntryValue['entry_target']) . '</span>';
 ?>
 <?php if(Yii::$app->session->hasFlash(MasterValueUtils::FLASH_SUCCESS)): ?><div class="alert alert-success">
 	<?php echo Yii::$app->session->getFlash(MasterValueUtils::FLASH_SUCCESS); ?>
@@ -112,39 +117,34 @@
 						
 						return $html;
 					},
-					'footer'=>NumberUtils::format($sumEntryValue['entry_target'] - $sumEntryValue['entry_source'])
+					'footer'=>$htmlFooterDate
 				],
 				[
-					'label'=>Yii::t('fin.grid', 'Debit'),
+					'label'=>Yii::t('fin.grid', 'Credit / Debit'),
 					'headerOptions'=>['style'=>'text-align: center'],
 					'footerOptions'=>['style'=>'text-align: right'],
 					'contentOptions'=>['style'=>'vertical-align: middle; text-align: left; min-width:162px'],
 					'format'=>'raw',
 					'value'=>function($model) use ($arrFinAccount) {
-						$html = isset($arrFinAccount[$model->account_source]) ? $arrFinAccount[$model->account_source] : '';
-						//if (!empty($html)) {
-						$amount = $model->account_source == 0 ? '0' : NumberUtils::format($model->entry_value);
-						$html .= '<span class="label label-danger pull-right">' . $amount . '</span>';
-						//}
-						return $html;
+						$htmls = [];
+						
+						$htmlCredit = isset($arrFinAccount[$model->account_target]) ? $arrFinAccount[$model->account_target] : '';
+						if (!empty($htmlCredit)) {
+							$amount = $model->account_target == 0 ? '' : NumberUtils::format($model->entry_value);
+							$htmlCredit .= '<span class="label label-info pull-right">' . $amount . '</span>';
+							$htmls[] = $htmlCredit;
+						}
+						
+						$htmlDebit = isset($arrFinAccount[$model->account_source]) ? $arrFinAccount[$model->account_source] : '';
+						if (!empty($htmlDebit)) {
+							$amount = $model->account_source == 0 ? '' : NumberUtils::format($model->entry_value);
+							$htmlDebit .= '<span class="label label-danger pull-right">' . $amount . '</span>';
+							$htmls[] = $htmlDebit;
+						}
+						
+						return implode('<br/>', $htmls);
 					},
-					'footer'=>NumberUtils::format($sumEntryValue['entry_source'])
-				],
-				[
-					'label'=>Yii::t('fin.grid', 'Credit'),
-					'headerOptions'=>['style'=>'text-align: center'],
-					'footerOptions'=>['style'=>'text-align: right'],
-					'contentOptions'=>['style'=>'vertical-align: middle; text-align: left; min-width:162px'],
-					'format'=>'raw',
-					'value'=>function($model) use ($arrFinAccount) {
-						$html = isset($arrFinAccount[$model->account_target]) ? $arrFinAccount[$model->account_target] : '';
-						//if (!empty($html)) {
-						$amount = $model->account_target == 0 ? '0' : NumberUtils::format($model->entry_value);
-						$html .= '<span class="label label-info pull-right">' . $amount . '</span>';
-						//}
-						return $html;
-					},
-					'footer'=>NumberUtils::format($sumEntryValue['entry_target'])
+					'footer'=>$htmlFooterCreditDebit
 				],
 				[
 					'attribute'=>'description',
