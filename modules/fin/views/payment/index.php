@@ -13,12 +13,6 @@
 	$this->title = Yii::t('fin.payment', 'Payments List');
 	$phpFmShortDateGui = 'php:' . $phpFmShortDate;
 ?>
-<?php if(Yii::$app->session->hasFlash(MasterValueUtils::FLASH_SUCCESS)): ?><div class="alert alert-success">
-	<?php echo Yii::$app->session->getFlash(MasterValueUtils::FLASH_SUCCESS); ?>
-</div><?php endif; ?>
-<?php if(Yii::$app->session->hasFlash(MasterValueUtils::FLASH_ERROR)): ?><div class="alert alert-error">
-	<?php echo Yii::$app->session->getFlash(MasterValueUtils::FLASH_ERROR); ?>
-</div><?php endif; ?>
 
 <div class="row"><div class="col-md-12"><div class="box">
 	<div class="box-header with-border">

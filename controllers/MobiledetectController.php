@@ -16,7 +16,7 @@ class MobiledetectController extends Controller {
 		}
 		
 		// detect and render view
-		$detectView = ($mobileTpl ? 'sp_' : '') . $view;
+		$detectView = $view . ($mobileTpl ? '_sp' : '');
 		$detectPath = parent::getViewPath() . "/$detectView.php";
 		
 		return parent::render(file_exists($detectPath) ? $detectView : $view, $params);

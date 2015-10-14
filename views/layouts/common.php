@@ -124,11 +124,11 @@ $user = Yii::$app->user->identity;
 
             <!-- Main content -->
             <section class="content">
-                <?php if (Yii::$app->session->hasFlash('alert')):?>
-                    <?php echo \yii\bootstrap\Alert::widget([
-                        'body'=>ArrayHelper::getValue(Yii::$app->session->getFlash('alert'), 'body'),
-                        'options'=>ArrayHelper::getValue(Yii::$app->session->getFlash('alert'), 'options'),
-                    ])?>
+                <?php if (Yii::$app->session->hasFlash('success')):?>
+                    <?php echo \yii\bootstrap\Alert::widget(['body'=>Yii::$app->session->getFlash('success'),'options'=>['class'=>'alert alert-success']])?>
+                <?php endif; ?>
+                <?php if (Yii::$app->session->hasFlash('error')):?>
+                    <?php echo \yii\bootstrap\Alert::widget(['body'=>Yii::$app->session->getFlash('error'), 'options'=>['class'=>'alert alert-error']])?>
                 <?php endif; ?>
                 <?php echo $content ?>
             </section><!-- /.content -->

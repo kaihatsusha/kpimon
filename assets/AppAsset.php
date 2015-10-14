@@ -29,7 +29,7 @@ class AppAsset extends AssetBundle
         'yii\bootstrap\BootstrapAsset',
 		'app\assets\AdminLte',
         'app\assets\Html5shiv',
-		'app\assets\AngularAsset',
+		//'app\assets\AngularAsset',
         //'app\assets\FcsaNumberAsset',
     ];
 }

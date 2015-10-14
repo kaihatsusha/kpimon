@@ -25,7 +25,7 @@ SmartPhoneAsset::register($this);
 <?php echo Html::beginTag('body', [
     'class' => implode(' ', [
         ArrayHelper::getValue($this->params, 'body-class'),
-		'skin-red sidebar-mini'
+		'skin-yellow sidebar-mini'
     ])
 ])?>
     <?php $this->beginBody() ?>

@@ -6,16 +6,14 @@
 	
 	$this->title = $formMode[MasterValueUtils::PG_MODE_NAME] === MasterValueUtils::PG_MODE_CREATE ? Yii::t('fin.payment', 'Create Payment') : Yii::t('fin.payment', 'Edit Payment');
 ?>
-<?php if(Yii::$app->session->hasFlash(MasterValueUtils::FLASH_ERROR)): ?><div class="alert alert-error">
-	<?php echo Yii::$app->session->getFlash(MasterValueUtils::FLASH_ERROR); ?>
-</div><?php endif; ?>
+
 <div class="box box-default">
 	<div class="box-header with-border">
 		<h3 class="box-title"><?= Yii::t('fin.form', 'Confirm Values'); ?></h3>
 	</div>
-	<div id="finPaymentCreateForm" class="box-body"><?php $form = ActiveForm::begin(); ?>
+	<div id="finPaymentConfirmForm" class="box-body"><?php $form = ActiveForm::begin(); ?>
 		<div class="row"><div class="col-md-12">
-			<div class="form-group"><table class="table table-bordered">
+			<table class="table table-bordered">
 				<tr>
 					<th class="warning" style="width: 200px;"><?= $model->getAttributeLabel('entry_date'); ?></th>
 					<td class="info"><?= $model->entry_date; ?></td>
@@ -36,7 +34,7 @@
 					<th class="warning"><?= $model->getAttributeLabel('description'); ?></th>
 					<td class="info"><?= $model->description; ?></td>
 				</tr>
-			</table></div>
+			</table>
 			<div style="display: none">
 				<?= $form->field($model, 'entry_date')->hiddenInput(); ?>
 				<?= $form->field($model, 'account_source')->hiddenInput(); ?>

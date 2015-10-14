@@ -24,6 +24,14 @@
 .content-wrapper-sp .pagination-bottom {
 	margin: 0;
 }
+
+.content-wrapper-sp .nav-no-padding {
+	padding-bottom: 15px;
+}
+
+.content-wrapper-sp .nav-no-padding > li > a {
+	padding: 10px 0 10px 0;
+}
 /****************************************************************************************
 **** COPY FROM box-body
 ****************************************************************************************/
@@ -43,7 +51,7 @@
 }
 
 .content-wrapper-sp .widget-detail .widget-detail-header {
-	border-top-left-radius: 3px; border-top-right-radius: 3px; padding: 6px 4px 6px 4px;
+	border-top-left-radius: 3px; border-top-right-radius: 3px; padding: 6px 4px 6px 8px;
 }
 
 .content-wrapper-sp .widget-detail .widget-detail-title {

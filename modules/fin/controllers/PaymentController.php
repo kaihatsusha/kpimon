@@ -91,9 +91,23 @@ class PaymentController extends MobiledetectController {
 	}
 	
 	public function actionView($id) {
-		var_dump($id);
 		$this->objectId = $id;
-		return $this->render('view');
+		$model = FinAccountEntry::findOne(['entry_id'=>$id, 'delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+		$phpFmShortDate = null;
+		$arrFinAccount = null;
+		
+		$renderView = 'view';
+		if (is_null($model)) {
+			$model = false;
+			Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, Yii::t('common', 'The requested {record} does not exist.', ['record'=>Yii::t('fin.models', 'Payment')]));
+		} else {
+			$phpFmShortDate = DateTimeUtils::getPhpDateFormat();
+			$arrFinAccount = ModelUtils::getArrData(FinAccount::find()->select(['account_id', 'account_name']), 'account_id', 'account_name');
+		}
+		
+		// render GUI
+		$renderData = ['model'=>$model, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount];
+		return $this->render($renderView, $renderData);
 	}
 	
 	public function actionCreate() {
@@ -198,8 +212,35 @@ class PaymentController extends MobiledetectController {
 		return true;
 	}
 	
-	public function actionUpdate() {
+	public function actionUpdate($id) {
+		$model = FinAccountEntry::findOne(['entry_id'=>$id, 'entry_status'=>MasterValueUtils::MV_FIN_ENTRY_TYPE_SIMPLE, 'delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+		$phpFmShortDate = null;
+		$arrFinAccount = null;
 		
+		$renderView = 'update';
+		if (is_null($model)) {
+			$model = false;
+			Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, Yii::t('common', 'The requested {record} does not exist.', ['record'=>Yii::t('fin.models', 'Payment')]));
+		} else {
+			$phpFmShortDate = DateTimeUtils::getPhpDateFormat();
+			$arrFinAccount = ModelUtils::getArrData(FinAccount::find()->select(['account_id', 'account_name'])
+					->where(['delete_flag'=>0, 'account_type'=>[1,2,3,5]])
+					->orderBy('account_type, order_num'), 'account_id', 'account_name');
+			// submit data
+			$postData = Yii::$app->request->post();
+			$submitMode = isset($postData[MasterValueUtils::SM_MODE_NAME]) ? $postData[MasterValueUtils::SM_MODE_NAME] : false;
+			
+			// populate model attributes with user inputs
+			$model->load($postData);
+
+			// init value
+			FinAccountEntry::$_PHP_FM_SHORTDATE = $phpFmShortDate;
+			$model->scenario = FinAccountEntry::SCENARIO_UPDATE;
+		}
+		
+		// render GUI
+		$renderData = ['model'=>$model, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount];
+		return $this->render($renderView, $renderData);
 	}
 }
 ?>

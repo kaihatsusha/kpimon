@@ -62,8 +62,8 @@ class FinAccountEntry extends \yii\db\ActiveRecord {
 			'entry_date_from' => Yii::t('fin.models', 'Entry Date From'),
 			'entry_date_to' => Yii::t('fin.models', 'Entry Date To'),
             'entry_value' => Yii::t('fin.models', 'Entry Value'),
-            'account_source' => Yii::t('fin.models', 'Account Source'),
-            'account_target' => Yii::t('fin.models', 'Account Target'),
+            'account_source' => Yii::t('fin.models', 'Debit Account'),
+            'account_target' => Yii::t('fin.models', 'Credit Account'),
             'entry_status' => Yii::t('fin.models', 'Entry Status'),
             'description' => Yii::t('fin.models', 'Description'),
             'create_date' => Yii::t('fin.models', 'Create Date'),
@@ -93,13 +93,13 @@ class FinAccountEntry extends \yii\db\ActiveRecord {
 	 */
 	public function validateSourceRelatedTarget() {
 		if ($this->account_source == 0 && $this->account_target == 0) {
-			$this->addError('account_source', Yii::t('fin.models', 'Account Source and Account Target must not be empty at the same time.'));
-			$this->addError('account_target', Yii::t('fin.models', 'Account Source and Account Target must not be empty at the same time.'));
+			$this->addError('account_source', Yii::t('fin.models', 'Debit Account and Credit Account must not be empty at the same time.'));
+			$this->addError('account_target', Yii::t('fin.models', 'Debit Account and Credit Account must not be empty at the same time.'));
 			return false;
 		}
 		if ($this->account_source == $this->account_target) {
-			$this->addError('account_source', Yii::t('fin.models', 'Account Source must be different to Account Target.'));
-			$this->addError('account_target', Yii::t('fin.models', 'Account Target must be different to Account Source.'));
+			$this->addError('account_source', Yii::t('fin.models', 'Debit Account must be different to Credit Account.'));
+			$this->addError('account_target', Yii::t('fin.models', 'Credit Account must be different to Debit Account.'));
 			return false;
 		}
 		return true;

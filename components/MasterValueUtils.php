@@ -24,9 +24,11 @@ class MasterValueUtils {
 	const MV_FIN_ACCOUNT_TYPE_ADVANCE = 5;		// Advances
 	const MV_FIN_ACCOUNT_TYPE_OIR = 6;			// Other internal receivables
 	
-	const MV_FIN_ENTRY_TYPE_SIMPLE = 1;		// Simple
-	const MV_FIN_ENTRY_TYPE_DEPOSIT = 2;	// Internet
-	const MV_FIN_ENTRY_TYPE_INTERNET = 3;	// Internet
+	const MV_FIN_ENTRY_TYPE_SIMPLE = 1;				// Simple
+	const MV_FIN_ENTRY_TYPE_DEPOSIT = 2;			// Deposits
+	const MV_FIN_ENTRY_TYPE_INTEREST_DEPOSIT = 3;	// Interest of Deposits
+	const MV_FIN_ENTRY_TYPE_INTEREST_ATM = 4;		// Interest of ATM
+	const MV_FIN_ENTRY_TYPE_COST_INTERNET = 5;		// Cost of Internet
 	
 	const MV_FIN_FLG_DELETE_TRUE = 1;	// is deleted
 	const MV_FIN_FLG_DELETE_FALSE = 0;	// not delete
