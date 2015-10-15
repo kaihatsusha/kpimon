@@ -25,6 +25,9 @@ class FinAccountEntry extends \yii\db\ActiveRecord {
 	
 	public $entry_date_from = null;
 	public $entry_date_to = null;
+	public $entry_adjust = 0;
+	public $entry_updated = 0;
+	public $arr_entry_log = null;
 	
 	public static $_PHP_FM_SHORTDATE = 'Y-m-d';
 	
@@ -40,14 +43,15 @@ class FinAccountEntry extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['entry_date', 'entry_date_from', 'entry_date_to', 'create_date', 'update_date'], 'safe'],
-            [['entry_value', 'account_source', 'account_target', 'entry_status'], 'integer'],
+            [['entry_date', 'entry_date_from', 'entry_date_to', 'create_date', 'update_date', 'arr_entry_log'], 'safe'],
+            [['entry_value', 'entry_adjust', 'account_source', 'account_target', 'entry_status'], 'integer'],
             [['description'], 'string'],
             [['delete_flag'], 'string', 'max' => 1],
 			[['entry_date', 'entry_value'], 'required', 'on' => [self::SCENARIO_CREATE]],
-			[['account_source', 'account_target'], 'default', 'value' => 0, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_LIST]],
-			[['account_source'], 'validateSourceRelatedTarget', 'on' => [self::SCENARIO_CREATE]],
-			[['entry_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [self::SCENARIO_CREATE]],
+			[['entry_date'], 'required', 'on' => [self::SCENARIO_UPDATE]],
+			[['account_source', 'account_target'], 'default', 'value' => 0, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_LIST]],
+			[['account_source'], 'validateSourceRelatedTarget', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
+			[['entry_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
 			[['entry_date_from', 'entry_date_to'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [self::SCENARIO_LIST]],
         ];
     }
@@ -62,10 +66,13 @@ class FinAccountEntry extends \yii\db\ActiveRecord {
 			'entry_date_from' => Yii::t('fin.models', 'Entry Date From'),
 			'entry_date_to' => Yii::t('fin.models', 'Entry Date To'),
             'entry_value' => Yii::t('fin.models', 'Entry Value'),
+			'entry_adjust' => Yii::t('fin.models', 'Adjustment'),
+			'entry_updated' => Yii::t('fin.models', 'Updated Value'),
             'account_source' => Yii::t('fin.models', 'Debit Account'),
             'account_target' => Yii::t('fin.models', 'Credit Account'),
             'entry_status' => Yii::t('fin.models', 'Entry Status'),
             'description' => Yii::t('fin.models', 'Description'),
+			'arr_entry_log' => Yii::t('fin.models', 'Description'),
             'create_date' => Yii::t('fin.models', 'Create Date'),
             'update_date' => Yii::t('fin.models', 'Update Date'),
             'delete_flag' => Yii::t('fin.models', 'Delete Flag'),

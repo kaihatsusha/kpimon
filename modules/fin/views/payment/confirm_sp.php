@@ -4,7 +4,8 @@
 	use app\components\MasterValueUtils;
 	use app\components\NumberUtils;
 	
-	$this->title = $formMode[MasterValueUtils::PG_MODE_NAME] === MasterValueUtils::PG_MODE_CREATE ? Yii::t('fin.payment', 'Create Payment') : Yii::t('fin.payment', 'Edit Payment');
+	$formModeValue = $formMode[MasterValueUtils::PG_MODE_NAME];
+	$this->title = $formModeValue === MasterValueUtils::PG_MODE_CREATE ? Yii::t('fin.payment', 'Create Payment') : Yii::t('fin.payment', 'Edit Payment');
 ?>
 
 <div class="row"><div class="col-md-12"><div class="box box-widget widget-detail">
@@ -27,6 +28,16 @@
 				<?= $model->getAttributeLabel('entry_value'); ?>
 				<span class="pull-right badge bg-red"><?= NumberUtils::format($model->entry_value); ?></span>
 			</a></li>
+			<?php if ($formModeValue === MasterValueUtils::PG_MODE_EDIT): ?>
+				<li><a href="javascript:void(0);">
+					<?= $model->getAttributeLabel('entry_adjust'); ?>
+					<span class="pull-right badge bg-red"><?= NumberUtils::format($model->entry_adjust); ?></span>
+				</a></li>
+				<li><a href="javascript:void(0);">
+					<?= $model->getAttributeLabel('entry_updated'); ?>
+					<span class="pull-right badge bg-red"><?= NumberUtils::format($model->entry_updated); ?></span>
+				</a></li>
+			<?php endif; ?>
 			<li><a href="javascript:void(0);">
 				<?= $model->getAttributeLabel('description'); ?>
 				<span class="pull-right"><?= $model->description; ?></span>

@@ -4,13 +4,12 @@
 	use app\components\MasterValueUtils;
 	use app\components\NumberUtils;
 	
-	$this->title = $formMode[MasterValueUtils::PG_MODE_NAME] === MasterValueUtils::PG_MODE_CREATE ? Yii::t('fin.payment', 'Create Payment') : Yii::t('fin.payment', 'Edit Payment');
+	$formModeValue = $formMode[MasterValueUtils::PG_MODE_NAME];
+	$this->title = $formModeValue === MasterValueUtils::PG_MODE_CREATE ? Yii::t('fin.payment', 'Create Payment') : Yii::t('fin.payment', 'Edit Payment');
 ?>
 
 <div class="box box-default">
-	<div class="box-header with-border">
-		<h3 class="box-title"><?= Yii::t('fin.form', 'Confirm Values'); ?></h3>
-	</div>
+	<div class="box-header with-border"><h3 class="box-title"><?= Yii::t('fin.form', 'Confirm Values'); ?></h3></div>
 	<div id="finPaymentConfirmForm" class="box-body"><?php $form = ActiveForm::begin(); ?>
 		<div class="row"><div class="col-md-12">
 			<table class="table table-bordered">
@@ -30,6 +29,16 @@
 					<th class="warning"><?= $model->getAttributeLabel('entry_value'); ?></th>
 					<td class="info"><?= NumberUtils::format($model->entry_value); ?></td>
 				</tr>
+				<?php if ($formModeValue === MasterValueUtils::PG_MODE_EDIT): ?>
+					<tr>
+						<th class="warning"><?= $model->getAttributeLabel('entry_adjust'); ?></th>
+						<td class="info"><?= NumberUtils::format($model->entry_adjust); ?></td>
+					</tr>
+					<tr>
+						<th class="warning"><?= $model->getAttributeLabel('entry_updated'); ?></th>
+						<td class="info"><?= NumberUtils::format($model->entry_updated); ?></td>
+					</tr>
+				<?php endif; ?>
 				<tr>
 					<th class="warning"><?= $model->getAttributeLabel('description'); ?></th>
 					<td class="info"><?= $model->description; ?></td>

@@ -1,6 +1,9 @@
 <?php
 namespace app\components;
 
+use app\components\ModelUtils;
+use app\models\MasterValue;
+
 class MasterValueUtils {
 	const SM_MODE_NAME = 'submitmode';
 	const SM_MODE_INPUT = 1;
@@ -27,8 +30,7 @@ class MasterValueUtils {
 	const MV_FIN_ENTRY_TYPE_SIMPLE = 1;				// Simple
 	const MV_FIN_ENTRY_TYPE_DEPOSIT = 2;			// Deposits
 	const MV_FIN_ENTRY_TYPE_INTEREST_DEPOSIT = 3;	// Interest of Deposits
-	const MV_FIN_ENTRY_TYPE_INTEREST_ATM = 4;		// Interest of ATM
-	const MV_FIN_ENTRY_TYPE_COST_INTERNET = 5;		// Cost of Internet
+	const MV_FIN_ENTRY_TYPE_COST_INTERNET = 4;		// Cost of Internet
 	
 	const MV_FIN_FLG_DELETE_TRUE = 1;	// is deleted
 	const MV_FIN_FLG_DELETE_FALSE = 0;	// not delete
@@ -40,6 +42,19 @@ class MasterValueUtils {
 	 */
 	public static function getColorRow($index) {
 		return ($index % 2 == 0) ? self::CSS_COLOR_EVEN : self::CSS_COLOR_ODD;
+	}
+	
+	/**
+	 * get data as an Array [value_code=>locale]
+	 * @param type $code
+	 * @return Array
+	 */
+	public static function getArrData($code) {
+		$locale = 'en';
+		$arrData = ModelUtils::getArrData(MasterValue::find()->select(['value', 'label'])
+				->where(['delete_flag'=>self::MV_FIN_FLG_DELETE_FALSE, 'value_code'=>$code, 'locale'=>$locale])
+				->orderBy('order'), 'value', 'label');
+		return $arrData;
 	}
 }
 ?>

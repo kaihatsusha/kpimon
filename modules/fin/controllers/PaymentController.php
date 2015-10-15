@@ -6,6 +6,7 @@ use yii\db\Query;
 use app\components\DateTimeUtils;
 use app\components\ModelUtils;
 use app\components\MasterValueUtils;
+use app\components\StringUtils;
 use app\controllers\MobiledetectController;
 use app\models\FinAccount;
 use app\models\FinAccountEntry;
@@ -213,33 +214,68 @@ class PaymentController extends MobiledetectController {
 	}
 	
 	public function actionUpdate($id) {
+		$this->objectId = $id;
 		$model = FinAccountEntry::findOne(['entry_id'=>$id, 'entry_status'=>MasterValueUtils::MV_FIN_ENTRY_TYPE_SIMPLE, 'delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
-		$phpFmShortDate = null;
-		$arrFinAccount = null;
 		
 		$renderView = 'update';
 		if (is_null($model)) {
 			$model = false;
+			$renderData = ['model'=>$model];
 			Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, Yii::t('common', 'The requested {record} does not exist.', ['record'=>Yii::t('fin.models', 'Payment')]));
 		} else {
 			$phpFmShortDate = DateTimeUtils::getPhpDateFormat();
 			$arrFinAccount = ModelUtils::getArrData(FinAccount::find()->select(['account_id', 'account_name'])
 					->where(['delete_flag'=>0, 'account_type'=>[1,2,3,5]])
 					->orderBy('account_type, order_num'), 'account_id', 'account_name');
+			$arrEntryLog = MasterValueUtils::getArrData('fin_entry_log');
 			// submit data
 			$postData = Yii::$app->request->post();
 			$submitMode = isset($postData[MasterValueUtils::SM_MODE_NAME]) ? $postData[MasterValueUtils::SM_MODE_NAME] : false;
 			
 			// populate model attributes with user inputs
 			$model->load($postData);
+			if (is_null($model->arr_entry_log)) {
+				$model->arr_entry_log = StringUtils::unserializeArr($model->description);
+			}
 
 			// init value
 			FinAccountEntry::$_PHP_FM_SHORTDATE = $phpFmShortDate;
 			$model->scenario = FinAccountEntry::SCENARIO_UPDATE;
+			$renderData = ['model'=>$model, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount, 'arrEntryLog'=>$arrEntryLog];
+			switch ($submitMode) {
+				case MasterValueUtils::SM_MODE_INPUT:
+					$isValid = $model->validate();
+					if ($isValid) {
+						if (empty($model->entry_adjust)) {
+							$model->entry_adjust = 0;
+						}
+						$model->entry_updated = $model->entry_value + $model->entry_adjust;
+						$renderView = 'confirm';
+						$renderData['formMode'] = [MasterValueUtils::PG_MODE_NAME=>MasterValueUtils::PG_MODE_EDIT];
+					}
+					break;
+				case MasterValueUtils::SM_MODE_CONFIRM:
+					/*$isValid = $model->validate();
+					if ($isValid) {
+						$result = $this->createPayment($model);
+						if ($result === true) {
+							Yii::$app->session->setFlash(MasterValueUtils::FLASH_SUCCESS, Yii::t('common', '{record} has been saved successfully.', ['record'=>Yii::t('fin.models', 'Payment')]));
+							Yii::$app->getResponse()->redirect(array('fin/payment/index'));
+						} else {
+							Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, $result);
+							$renderView = 'confirm';
+							$renderData['formMode'] = [MasterValueUtils::PG_MODE_NAME=>MasterValueUtils::PG_MODE_CREATE];
+						}
+					}*/
+					break;
+				case MasterValueUtils::SM_MODE_BACK:
+					break;
+				default:
+					break;
+			}
 		}
 		
 		// render GUI
-		$renderData = ['model'=>$model, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount];
 		return $this->render($renderView, $renderData);
 	}
 }
