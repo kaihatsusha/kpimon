@@ -8,6 +8,7 @@
 	use yii\widgets\Pjax;
 	use app\components\MasterValueUtils;
 	use app\components\NumberUtils;
+	use app\components\StringUtils;
 	use app\components\yii2grid\DataColumn;
 	
 	$this->title = Yii::t('fin.payment', 'Payments List');
@@ -145,7 +146,11 @@
 					'contentOptions'=>function($model, $key, $index) {
 						return ['style'=>'vertical-align: middle; text-align: left', 'class'=>MasterValueUtils::getColorRow($index)];
 					},
-					'enableSorting'=>false
+					'enableSorting'=>false,
+					'value'=>function($model) use ($arrEntryLog) {
+						$arrEntryLogVal = StringUtils::unserializeArr($model->description);
+						return StringUtils::showArrValueAsString($arrEntryLogVal, $arrEntryLog);
+					}
 				],
 				[
 					'label'=>Yii::t('fin.grid', 'Action'),

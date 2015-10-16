@@ -3,6 +3,7 @@
 	use yii\helpers\Html;
 	use app\components\MasterValueUtils;
 	use app\components\NumberUtils;
+	use app\components\StringUtils;
 	
 	$formModeValue = $formMode[MasterValueUtils::PG_MODE_NAME];
 	$this->title = $formModeValue === MasterValueUtils::PG_MODE_CREATE ? Yii::t('fin.payment', 'Create Payment') : Yii::t('fin.payment', 'Edit Payment');
@@ -41,7 +42,7 @@
 				<?php endif; ?>
 				<tr>
 					<th class="warning"><?= $model->getAttributeLabel('description'); ?></th>
-					<td class="info"><?= $model->description; ?></td>
+					<td class="info"><?= StringUtils::showArrValueAsString($model->arr_entry_log, $arrEntryLog); ?></td>
 				</tr>
 			</table>
 			<div style="display: none">
@@ -49,7 +50,8 @@
 				<?= $form->field($model, 'account_source')->hiddenInput(); ?>
 				<?= $form->field($model, 'account_target')->hiddenInput(); ?>
 				<?= $form->field($model, 'entry_value')->hiddenInput(); ?>
-				<?= $form->field($model, 'description')->textarea(); ?>
+				<?= $form->field($model, 'entry_adjust')->hiddenInput(); ?>
+				<?= $form->field($model, 'arr_entry_log')->checkboxList($arrEntryLog); ?>
 			</div>
 			<div class="form-group">
 				<?= Html::submitButton(Yii::t('button', 'Back'), ['class'=>'btn btn-default', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_BACK]); ?>

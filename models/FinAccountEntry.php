@@ -28,6 +28,8 @@ class FinAccountEntry extends \yii\db\ActiveRecord {
 	public $entry_adjust = 0;
 	public $entry_updated = 0;
 	public $arr_entry_log = null;
+	public $account_source_old = null;
+	public $account_target_old = null;
 	
 	public static $_PHP_FM_SHORTDATE = 'Y-m-d';
 	
@@ -51,6 +53,7 @@ class FinAccountEntry extends \yii\db\ActiveRecord {
 			[['entry_date'], 'required', 'on' => [self::SCENARIO_UPDATE]],
 			[['account_source', 'account_target'], 'default', 'value' => 0, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_LIST]],
 			[['account_source'], 'validateSourceRelatedTarget', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
+			[['account_source'], 'validateEntryAdjust', 'on' => [self::SCENARIO_UPDATE]],
 			[['entry_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
 			[['entry_date_from', 'entry_date_to'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [self::SCENARIO_LIST]],
         ];
@@ -100,13 +103,25 @@ class FinAccountEntry extends \yii\db\ActiveRecord {
 	 */
 	public function validateSourceRelatedTarget() {
 		if ($this->account_source == 0 && $this->account_target == 0) {
-			$this->addError('account_source', Yii::t('fin.models', 'Debit Account and Credit Account must not be empty at the same time.'));
-			$this->addError('account_target', Yii::t('fin.models', 'Debit Account and Credit Account must not be empty at the same time.'));
+			$this->addError('account_source', Yii::t('common', 'Debit Account and Credit Account must not be empty at the same time.'));
+			$this->addError('account_target', Yii::t('common', 'Debit Account and Credit Account must not be empty at the same time.'));
 			return false;
 		}
 		if ($this->account_source == $this->account_target) {
-			$this->addError('account_source', Yii::t('fin.models', 'Debit Account must be different to Credit Account.'));
-			$this->addError('account_target', Yii::t('fin.models', 'Credit Account must be different to Debit Account.'));
+			$this->addError('account_source', Yii::t('common', 'Debit Account must be different to Credit Account.'));
+			$this->addError('account_target', Yii::t('common', 'Credit Account must be different to Debit Account.'));
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * validate Entry Adjust
+	 */
+	public function validateEntryAdjust() {
+		$temp = $this->entry_value + $this->entry_adjust;
+		if ($temp < 0) {
+			$this->addError('entry_adjust', Yii::t('common', '{field} must be larger than {value}', ['field'=>$this->getAttributeLabel('entry_adjust'), 'value'=>-$this->entry_value]));
 			return false;
 		}
 		return true;

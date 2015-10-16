@@ -31,6 +31,6 @@
 
 <style type="text/css">
 div#finaccountentry-arr_entry_log .checkbox-inline {
-    width: 140px; margin-left: 0;
+    width: 160px; margin-left: 0;
 }
 </style>

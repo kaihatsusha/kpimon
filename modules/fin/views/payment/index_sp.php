@@ -9,6 +9,7 @@
 	use app\components\DateTimeUtils;
 	use app\components\MasterValueUtils;
 	use app\components\NumberUtils;
+	use app\components\StringUtils;
 	
 	$this->title = Yii::t('fin.payment', 'Payments List');
 	$phpFmShortDateGui = 'php:' . $phpFmShortDate;
@@ -145,7 +146,11 @@
 					'label'=>Yii::t('fin.grid', 'Description'),
 					'headerOptions'=>['style'=>'text-align: center'],
 					'contentOptions'=>['style'=>'vertical-align: middle; text-align: left'],
-					'enableSorting'=>false
+					'enableSorting'=>false,
+					'value'=>function($model) use ($arrEntryLog) {
+						$arrEntryLogVal = StringUtils::unserializeArr($model->description);
+						return StringUtils::showArrValueAsString($arrEntryLogVal, $arrEntryLog);
+					}
 				]
 			]
 		]); ?><?php Pjax::end(); ?></div>

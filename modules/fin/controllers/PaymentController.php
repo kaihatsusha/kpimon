@@ -3,6 +3,7 @@ namespace app\modules\fin\controllers;
 
 use Yii;
 use yii\db\Query;
+use yii\helpers\Url;
 use app\components\DateTimeUtils;
 use app\components\ModelUtils;
 use app\components\MasterValueUtils;
@@ -35,6 +36,7 @@ class PaymentController extends MobiledetectController {
 		$arrFinAccount = ModelUtils::getArrData(FinAccount::find()->select(['account_id', 'account_name'])
 				->where(['delete_flag'=>0])->andWhere(['<>', 'account_type', 6])
 				->orderBy('account_type, order_num'), 'account_id', 'account_name');
+		$arrEntryLog = MasterValueUtils::getArrData('fin_entry_log');
 		
 		// submit data
 		$postData = Yii::$app->request->post();
@@ -79,14 +81,14 @@ class PaymentController extends MobiledetectController {
 				$dataQuery->andWhere(['=', 'account_target', $searchModel->account_target]);
 				$sumEntryQuery->andWhere(['=', 'account_target', $searchModel->account_target]);
 			}
-			$dataQuery->orderBy('entry_date DESC, update_date DESC');
+			$dataQuery->orderBy('entry_date DESC, create_date DESC');
 			$sumEntryValue = $sumEntryQuery->createCommand()->queryOne();
 		} else {
 			$dataQuery = FinAccountEntry::find()->where(['entry_id'=>-1]);
 		}
 		
 		// render GUI
-		$renderData = ['searchModel'=>$searchModel, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount, 'dataQuery'=>$dataQuery, 'sumEntryValue'=>$sumEntryValue];
+		$renderData = ['searchModel'=>$searchModel, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount, 'dataQuery'=>$dataQuery, 'sumEntryValue'=>$sumEntryValue, 'arrEntryLog'=>$arrEntryLog];
 		
 		return $this->render('index', $renderData);
 	}
@@ -103,6 +105,9 @@ class PaymentController extends MobiledetectController {
 			Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, Yii::t('common', 'The requested {record} does not exist.', ['record'=>Yii::t('fin.models', 'Payment')]));
 		} else {
 			$phpFmShortDate = DateTimeUtils::getPhpDateFormat();
+			$arrEntryLog = MasterValueUtils::getArrData('fin_entry_log');
+			$arrEntryLogVal = StringUtils::unserializeArr($model->description);
+			$model->description = StringUtils::showArrValueAsString($arrEntryLogVal, $arrEntryLog);
 			$arrFinAccount = ModelUtils::getArrData(FinAccount::find()->select(['account_id', 'account_name']), 'account_id', 'account_name');
 		}
 		
@@ -117,6 +122,7 @@ class PaymentController extends MobiledetectController {
 		$arrFinAccount = ModelUtils::getArrData(FinAccount::find()->select(['account_id', 'account_name'])
 				->where(['delete_flag'=>0, 'account_type'=>[1,2,3,5]])
 				->orderBy('account_type, order_num'), 'account_id', 'account_name');
+		$arrEntryLog = MasterValueUtils::getArrData('fin_entry_log');
 		
 		// submit data
 		$postData = Yii::$app->request->post();
@@ -149,7 +155,7 @@ class PaymentController extends MobiledetectController {
 					$result = $this->createPayment($model);
 					if ($result === true) {
 						Yii::$app->session->setFlash(MasterValueUtils::FLASH_SUCCESS, Yii::t('common', '{record} has been saved successfully.', ['record'=>Yii::t('fin.models', 'Payment')]));
-						Yii::$app->getResponse()->redirect(array('fin/payment/index'));
+						return Yii::$app->getResponse()->redirect(Url::to(['index']));
 					} else {
 						Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, $result);
 						$renderView = 'confirm';
@@ -180,17 +186,17 @@ class PaymentController extends MobiledetectController {
 			$accountSource = FinAccount::findOne($paymentModel->account_source);
 			$accountTarget = FinAccount::findOne($paymentModel->account_target);
 			// save source
-			if (!is_null($accountSource) && $save) {
+			if (!is_null($accountSource) && ($save !== false)) {
 				$accountSource->opening_balance -= $paymentModel->entry_value;
 				$save = $accountSource->save();
 			}
 			// save Target
-			if (!is_null($accountTarget) && $save) {
+			if (!is_null($accountTarget) && ($save !== false)) {
 				$accountTarget->opening_balance += $paymentModel->entry_value;
 				$save = $accountTarget->save();
 			}
 			// save payment
-			if ($save) {
+			if ($save !== false) {
 				$save = $paymentModel->save();
 			}
 		} catch(\Exception $e) {
@@ -200,11 +206,11 @@ class PaymentController extends MobiledetectController {
 		
 		// end transaction
 		try {
-			if ($save) {
-				$transaction->commit();
-			} else {
+			if ($save === false) {
 				$transaction->rollback();
 				return $message;
+			} else {
+				$transaction->commit();
 			}
 		} catch(\Exception $e) {
 			throw \Exception(Yii::t('common', 'Unable to excute Transaction.'));
@@ -223,6 +229,10 @@ class PaymentController extends MobiledetectController {
 			$renderData = ['model'=>$model];
 			Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, Yii::t('common', 'The requested {record} does not exist.', ['record'=>Yii::t('fin.models', 'Payment')]));
 		} else {
+			// back up data
+			$model->account_source_old = $model->account_source;
+			$model->account_target_old = $model->account_target;
+			// master value
 			$phpFmShortDate = DateTimeUtils::getPhpDateFormat();
 			$arrFinAccount = ModelUtils::getArrData(FinAccount::find()->select(['account_id', 'account_name'])
 					->where(['delete_flag'=>0, 'account_type'=>[1,2,3,5]])
@@ -237,6 +247,10 @@ class PaymentController extends MobiledetectController {
 			if (is_null($model->arr_entry_log)) {
 				$model->arr_entry_log = StringUtils::unserializeArr($model->description);
 			}
+			if (empty($model->entry_adjust)) {
+				$model->entry_adjust = 0;
+			}
+			$model->entry_updated = $model->entry_value + $model->entry_adjust;
 
 			// init value
 			FinAccountEntry::$_PHP_FM_SHORTDATE = $phpFmShortDate;
@@ -246,27 +260,23 @@ class PaymentController extends MobiledetectController {
 				case MasterValueUtils::SM_MODE_INPUT:
 					$isValid = $model->validate();
 					if ($isValid) {
-						if (empty($model->entry_adjust)) {
-							$model->entry_adjust = 0;
-						}
-						$model->entry_updated = $model->entry_value + $model->entry_adjust;
 						$renderView = 'confirm';
 						$renderData['formMode'] = [MasterValueUtils::PG_MODE_NAME=>MasterValueUtils::PG_MODE_EDIT];
 					}
 					break;
 				case MasterValueUtils::SM_MODE_CONFIRM:
-					/*$isValid = $model->validate();
+					$isValid = $model->validate();
 					if ($isValid) {
-						$result = $this->createPayment($model);
+						$result = $this->updatePayment($model);
 						if ($result === true) {
 							Yii::$app->session->setFlash(MasterValueUtils::FLASH_SUCCESS, Yii::t('common', '{record} has been saved successfully.', ['record'=>Yii::t('fin.models', 'Payment')]));
-							Yii::$app->getResponse()->redirect(array('fin/payment/index'));
+							return Yii::$app->getResponse()->redirect(Url::to(['update', 'id'=>$id]));
 						} else {
 							Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, $result);
 							$renderView = 'confirm';
-							$renderData['formMode'] = [MasterValueUtils::PG_MODE_NAME=>MasterValueUtils::PG_MODE_CREATE];
+							$renderData['formMode'] = [MasterValueUtils::PG_MODE_NAME=>MasterValueUtils::PG_MODE_EDIT];
 						}
-					}*/
+					}
 					break;
 				case MasterValueUtils::SM_MODE_BACK:
 					break;
@@ -277,6 +287,87 @@ class PaymentController extends MobiledetectController {
 		
 		// render GUI
 		return $this->render($renderView, $renderData);
+	}
+	
+	/**
+	 * update a payment
+	 * @param type $paymentModel
+	 * @return string|true
+	 */
+	private function updatePayment($paymentModel) {
+		$transaction = Yii::$app->db->beginTransaction();
+		$save = true;
+		$message = null;
+		
+		// begin transaction
+		try {
+			$entryValueOld = $paymentModel->entry_value;
+			$paymentModel->description = serialize($paymentModel->arr_entry_log);
+			$paymentModel->entry_value = $paymentModel->entry_updated;
+			// save payment
+			if ($save) {
+				$save = $paymentModel->update();
+			}
+			// save source
+			if ($paymentModel->account_source == $paymentModel->account_source_old) {
+				if ($paymentModel->account_source != 0 && $save !== false) {
+					$accountSource = FinAccount::findOne($paymentModel->account_source);
+					$accountSource->opening_balance -= $paymentModel->entry_adjust;
+					$save = $accountSource->update();
+				}
+			} else {
+				// old source
+				if ($paymentModel->account_source_old != 0 && $save !== false) {
+					$accountSource = FinAccount::findOne($paymentModel->account_source_old);
+					$accountSource->opening_balance += $entryValueOld;
+					$save = $accountSource->update();
+				}
+				// new source
+				if ($paymentModel->account_source != 0 && $save !== false) {
+					$accountSource = FinAccount::findOne($paymentModel->account_source);
+					$accountSource->opening_balance -= $paymentModel->entry_value;
+					$save = $accountSource->update();
+				}
+			}
+			// save Target
+			if ($paymentModel->account_target == $paymentModel->account_target_old) {
+				if ($paymentModel->account_target != 0 && $save !== false) {
+					$accountTarget = FinAccount::findOne($paymentModel->account_target);
+					$accountTarget->opening_balance += $paymentModel->entry_adjust;
+					$save = $accountTarget->update();
+				}
+			} else {
+				// old target
+				if ($paymentModel->account_target_old != 0 && $save !== false) {
+					$accountTarget = FinAccount::findOne($paymentModel->account_target_old);
+					$accountTarget->opening_balance -= $entryValueOld;
+					$save = $accountTarget->update();
+				}
+				// new target
+				if ($paymentModel->account_target != 0 && $save !== false) {
+					$accountTarget = FinAccount::findOne($paymentModel->account_target);
+					$accountTarget->opening_balance += $paymentModel->entry_value;
+					$save = $accountTarget->update();
+				}
+			}
+		} catch(\Exception $e) {
+			$save = false;
+			$message = Yii::t('common', 'Unable to save {record}.', ['record'=>Yii::t('fin.models', 'Payment')]);
+		}
+		
+		// end transaction
+		try {
+			if ($save === false) {
+				$transaction->rollback();
+				return $message;
+			} else {
+				$transaction->commit();
+			}
+		} catch(\Exception $e) {
+			throw \Exception(Yii::t('common', 'Unable to excute Transaction.'));
+		}
+		
+		return true;
 	}
 }
 ?>

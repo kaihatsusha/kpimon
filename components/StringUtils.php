@@ -48,7 +48,7 @@ class StringUtils {
 	 * @param type $split
 	 * @return string
 	 */
-	public static function showArrValueAsString($arrValue, $arrMaster, $split = '+') {
+	public static function showArrValueAsString($arrValue, $arrMaster, $split = ' + ') {
 		if (!is_array($arrValue) || !is_array($arrMaster)) {
 			return false;
 		}
