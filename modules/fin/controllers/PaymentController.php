@@ -64,6 +64,7 @@ class PaymentController extends MobiledetectController {
 			$dataQuery = FinAccountEntry::find()->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
 			$sumEntryQuery = (new Query())->select(['SUM(IF(account_source > 0, entry_value, 0)) AS entry_source', 'SUM(IF(account_target > 0, entry_value, 0)) AS entry_target']);
 			$sumEntryQuery->from('fin_account_entry')->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+			$sumEntryQuery->andWhere(['OR', ['=', 'account_source', MasterValueUtils::MV_FIN_ACCOUNT_NONE], ['=', 'account_target', MasterValueUtils::MV_FIN_ACCOUNT_NONE]]);
 			
 			if (!empty($searchModel->entry_date_from)) {
 				$dataQuery->andWhere(['>=', 'entry_date', $searchModel->entry_date_from]);
@@ -75,11 +76,9 @@ class PaymentController extends MobiledetectController {
 			}
 			if ($searchModel->account_source > 0) {
 				$dataQuery->andWhere(['=', 'account_source', $searchModel->account_source]);
-				$sumEntryQuery->andWhere(['=', 'account_source', $searchModel->account_source]);
 			}
 			if ($searchModel->account_target > 0) {
 				$dataQuery->andWhere(['=', 'account_target', $searchModel->account_target]);
-				$sumEntryQuery->andWhere(['=', 'account_target', $searchModel->account_target]);
 			}
 			$dataQuery->orderBy('entry_date DESC, create_date DESC');
 			$sumEntryValue = $sumEntryQuery->createCommand()->queryOne();
@@ -130,6 +129,9 @@ class PaymentController extends MobiledetectController {
 		
 		// populate model attributes with user inputs
 		$model->load($postData);
+		if (is_null($model->arr_entry_log)) {
+			$model->arr_entry_log = StringUtils::unserializeArr($model->description);
+		}
 		
 		// init value
 		FinAccountEntry::$_PHP_FM_SHORTDATE = $phpFmShortDate;
@@ -140,7 +142,7 @@ class PaymentController extends MobiledetectController {
 		
 		// render GUI
 		$renderView = 'create';
-		$renderData = ['model'=>$model, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount];
+		$renderData = ['model'=>$model, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount, 'arrEntryLog'=>$arrEntryLog];
 		switch ($submitMode) {
 			case MasterValueUtils::SM_MODE_INPUT:
 				$isValid = $model->validate();
@@ -183,6 +185,7 @@ class PaymentController extends MobiledetectController {
 		
 		// begin transaction
 		try {
+			$paymentModel->description = serialize($paymentModel->arr_entry_log);
 			$accountSource = FinAccount::findOne($paymentModel->account_source);
 			$accountTarget = FinAccount::findOne($paymentModel->account_target);
 			// save source
@@ -368,6 +371,69 @@ class PaymentController extends MobiledetectController {
 		}
 		
 		return true;
+	}
+	
+	public function actionCopy($id) {
+		$this->objectId = $id;
+		$model = FinAccountEntry::findOne(['entry_id'=>$id, 'entry_status'=>MasterValueUtils::MV_FIN_ENTRY_TYPE_SIMPLE, 'delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+		
+		$renderView = 'copy';
+		if (is_null($model)) {
+			$model = false;
+			$renderData = ['model'=>$model];
+			Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, Yii::t('common', 'The requested {record} does not exist.', ['record'=>Yii::t('fin.models', 'Payment')]));
+		} else {
+			// master value
+			$phpFmShortDate = DateTimeUtils::getPhpDateFormat();
+			$arrFinAccount = ModelUtils::getArrData(FinAccount::find()->select(['account_id', 'account_name'])
+					->where(['delete_flag'=>0, 'account_type'=>[1,2,3,5]])
+					->orderBy('account_type, order_num'), 'account_id', 'account_name');
+			$arrEntryLog = MasterValueUtils::getArrData('fin_entry_log');
+			// submit data
+			$postData = Yii::$app->request->post();
+			$submitMode = isset($postData[MasterValueUtils::SM_MODE_NAME]) ? $postData[MasterValueUtils::SM_MODE_NAME] : false;
+			
+			// populate model attributes with user inputs
+			$model->load($postData);
+			if (is_null($model->arr_entry_log)) {
+				$model->arr_entry_log = StringUtils::unserializeArr($model->description);
+			}
+			
+			// init value
+			FinAccountEntry::$_PHP_FM_SHORTDATE = $phpFmShortDate;
+			$model->scenario = FinAccountEntry::SCENARIO_COPY;
+			$renderData = ['model'=>$model, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount, 'arrEntryLog'=>$arrEntryLog];
+			switch ($submitMode) {
+				case MasterValueUtils::SM_MODE_INPUT:
+					$isValid = $model->validate();
+					if ($isValid) {
+						$renderView = 'confirm';
+						$renderData['formMode'] = [MasterValueUtils::PG_MODE_NAME=>MasterValueUtils::PG_MODE_EDIT];
+					}
+					break;
+				case MasterValueUtils::SM_MODE_CONFIRM:
+					$isValid = $model->validate();
+					if ($isValid) {
+						$result = $this->updatePayment($model);
+						if ($result === true) {
+							Yii::$app->session->setFlash(MasterValueUtils::FLASH_SUCCESS, Yii::t('common', '{record} has been saved successfully.', ['record'=>Yii::t('fin.models', 'Payment')]));
+							return Yii::$app->getResponse()->redirect(Url::to(['update', 'id'=>$id]));
+						} else {
+							Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, $result);
+							$renderView = 'confirm';
+							$renderData['formMode'] = [MasterValueUtils::PG_MODE_NAME=>MasterValueUtils::PG_MODE_EDIT];
+						}
+					}
+					break;
+				case MasterValueUtils::SM_MODE_BACK:
+					break;
+				default:
+					break;
+			}
+		}
+		
+		// render GUI
+		return $this->render($renderView, $renderData);
 	}
 }
 ?>

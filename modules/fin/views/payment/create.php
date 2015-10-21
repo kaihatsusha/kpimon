@@ -3,6 +3,10 @@
 	use yii\helpers\Html;
 	use yii\jui\DatePicker;
 	use app\components\MasterValueUtils;
+	use app\modules\fin\views\PaymentAsset;
+	
+	// css & js
+	PaymentAsset::register($this);
 	
 	$this->title = Yii::t('fin.payment', 'Create Payment');
 ?>
@@ -17,7 +21,7 @@
 			<?= $form->field($model, 'account_source')->dropDownList($arrFinAccount, ['prompt'=>'']); ?>
 			<?= $form->field($model, 'account_target')->dropDownList($arrFinAccount, ['prompt'=>'']); ?>
 			<?= $form->field($model, 'entry_value')->textInput(['type'=>'number']); ?>
-			<?= $form->field($model, 'description')->textarea(['rows'=>3]); ?>
+			<?= $form->field($model, 'arr_entry_log')->inline(true)->checkboxList($arrEntryLog); ?>
 			<div class="form-group">
 				<?= Html::resetButton(Yii::t('button', 'Reset'), ['class'=>'btn btn-default']); ?>
 				<?= Html::submitButton(Yii::t('button', 'Confirm'), ['class'=>'btn btn-info', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_INPUT]); ?>
@@ -25,9 +29,3 @@
 		</div></div>
 	<?php ActiveForm::end(); ?></div>
 </div>
-
-<style type="text/css">
-div#finaccountentry-arr_entry_log .checkbox-inline {
-    width: 140px; margin-left: 0;
-}
-</style>

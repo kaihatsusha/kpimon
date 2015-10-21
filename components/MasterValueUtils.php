@@ -20,6 +20,8 @@ class MasterValueUtils {
 	const CSS_COLOR_EVEN = 'info';		// row % 2 == 0
 	const CSS_COLOR_ODD = 'success';	// row % 2 == 1
 	
+	const MV_FIN_ACCOUNT_NONE = 0;	// NONE
+	
 	const MV_FIN_ACCOUNT_TYPE_CASH = 1;			// Cash
 	const MV_FIN_ACCOUNT_TYPE_CURRENT = 2;		// Current account
 	const MV_FIN_ACCOUNT_TYPE_CREDIT = 3;		// Credit card

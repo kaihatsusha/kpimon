@@ -8,19 +8,20 @@
 	// css & js
 	PaymentAssetSp::register($this);
 	
-	$this->title = Yii::t('fin.payment', 'Create Payment');
+	$this->title = Yii::t('fin.payment', 'Edit Payment');
 ?>
 
-<div class="row"><div class="col-md-12"><div class="box box-widget widget-detail">
+<?php if ($model): ?><div class="row"><div class="col-md-12"><div class="box box-widget widget-detail">
 	<div class="widget-detail-header bg-maroon"><h3 class="widget-detail-title"><?= Yii::t('fin.form', 'Input Values'); ?></h3></div>
-	<div class="box-footer" id="finPaymentCreateForm">
+	<div class="box-footer" id="finPaymentConfirmForm">
 		<?php $form = ActiveForm::begin(['requiredCssClass' => 'form-group-required']); ?>
 			<?= $form->field($model, 'entry_date')->widget(DatePicker::className(), [
 				'inline'=>false, 'dateFormat'=>'php:' . $phpFmShortDate, 'options'=>['class'=>'form-control']
 			]); ?>
 			<?= $form->field($model, 'account_source')->dropDownList($arrFinAccount, ['prompt'=>'']); ?>
 			<?= $form->field($model, 'account_target')->dropDownList($arrFinAccount, ['prompt'=>'']); ?>
-			<?= $form->field($model, 'entry_value')->textInput(['type'=>'number']); ?>
+			<?= $form->field($model, 'entry_value')->textInput(['type'=>'number', 'readonly'=>'readonly']); ?>
+			<?= $form->field($model, 'entry_adjust')->textInput(['type'=>'number']); ?>
 			<?= $form->field($model, 'arr_entry_log')->inline(true)->checkboxList($arrEntryLog); ?>
 			<div class="form-group">
 				<?= Html::resetButton(Yii::t('button', 'Reset'), ['class'=>'btn btn-default btn-lg btn-block']); ?>
@@ -28,4 +29,4 @@
 			</div>
 		<?php ActiveForm::end(); ?>
 	</div>
-</div></div></div>
+</div></div></div><?php endif; ?>

@@ -22,6 +22,7 @@ class FinAccountEntry extends \yii\db\ActiveRecord {
 	const SCENARIO_LIST = 'list';
 	const SCENARIO_CREATE = 'create';
 	const SCENARIO_UPDATE = 'update';
+	const SCENARIO_COPY = 'copy';
 	
 	public $entry_date_from = null;
 	public $entry_date_to = null;
@@ -49,12 +50,12 @@ class FinAccountEntry extends \yii\db\ActiveRecord {
             [['entry_value', 'entry_adjust', 'account_source', 'account_target', 'entry_status'], 'integer'],
             [['description'], 'string'],
             [['delete_flag'], 'string', 'max' => 1],
-			[['entry_date', 'entry_value'], 'required', 'on' => [self::SCENARIO_CREATE]],
+			[['entry_date', 'entry_value'], 'required', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_COPY]],
 			[['entry_date'], 'required', 'on' => [self::SCENARIO_UPDATE]],
-			[['account_source', 'account_target'], 'default', 'value' => 0, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_LIST]],
-			[['account_source'], 'validateSourceRelatedTarget', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
+			[['account_source', 'account_target'], 'default', 'value' => 0, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_COPY, self::SCENARIO_LIST]],
+			[['account_source'], 'validateSourceRelatedTarget', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_COPY]],
 			[['account_source'], 'validateEntryAdjust', 'on' => [self::SCENARIO_UPDATE]],
-			[['entry_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
+			[['entry_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_COPY]],
 			[['entry_date_from', 'entry_date_to'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [self::SCENARIO_LIST]],
         ];
     }

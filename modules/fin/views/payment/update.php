@@ -3,6 +3,10 @@
 	use yii\helpers\Html;
 	use yii\jui\DatePicker;
 	use app\components\MasterValueUtils;
+	use app\modules\fin\views\PaymentAsset;
+	
+	// css & js
+	PaymentAsset::register($this);
 	
 	$this->title = Yii::t('fin.payment', 'Edit Payment');
 ?>
@@ -28,9 +32,3 @@
 		</div></div>
 	<?php ActiveForm::end(); ?></div>
 </div><?php endif; ?>
-
-<style type="text/css">
-div#finaccountentry-arr_entry_log .checkbox-inline {
-    width: 160px; margin-left: 0;
-}
-</style>
