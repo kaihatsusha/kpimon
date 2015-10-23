@@ -13,6 +13,7 @@ class MasterValueUtils {
 	const PG_MODE_NAME = 'pagemode';
 	const PG_MODE_CREATE = 1;
 	const PG_MODE_EDIT = 2;
+	const PG_MODE_COPY = 3;
 	
 	const FLASH_SUCCESS = 'success';
 	const FLASH_ERROR = 'error';

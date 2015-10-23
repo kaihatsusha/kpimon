@@ -1,12 +1,18 @@
 <?php
 	use yii\bootstrap\ActiveForm;
 	use yii\helpers\Html;
+	use app\components\DateTimeUtils;
 	use app\components\MasterValueUtils;
 	use app\components\NumberUtils;
 	use app\components\StringUtils;
 	
 	$formModeValue = $formMode[MasterValueUtils::PG_MODE_NAME];
-	$this->title = $formModeValue === MasterValueUtils::PG_MODE_CREATE ? Yii::t('fin.payment', 'Create Payment') : Yii::t('fin.payment', 'Edit Payment');
+	$this->title = Yii::t('fin.payment', 'Create Payment');
+	if ($formModeValue === MasterValueUtils::PG_MODE_EDIT) {
+		$this->title = Yii::t('fin.payment', 'Edit Payment');
+	} elseif ($formModeValue === MasterValueUtils::PG_MODE_COPY) {
+		$this->title = Yii::t('fin.payment', 'Copy Payment');
+	}
 ?>
 
 <div class="row"><div class="col-md-12"><div class="box box-widget widget-detail">
@@ -15,7 +21,7 @@
 		<ul class="nav nav-stacked nav-no-padding">
 			<li><a href="javascript:void(0);">
 				<?= $model->getAttributeLabel('entry_date'); ?>
-				<span class="pull-right"><?= $model->entry_date; ?></span>
+				<?= DateTimeUtils::htmlDateFormatFromDB($model->entry_date, $phpFmShortDate, ['class'=>'pull-right']); ?>
 			</a></li>
 			<li><a href="javascript:void(0);">
 				<?= $model->getAttributeLabel('account_source'); ?>

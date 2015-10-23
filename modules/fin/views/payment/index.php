@@ -6,6 +6,7 @@
 	use yii\helpers\Html;
 	use yii\jui\DatePicker;
 	use yii\widgets\Pjax;
+	use app\components\DateTimeUtils;
 	use app\components\MasterValueUtils;
 	use app\components\NumberUtils;
 	use app\components\StringUtils;
@@ -85,7 +86,10 @@
 					'contentOptions'=>function($model, $key, $index) {
 						return ['style'=>'vertical-align: middle; text-align: center', 'class'=>MasterValueUtils::getColorRow($index)];
 					},
-					'format'=>['date', $phpFmShortDateGui],
+					'format'=>'raw',
+					'value'=>function($model) use ($phpFmShortDate) {
+						return DateTimeUtils::htmlDateFormatFromDB($model->entry_date, $phpFmShortDate, true);
+					},
 					'footer'=>NumberUtils::format($sumEntryValue['entry_target'] - $sumEntryValue['entry_source'])
 				],
 				[
@@ -164,12 +168,17 @@
 						$lblView = Yii::t('button', 'View');
 						$lblEdit = Yii::t('button', 'Edit');
 						$lblCopy = Yii::t('button', 'Copy');
-						$urlView = $urlEdit = '#';
-						$urlCopy = false;
+						$urlEdit = false;
+						$arrBtns = [];
 						if ($model->entry_status == MasterValueUtils::MV_FIN_ENTRY_TYPE_SIMPLE) {
-							$urlView = BaseUrl::toRoute(['payment/view', 'id'=>$model->entry_id]);
 							$urlEdit = BaseUrl::toRoute(['payment/update', 'id'=>$model->entry_id]);
+							$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlEdit, $lblEdit]);
+							
+							$urlView = BaseUrl::toRoute(['payment/view', 'id'=>$model->entry_id]);
+							$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlView, $lblView]);
+							
 							$urlCopy = BaseUrl::toRoute(['payment/copy', 'id'=>$model->entry_id]);
+							$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlCopy, $lblCopy]);
 						}
 						
 						$html = '<div class="btn-group">';
@@ -178,10 +187,7 @@
 						$html .= '<span class="caret"></span><span class="sr-only">Toggle Dropdown</span>';
 						$html .= '</button>';
 						$html .= '<ul class="dropdown-menu" role="menu">';
-						$html .= '<li><a href="' . $urlView . '">' . $lblView . '</a></li>';
-						if ($urlCopy) {
-							$html .= '<li><a href="' . $urlCopy . '">' . $lblCopy . '</a></li>';
-						}
+						$html .= implode('', $arrBtns);
 						$html .= '</ul></div>';
 						
 						return $html;

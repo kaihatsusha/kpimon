@@ -389,6 +389,9 @@ class PaymentController extends MobiledetectController {
 					->where(['delete_flag'=>0, 'account_type'=>[1,2,3,5]])
 					->orderBy('account_type, order_num'), 'account_id', 'account_name');
 			$arrEntryLog = MasterValueUtils::getArrData('fin_entry_log');
+			// reset value
+			$model->entry_date = DateTimeUtils::formatNow($phpFmShortDate);
+			
 			// submit data
 			$postData = Yii::$app->request->post();
 			$submitMode = isset($postData[MasterValueUtils::SM_MODE_NAME]) ? $postData[MasterValueUtils::SM_MODE_NAME] : false;
@@ -408,20 +411,20 @@ class PaymentController extends MobiledetectController {
 					$isValid = $model->validate();
 					if ($isValid) {
 						$renderView = 'confirm';
-						$renderData['formMode'] = [MasterValueUtils::PG_MODE_NAME=>MasterValueUtils::PG_MODE_EDIT];
+						$renderData['formMode'] = [MasterValueUtils::PG_MODE_NAME=>MasterValueUtils::PG_MODE_COPY];
 					}
 					break;
 				case MasterValueUtils::SM_MODE_CONFIRM:
 					$isValid = $model->validate();
 					if ($isValid) {
-						$result = $this->updatePayment($model);
+						$result = $this->copyPayment($model);
 						if ($result === true) {
 							Yii::$app->session->setFlash(MasterValueUtils::FLASH_SUCCESS, Yii::t('common', '{record} has been saved successfully.', ['record'=>Yii::t('fin.models', 'Payment')]));
-							return Yii::$app->getResponse()->redirect(Url::to(['update', 'id'=>$id]));
+							return Yii::$app->getResponse()->redirect(Url::to(['index']));
 						} else {
 							Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, $result);
 							$renderView = 'confirm';
-							$renderData['formMode'] = [MasterValueUtils::PG_MODE_NAME=>MasterValueUtils::PG_MODE_EDIT];
+							$renderData['formMode'] = [MasterValueUtils::PG_MODE_NAME=>MasterValueUtils::PG_MODE_COPY];
 						}
 					}
 					break;
@@ -434,6 +437,56 @@ class PaymentController extends MobiledetectController {
 		
 		// render GUI
 		return $this->render($renderView, $renderData);
+	}
+	
+	/**
+	 * copy a payment
+	 * @param type $paymentModel
+	 * @return string|true
+	 */
+	private function copyPayment($paymentModel) {
+		$paymentModel->setIsNewRecord(true);
+		$transaction = Yii::$app->db->beginTransaction();
+		$save = true;
+		$message = null;
+		
+		// begin transaction
+		try {
+			$paymentModel->description = serialize($paymentModel->arr_entry_log);
+			$accountSource = FinAccount::findOne($paymentModel->account_source);
+			$accountTarget = FinAccount::findOne($paymentModel->account_target);
+			// save source
+			if (!is_null($accountSource) && ($save !== false)) {
+				$accountSource->opening_balance -= $paymentModel->entry_value;
+				$save = $accountSource->save();
+			}
+			// save Target
+			if (!is_null($accountTarget) && ($save !== false)) {
+				$accountTarget->opening_balance += $paymentModel->entry_value;
+				$save = $accountTarget->save();
+			}
+			// save payment
+			if ($save !== false) {
+				$save = $paymentModel->save();
+			}
+		} catch(\Exception $e) {
+			$save = false;
+			$message = Yii::t('common', 'Unable to save {record}.', ['record'=>Yii::t('fin.models', 'Payment')]);
+		}
+		
+		// end transaction
+		try {
+			if ($save === false) {
+				$transaction->rollback();
+				return $message;
+			} else {
+				$transaction->commit();
+			}
+		} catch(\Exception $e) {
+			throw \Exception(Yii::t('common', 'Unable to excute Transaction.'));
+		}
+		
+		return true;
 	}
 }
 ?>

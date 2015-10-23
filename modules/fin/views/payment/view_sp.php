@@ -1,4 +1,5 @@
 <?php
+	use app\components\DateTimeUtils;
 	use app\components\NumberUtils;
 	
 	$this->title = Yii::t('fin.payment', 'Details of Payment');
@@ -14,7 +15,7 @@
 			</a></li>
 			<li><a href="javascript:void(0);">
 				<?= $model->getAttributeLabel('entry_date'); ?>
-				<span class="pull-right"><?= $model->entry_date; ?></span>
+				<?= DateTimeUtils::htmlDateFormatFromDB($model->entry_date, $phpFmShortDate, ['class'=>'pull-right']); ?>
 			</a></li>
 			<li><a href="javascript:void(0);">
 				<?= $model->getAttributeLabel('account_source'); ?>

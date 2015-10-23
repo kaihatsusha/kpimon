@@ -8,13 +8,78 @@ class DateTimeUtils {
 	const FM_DB_DATETIME = 'Y-m-d H:i:s';
 	const FM_DB_DATE = 'Y-m-d';
 	const FM_DB_TIME = 'H:i:s';
-    const FM_DEV_DATETIME = 'Ymd His';
+	const FM_DEV_DATETIME = 'Ymd His';
 	const FM_DEV_YM = 'Ym';
-    const FM_DEV_DATE = 'Ymd';
-    const FM_DEV_TIME = 'His';
+	const FM_DEV_DATE = 'Ymd';
+	const FM_DEV_TIME = 'His';
 	const FM_VIEW_DATE = 'Y-m-d';
 	
+	const FN_KEY_GETDATE_YEAR = 'year';					// A full numeric representation of a year, 4 digits (Examples: 1999 or 2003)
+	const FN_KEY_GETDATE_MONTH_INT = 'mon';				// Numeric representation of a month (1 through 12)
+	const FN_KEY_GETDATE_MONTH_STR = 'month';			// A full textual representation of a month, such as January or March (January through December)
+	const FN_KEY_GETDATE_HOURS = 'hours';				// Numeric representation of hours [0 to 23]
+	const FN_KEY_GETDATE_MINUTES = 'minutes';			// Numeric representation of minutes [0 to 59]
+	const FN_KEY_GETDATE_SECONDS = 'seconds';			// Numeric representation of seconds [0 to 59]
+	const FN_KEY_GETDATE_DAYSOFYEAR = 'yday';			// Numeric representation of the day of the year (0 through 365)
+	const FN_KEY_GETDATE_DAYSOFMONTH = 'mday';			// Numeric representation of the day of the month [1 to 31]
+	const FN_KEY_GETDATE_DAYSOFWEEK_INT = 'wday';		// Numeric representation of the day of the week [0 (for Sunday) through 6 (for Saturday)]
+	const FN_KEY_GETDATE_DAYSOFWEEK_STR = 'weekday';	// A full textual representation of the day of the week (Sunday through Saturday)
+	const FN_KEY_GETDATE_TOTAL_SECONDS = 0;				// Seconds since the Unix Epoch, similar to the values returned by time() and used by date(). (System Dependent, typically -2147483648 through 2147483647.)
+	
 	private static $DATE_FORMAT;
+	
+	private static function getDateFormatInstall($language='') {
+		//$lang = empty($language) ? Yii::app()->language : $language;
+		$lang = empty($language) ? 'ja' : $language;
+		
+		// init value
+		if (is_null(self::$DATE_FORMAT)) {
+			self::$DATE_FORMAT = [
+				'en'=>[
+					'short'=>['php'=>'m{0}d{0}Y','jui'=>'MM{0}dd{0}yyyy','pattern'=>'/^\d{2}{0}\d{2}{0}\d{4}$/'], // 09/03/2014 (Sep 3rd 2014)
+					'weekday'=>[
+						['text-color'=>'text-red'],
+						['text-color'=>''],
+						['text-color'=>''],
+						['text-color'=>''],
+						['text-color'=>''],
+						['text-color'=>''],
+						['text-color'=>'text-blue']
+					] // 0 (for Sunday) through 6 (for Saturday)
+				],
+				'ja'=>[
+					'short'=>['php'=>'Y{0}m{0}d','jui'=>'yyyy{0}MM{0}dd','pattern'=>'/^\d{4}{0}\d{2}{0}\d{2}$/'], // 2014/09/03 (Sep 3rd 2014)
+					'weekday'=>[
+						['text-color'=>'text-red'],
+						['text-color'=>''],
+						['text-color'=>''],
+						['text-color'=>''],
+						['text-color'=>''],
+						['text-color'=>''],
+						['text-color'=>'text-blue']
+					] // 0 (for Sunday) through 6 (for Saturday)
+				],
+				'vi'=>[
+					'short'=>['php'=>'d{0}m{0}Y','jui'=>'dd{0}MM{0}yyyy','pattern'=>'/^\d{2}{0}\d{2}{0}\d{4}$/'], // 03/09/2014 (Sep 3rd 2014)
+					'weekday'=>[
+						['text-color'=>'text-red'],
+						['text-color'=>''],
+						['text-color'=>''],
+						['text-color'=>''],
+						['text-color'=>''],
+						['text-color'=>''],
+						['text-color'=>'text-blue']
+					] // 0 (for Sunday) through 6 (for Saturday)
+				]
+			];
+		}
+		
+		if (isset(self::$DATE_FORMAT[$lang])) {
+			return self::$DATE_FORMAT[$lang];
+		} else {
+			throw new Exception(Yii::t('DateTimeUtils', 'No date format is supported for this Language'));
+		}
+	}
 	
 	/**
 	 * get DateFormat
@@ -26,25 +91,10 @@ class DateTimeUtils {
 	 * @throws CException
 	 */
 	public static function getDateFormat($usefor='php', $language='', $width = 'short', $split = '-') {
-		// init value
-		if (null === self::$DATE_FORMAT) {
-			self::$DATE_FORMAT = [
-				'en'=>[
-					'short'=>['php'=>'m{0}d{0}Y','jui'=>'MM{0}dd{0}yyyy','pattern'=>'/^\d{2}{0}\d{2}{0}\d{4}$/'] // 09/03/2014 (Sep 3rd 2014)
-				],
-				'ja'=>[
-					'short'=>['php'=>'Y{0}m{0}d','jui'=>'yyyy{0}MM{0}dd','pattern'=>'/^\d{4}{0}\d{2}{0}\d{2}$/'] // 2014/09/03 (Sep 3rd 2014)
-				],
-				'vi'=>[
-					'short'=>['php'=>'d{0}m{0}Y','jui'=>'dd{0}MM{0}yyyy','pattern'=>'/^\d{2}{0}\d{2}{0}\d{4}$/'] // 03/09/2014 (Sep 3rd 2014)
-				]
-			];
-		}
+		$dateFormatInstall = self::getDateFormatInstall($language);
 		
-		//$lang = empty($language) ? Yii::app()->language : $language;
-		$lang = empty($language) ? 'ja' : $language;
-		if (isset(self::$DATE_FORMAT[$lang][$width][$usefor])) {
-			$dateformat = self::$DATE_FORMAT[$lang][$width][$usefor];
+		if (isset($dateFormatInstall[$width][$usefor])) {
+			$dateformat = $dateFormatInstall[$width][$usefor];
 			return StringUtils::format($dateformat, $split);
 		} else {
 			throw new Exception(Yii::t('DateTimeUtils', 'No date format is supported'));
@@ -267,6 +317,58 @@ class DateTimeUtils {
 			throw new Exception(Yii::t('DateTimeUtils', 'Unknown type'));
 		}
 		return (null == $format) ? $result : $result->format($format);
+	}
+	
+	/**
+	 * format html for date
+	 * @param type $datetime
+	 * @param type $df
+	 * @param type $htmlOpts [tag=>'span', class=>'abc']
+	 */
+	public static function htmlDateFormat($datetime, $df, $htmlOpts = false) {
+		if ($htmlOpts === false) {
+			return $datetime;
+		}
+		
+		$dt = getdate(self::parse($datetime, $df)->getTimestamp());
+		$daysweek = $dt[self::FN_KEY_GETDATE_DAYSOFWEEK_INT];
+		$dateFormatInstall = self::getDateFormatInstall();
+		$textcolor = $dateFormatInstall['weekday'][$daysweek]['text-color'];
+		
+		$tag = isset($htmlOpts['tag']) ? $htmlOpts['tag'] : 'span';
+		$fulltag = '<' . $tag .' class="{0}">{1}';
+		$fulltag .= '</' . $tag .'>';
+		$css = (isset($htmlOpts['class']) ? $htmlOpts['class'] : '') . ' ' . $textcolor;
+		
+		return StringUtils::format($fulltag, [$css, $datetime]);
+	}
+	
+	/**
+	 * format html for date
+	 * @param string $datetime: value from database (EX: Y-m-d)
+	 * @param string $format: new format
+	 * @param type $htmlOpts [tag=>'span', class=>'abc']
+	 * @return string
+	 */
+	public static function htmlDateFormatFromDB($datetime, $format, $htmlOpts = false) {
+		$date = \DateTime::createFromFormat(self::FM_DB_DATE, $datetime);
+		$datestr = $date->format($format);
+		
+		if ($htmlOpts === false) {
+			return $datestr;
+		}
+		
+		$dt = getdate($date->getTimestamp());
+		$daysweek = $dt[self::FN_KEY_GETDATE_DAYSOFWEEK_INT];
+		$dateFormatInstall = self::getDateFormatInstall();
+		$textcolor = $dateFormatInstall['weekday'][$daysweek]['text-color'];
+		
+		$tag = isset($htmlOpts['tag']) ? $htmlOpts['tag'] : 'span';
+		$fulltag = '<' . $tag .' class="{0}">{1}';
+		$fulltag .= '</' . $tag .'>';
+		$css = (isset($htmlOpts['class']) ? $htmlOpts['class'] : '') . ' ' . $textcolor;
+		
+		return StringUtils::format($fulltag, [$css, $datetime]);
 	}
 }
 ?>

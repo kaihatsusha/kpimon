@@ -100,6 +100,20 @@ class FinAccountEntry extends \yii\db\ActiveRecord {
 	}
 	
 	/**
+     * @inheritdoc
+     */
+	public function beforeSave($insert) {
+		if (parent::beforeSave($insert)) {
+			if ($insert) {
+				$this->entry_id = null;
+			}
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
 	 * validate Source Related Target
 	 */
 	public function validateSourceRelatedTarget() {

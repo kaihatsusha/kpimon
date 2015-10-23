@@ -2,7 +2,7 @@
 	use app\components\DateTimeUtils;
 	use app\components\NumberUtils;
 	
-	$this->title = Yii::t('fin.account', 'Personal Accounts List');
+	$this->title = Yii::t('fin.deposit', 'Time Deposit Accounts List');
 	// for render
 	$rowindex = 0;
 	$viewToday = DateTimeUtils::formatNow(DateTimeUtils::FM_VIEW_DATE);
@@ -60,74 +60,3 @@
 		</tr>
 	</tbody></table></div>
 </div></div></div>
-
-<div class="row">
-	<div class="col-md-6"><div class="box">
-		<div class="box-header">
-			<h3 class="box-title"><?= Yii::t('fin.account', 'High Liquidity'); ?></h3>
-		</div>
-		<div class="box-body no-padding"><table class="table table-bordered"><tbody>
-			<tr>
-				<th style="text-align: center"><?= Yii::t('fin.grid', 'Name'); ?></th>
-				<th style="text-align: center"><?= Yii::t('fin.grid', 'Opening'); ?></th>
-				<th style="text-align: center"><?= Yii::t('fin.grid', 'Closing'); ?></th>
-				<th style="text-align: center"><?= $viewToday; ?></th>
-			</tr>
-			<?php foreach($arrTmAtm as $tmAtm): ?><tr class="info">
-				<td style="text-align: left"><?= $tmAtm->account_name; ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($tmAtm->opening_balance); ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($tmAtm->closing_balance); ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($tmAtm->now_balance); ?></td>
-			</tr><?php endforeach; ?>
-			<tr class="success">
-				<td style="text-align: left"><?= Yii::t('fin.grid', 'TM-ATM'); ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($sumTmAtm['opening_balance']); ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($sumTmAtm['closing_balance']); ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($sumTmAtm['now_balance']); ?></td>
-			</tr>
-			<tr class="warning">
-				<td style="text-align: left"><?= Yii::t('fin.grid', 'TM-ATM-DPS'); ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($sumTmAtmDeposit['opening_balance']); ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($sumTmAtmDeposit['closing_balance']); ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($sumTmAtmDeposit['now_balance']); ?></td>
-			</tr>
-		</tbody></table></div>
-	</div></div>
-	<div class="col-md-6"><div class="box">
-		<div class="box-header">
-			<h3 class="box-title"><?= Yii::t('fin.account', 'Low Liquidity'); ?></h3>
-		</div>
-		<div class="box-body no-padding"><table class="table table-bordered"><tbody>
-			<tr>
-				<th style="text-align: center"><?= Yii::t('fin.grid', 'Name'); ?></th>
-				<th style="text-align: center"><?= Yii::t('fin.grid', 'Opening'); ?></th>
-				<th style="text-align: center"><?= Yii::t('fin.grid', 'Closing'); ?></th>
-				<th style="text-align: center"><?= $viewToday; ?></th>
-			</tr>
-			<?php foreach($arrLunchFound as $lunchFound): ?><tr class="info">
-				<td style="text-align: left"><?= $lunchFound->account_name; ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($lunchFound->opening_balance); ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($lunchFound->closing_balance); ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($lunchFound->now_balance); ?></td>
-			</tr><?php endforeach; ?>
-			<?php foreach($arrCredit as $credit): ?><tr class="success">
-				<td style="text-align: left"><?= $credit->account_name; ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($credit->opening_balance); ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($credit->closing_balance); ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($credit->now_balance); ?></td>
-			</tr><?php endforeach; ?>
-			<?php foreach($arrOtherFound as $otherFound): ?><tr class="warning">
-				<td style="text-align: left"><?= $otherFound->account_name; ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($otherFound->opening_balance); ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($otherFound->closing_balance); ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($otherFound->now_balance); ?></td>
-			</tr><?php endforeach; ?>
-			<tr class="danger">
-				<td style="text-align: left"><?= Yii::t('fin.grid', 'Total'); ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($sumTotal['opening_balance']); ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($sumTotal['closing_balance']); ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($sumTotal['now_balance']); ?></td>
-			</tr>
-		</tbody></table></div>
-	</div></div>
-</div>
