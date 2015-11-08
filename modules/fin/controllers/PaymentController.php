@@ -2,6 +2,7 @@
 namespace app\modules\fin\controllers;
 
 use Yii;
+use yii\base\Exception;
 use yii\db\Query;
 use yii\helpers\Url;
 use app\components\DateTimeUtils;
@@ -176,6 +177,7 @@ class PaymentController extends MobiledetectController {
 	/**
 	 * create a payment
 	 * @param type $paymentModel
+	 * @throws Exception
 	 * @return string|true
 	 */
 	private function createPayment($paymentModel) {
@@ -202,7 +204,7 @@ class PaymentController extends MobiledetectController {
 			if ($save !== false) {
 				$save = $paymentModel->save();
 			}
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
 			$save = false;
 			$message = Yii::t('common', 'Unable to save {record}.', ['record'=>Yii::t('fin.models', 'Payment')]);
 		}
@@ -215,8 +217,8 @@ class PaymentController extends MobiledetectController {
 			} else {
 				$transaction->commit();
 			}
-		} catch(\Exception $e) {
-			throw \Exception(Yii::t('common', 'Unable to excute Transaction.'));
+		} catch(Exception $e) {
+			throw Exception(Yii::t('common', 'Unable to excute Transaction.'));
 		}
 		
 		return true;
@@ -295,6 +297,7 @@ class PaymentController extends MobiledetectController {
 	/**
 	 * update a payment
 	 * @param type $paymentModel
+	 * @throws Exception
 	 * @return string|true
 	 */
 	private function updatePayment($paymentModel) {
@@ -353,7 +356,7 @@ class PaymentController extends MobiledetectController {
 					$save = $accountTarget->update();
 				}
 			}
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
 			$save = false;
 			$message = Yii::t('common', 'Unable to save {record}.', ['record'=>Yii::t('fin.models', 'Payment')]);
 		}
@@ -366,8 +369,8 @@ class PaymentController extends MobiledetectController {
 			} else {
 				$transaction->commit();
 			}
-		} catch(\Exception $e) {
-			throw \Exception(Yii::t('common', 'Unable to excute Transaction.'));
+		} catch(Exception $e) {
+			throw Exception(Yii::t('common', 'Unable to excute Transaction.'));
 		}
 		
 		return true;
@@ -442,6 +445,7 @@ class PaymentController extends MobiledetectController {
 	/**
 	 * copy a payment
 	 * @param type $paymentModel
+	 * @throws Exception
 	 * @return string|true
 	 */
 	private function copyPayment($paymentModel) {
@@ -469,7 +473,7 @@ class PaymentController extends MobiledetectController {
 			if ($save !== false) {
 				$save = $paymentModel->save();
 			}
-		} catch(\Exception $e) {
+		} catch(Exception $e) {
 			$save = false;
 			$message = Yii::t('common', 'Unable to save {record}.', ['record'=>Yii::t('fin.models', 'Payment')]);
 		}
@@ -482,8 +486,8 @@ class PaymentController extends MobiledetectController {
 			} else {
 				$transaction->commit();
 			}
-		} catch(\Exception $e) {
-			throw \Exception(Yii::t('common', 'Unable to excute Transaction.'));
+		} catch(Exception $e) {
+			throw Exception(Yii::t('common', 'Unable to excute Transaction.'));
 		}
 		
 		return true;

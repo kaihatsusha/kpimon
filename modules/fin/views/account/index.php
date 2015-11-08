@@ -48,7 +48,7 @@
 			<th class="info" style="text-align: center">#</th>
 			<th class="info"></th>
 			<th class="danger" style="text-align: right" colspan="2"><?= NumberUtils::format($sumDeposits['opening_balance']); ?></th>
-			<th class="success" style="text-align: right" colspan="2"><?= NumberUtils::format($sumDeposits['closing_interest_unit']); ?></th>
+			<th class="success" style="text-align: right" colspan="2"><?= NumberUtils::format($sumDeposits['closing_interest_unit'], 4); ?></th>
 			<th class="success" style="text-align: right"><?= NumberUtils::format($sumDeposits['closing_interest']); ?></th>
 			<th class="success" style="text-align: right"><?= NumberUtils::format($sumDeposits['closing_balance']); ?></th>
 			<th class="danger" style="text-align: right" colspan="2"><?= NumberUtils::format($sumDeposits['now_interest_unit']); ?></th>

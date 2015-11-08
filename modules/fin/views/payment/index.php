@@ -158,7 +158,7 @@
 				],
 				[
 					'label'=>Yii::t('fin.grid', 'Action'),
-					'headerOptions'=>['style'=>'text-align: center'],
+					'headerOptions'=>['style'=>'text-align: center; width: 100px;'],
 					'contentOptions'=>function($model, $key, $index) {
 						return ['style'=>'vertical-align: middle; text-align: center', 'class'=>MasterValueUtils::getColorRow($index)];
 					},

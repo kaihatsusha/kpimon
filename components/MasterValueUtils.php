@@ -34,6 +34,12 @@ class MasterValueUtils {
 	const MV_FIN_ENTRY_TYPE_DEPOSIT = 2;			// Deposits
 	const MV_FIN_ENTRY_TYPE_INTEREST_DEPOSIT = 3;	// Interest of Deposits
 	const MV_FIN_ENTRY_TYPE_COST_INTERNET = 4;		// Cost of Internet
+
+	const MV_FIN_ENTRY_LOG_INTEREST = 13;	// Interest of Deposits
+	const MV_FIN_ENTRY_LOG_SAVING = 15;		// Saving
+
+	const MV_FIN_TIMEDP_TRANTYPE_ADDING = 1;		// Adding funds
+	const MV_FIN_TIMEDP_TRANTYPE_WITHDRAWAL = 2;	// Partial withdrawal
 	
 	const MV_FIN_FLG_DELETE_TRUE = 1;	// is deleted
 	const MV_FIN_FLG_DELETE_FALSE = 0;	// not delete

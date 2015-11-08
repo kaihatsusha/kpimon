@@ -79,6 +79,29 @@
 						'label'=>Yii::t('fin.menuLeft', 'List'),
 						'url'=>['/fin/deposit/index'],
 						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('fin.menuLeft', 'Create'),
+						'url'=>['/fin/deposit/create'],
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('fin.menuLeft', 'View'),
+						'url'=>['/fin/deposit/view'],
+						'requireId'=>true,
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('fin.menuLeft', 'Edit'),
+						'url'=>['/fin/deposit/update'],
+						'requireId'=>true,
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('fin.menuLeft', 'Copy'),
+						'url'=>['/fin/deposit/copy'],
+						'requireId'=>true,
+						'icon'=>'<i class="fa fa-circle-o"></i>'
 					]
 				]
 			]
