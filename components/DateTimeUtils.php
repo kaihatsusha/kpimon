@@ -1,6 +1,7 @@
 <?php
 namespace app\components;
 
+use Yii;
 use yii\base\Exception;
 use app\components\StringUtils;
 
@@ -88,7 +89,7 @@ class DateTimeUtils {
 	 * @param string $width
 	 * @param string $split
 	 * @return string DateFormat
-	 * @throws CException
+	 * @throws Exception
 	 */
 	public static function getDateFormat($usefor='php', $language='', $width = 'short', $split = '-') {
 		$dateFormatInstall = self::getDateFormatInstall($language);
@@ -256,7 +257,7 @@ class DateTimeUtils {
 	 * @param string $format if you want to return a string, you should use this
 	 * @param boolean $nochange
 	 * @return mixed string OR DateTime base on '$format' - the new date time with sub data
-	 * @throws CException
+	 * @throws Exception
 	 */
 	public static function subDateTime($datetime, $interval, $format = null, $nochange = true) {
 		$result = ($nochange || gettype($datetime) == 'integer') ? self::cloneDateTime($datetime) : $datetime;
@@ -293,7 +294,7 @@ class DateTimeUtils {
 	 * @param string $format if you want to return a string, you should use this
 	 * @param boolean $nochange
 	 * @return mixed string OR DateTime base on '$format' - the new date time with add data
-	 * @throws CException
+	 * @throws Exception
 	 */
 	public static function addDateTime($datetime, $interval, $format = null, $nochange = true) {
 		$result = ($nochange || gettype($datetime) == 'integer') ? self::cloneDateTime($datetime) : $datetime;
@@ -308,6 +309,10 @@ class DateTimeUtils {
 					$error = true;
 				}
 				break;
+			case 'string':
+				$intervalObj = new \DateInterval($interval);
+				$result->add($intervalObj);
+				break;
 			default:
 				$error = true;
 				break;
@@ -321,9 +326,10 @@ class DateTimeUtils {
 	
 	/**
 	 * format html for date
-	 * @param type $datetime
-	 * @param type $df
-	 * @param type $htmlOpts [tag=>'span', class=>'abc']
+	 * @param String $datetime
+	 * @param String $df
+	 * @param mixed $htmlOpts [tag=>'span', class=>'abc']
+	 * @return String
 	 */
 	public static function htmlDateFormat($datetime, $df, $htmlOpts = false) {
 		if ($htmlOpts === false) {
