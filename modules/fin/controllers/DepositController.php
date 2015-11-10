@@ -63,7 +63,6 @@ class DepositController extends MobiledetectController {
 
 	public function actionView($id) {
 		$this->objectId = $id;
-		var_dump([$id]);
 	}
 
 	public function actionCreate() {
