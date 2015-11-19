@@ -4,6 +4,9 @@ namespace app\controllers;
 use yii\web\Controller;
 
 class MobiledetectController extends Controller {
+	public $objectId = false;
+	public $defaultAction = 'index';
+
 	public function render($view, $params = []) {
 		$devicedetect = \Yii::$app->devicedetect;
 		$isMobile = $devicedetect->isMobile();

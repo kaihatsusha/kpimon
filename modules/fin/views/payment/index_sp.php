@@ -85,7 +85,7 @@
 					'contentOptions'=>['style'=>'vertical-align: middle; text-align: center'],
 					'format'=>'raw',
 					'value'=>function($model) use ($phpFmShortDate) {
-						$html = DateTimeUtils::htmlDateFormatFromDB($model->entry_date, $phpFmShortDate, true);
+						$html = DateTimeUtils::htmlDateFormatFromDB($model->entry_date, DateTimeUtils::FM_VIEW_DATE, true);
 						
 						$lblView = Yii::t('button', 'View');
 						$lblEdit = Yii::t('button', 'Edit');

@@ -12,8 +12,6 @@ use app\models\extended\FinAccount05I00;
 use app\models\extended\FinAccount06I00;
 
 class AccountController extends MobiledetectController {
-	public $defaultAction = 'index';
-	
 	public function behaviors() {
 		return [
 			'access' => [

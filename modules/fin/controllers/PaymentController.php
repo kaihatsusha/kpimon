@@ -14,9 +14,6 @@ use app\models\FinAccount;
 use app\models\FinAccountEntry;
 
 class PaymentController extends MobiledetectController {
-	public $objectId = false;
-	public $defaultAction = 'index';
-	
 	public function behaviors() {
 		return [
 			'access' => [
@@ -62,31 +59,45 @@ class PaymentController extends MobiledetectController {
 		// query for dataprovider
 		$dataQuery = null;
 		if ($searchModel->validate()) {
-			$dataQuery = FinAccountEntry::find()->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+			$t2leftJoin = '';
+			$t2leftJoin .= ' (';
+			$t2leftJoin .= ' t1.entry_date = t2.opening_date AND t2.delete_flag = :deleteFlagFalse';
+			$t2leftJoin .= '   AND (';
+			$t2leftJoin .= '     (t2.add_flag = :trantypeAdding AND t1.account_source = t2.current_assets AND t1.account_target = t2.saving_account)';
+			$t2leftJoin .= '     OR';
+			$t2leftJoin .= '     (t2.add_flag = :trantypeWithdrawal AND t1.account_source = t2.saving_account AND t1.account_target = t2.current_assets)';
+			$t2leftJoin .= '   )';
+			$t2leftJoin .= ' )';
+			$dataQuery = FinAccountEntry::find()->select('t1.*, t2.*')->from('fin_account_entry t1')
+				->leftJoin('fin_time_deposit_tran t2', $t2leftJoin, [
+					'deleteFlagFalse' => MasterValueUtils::MV_FIN_FLG_DELETE_FALSE,
+					'trantypeAdding' => MasterValueUtils::MV_FIN_TIMEDP_TRANTYPE_ADDING,
+					'trantypeWithdrawal' => MasterValueUtils::MV_FIN_TIMEDP_TRANTYPE_WITHDRAWAL,
+				])->where(['=', 't1.delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
 			$sumEntryQuery = (new Query())->select(['SUM(IF(account_source > 0, entry_value, 0)) AS entry_source', 'SUM(IF(account_target > 0, entry_value, 0)) AS entry_target']);
 			$sumEntryQuery->from('fin_account_entry')->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
 			$sumEntryQuery->andWhere(['OR', ['=', 'account_source', MasterValueUtils::MV_FIN_ACCOUNT_NONE], ['=', 'account_target', MasterValueUtils::MV_FIN_ACCOUNT_NONE]]);
 			
 			if (!empty($searchModel->entry_date_from)) {
-				$dataQuery->andWhere(['>=', 'entry_date', $searchModel->entry_date_from]);
+				$dataQuery->andWhere(['>=', 't1.entry_date', $searchModel->entry_date_from]);
 				$sumEntryQuery->andWhere(['>=', 'entry_date', $searchModel->entry_date_from]);
 			}
 			if (!empty($searchModel->entry_date_to)) {
-				$dataQuery->andWhere(['<=', 'entry_date', $searchModel->entry_date_to]);
+				$dataQuery->andWhere(['<=', 't1.entry_date', $searchModel->entry_date_to]);
 				$sumEntryQuery->andWhere(['<=', 'entry_date', $searchModel->entry_date_to]);
 			}
 			if ($searchModel->account_source > 0) {
-				$dataQuery->andWhere(['=', 'account_source', $searchModel->account_source]);
+				$dataQuery->andWhere(['=', 't1.account_source', $searchModel->account_source]);
 			}
 			if ($searchModel->account_target > 0) {
-				$dataQuery->andWhere(['=', 'account_target', $searchModel->account_target]);
+				$dataQuery->andWhere(['=', 't1.account_target', $searchModel->account_target]);
 			}
-			$dataQuery->orderBy('entry_date DESC, create_date DESC');
+			$dataQuery->orderBy('t1.entry_date DESC, t1.create_date DESC');
 			$sumEntryValue = $sumEntryQuery->createCommand()->queryOne();
 		} else {
 			$dataQuery = FinAccountEntry::find()->where(['entry_id'=>-1]);
 		}
-		
+		echo $dataQuery->createCommand()->getRawSql();die();
 		// render GUI
 		$renderData = ['searchModel'=>$searchModel, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount, 'dataQuery'=>$dataQuery, 'sumEntryValue'=>$sumEntryValue, 'arrEntryLog'=>$arrEntryLog];
 		

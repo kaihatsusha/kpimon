@@ -3,6 +3,7 @@ namespace app\models;
 
 use Yii;
 use yii\db\Expression;
+use app\components\StringUtils;
 
 /**
  * This is the model class for table "fin_time_deposit_tran".
@@ -28,6 +29,7 @@ class FinTimeDepositTran extends \yii\db\ActiveRecord {
     const SCENARIO_COPY = 'copy';
 
     public static $_PHP_FM_SHORTDATE = 'Y-m-d';
+    public static $_ARR_SAVING_ACOUNT = null;
 
     /**
      * @inheritdoc
@@ -47,6 +49,10 @@ class FinTimeDepositTran extends \yii\db\ActiveRecord {
             [['opening_date', 'closing_date', 'create_date', 'update_date'], 'safe'],
             [['delete_flag'], 'string', 'max' => 1],
             [['opening_date', 'closing_date', 'interest_rate', 'interest_add', 'entry_value'], 'required', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_COPY]],
+            [['interest_add', 'entry_value'], 'integer', 'min' => 0, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_COPY]],
+            [['interest_rate'], 'number', 'min' => 0, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_COPY]],
+            [['saving_account'], 'unique', 'targetAttribute' => ['saving_account', 'opening_date'], 'message' => Yii::t('yii', '{attribute} "{{value}}" has already been taken.'), 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_COPY]],
+            [['opening_date'], 'unique', 'targetAttribute' => ['saving_account', 'opening_date'], 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_COPY]],
             [['opening_date', 'closing_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_COPY]],
         ];
     }
@@ -100,5 +106,24 @@ class FinTimeDepositTran extends \yii\db\ActiveRecord {
         }
 
         return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function afterValidate ( ) {
+        $arrOldErrors = $this->getErrors('saving_account');
+        if (count($arrOldErrors) > 0) {
+            $this->clearErrors('saving_account');
+            foreach ($arrOldErrors as $oldError) {
+                $newError = null;
+                if (empty($this->saving_account)) {
+                    $newError = $oldError;
+                } else {
+                    $newError = StringUtils::format($oldError, [$this->saving_account => self::$_ARR_SAVING_ACOUNT[$this->saving_account]]);
+                }
+                $this->addError('saving_account', $newError);
+            }
+        }
     }
 }

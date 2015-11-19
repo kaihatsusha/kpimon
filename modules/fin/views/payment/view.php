@@ -15,7 +15,7 @@
 			</tr>
 			<tr>
 				<th class="warning"><?= $model->getAttributeLabel('entry_date'); ?></th>
-				<td class="info"><?= DateTimeUtils::htmlDateFormatFromDB($model->entry_date, $phpFmShortDate, true); ?></td>
+				<td class="info"><?= DateTimeUtils::htmlDateFormatFromDB($model->entry_date, DateTimeUtils::FM_VIEW_DATE_WD, true); ?></td>
 			</tr>
 			<tr>
 				<th class="warning"><?= $model->getAttributeLabel('account_source'); ?></th>

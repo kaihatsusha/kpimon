@@ -40,14 +40,24 @@ class Menu extends \yii\widgets\Menu
     public $parentRightIcon = '<i class="fa fa-angle-left pull-right"></i>';
 	
 	private $objectId;
+    private $pathPattern;
 	
 	/**
      * Renders the menu.
      */
     public function run() {
 		$controller = \Yii::$app->controller;
+        $moduleObj = $controller->module;
+
+        $paths = [];
+        $moduleId = isset($moduleObj->id) ? $moduleObj->id : false;
+        if ($moduleId && ('fin' == $moduleId)) {
+            $paths[] = $moduleId;
+        }
+        $paths[] = $controller->id;
+
 		$this->objectId = isset($controller->objectId) ? $controller->objectId : false;
-		
+        $this->pathPattern = '/^\/' . implode('\/', $paths) . '\/.*$/';
 		parent::run();
 	}
 	
@@ -71,6 +81,13 @@ class Menu extends \yii\widgets\Menu
 				if ($this->objectId === false) {
 					return '';
 				}
+
+                $matches = null;
+                preg_match($this->pathPattern, $item['url'][0], $matches);
+                if (count($matches) < 1) {
+                    return '';
+                }
+
 				$item['url']['id'] = $this->objectId;
 			}
 			

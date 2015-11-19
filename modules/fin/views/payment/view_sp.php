@@ -15,7 +15,7 @@
 			</a></li>
 			<li><a href="javascript:void(0);">
 				<?= $model->getAttributeLabel('entry_date'); ?>
-				<?= DateTimeUtils::htmlDateFormatFromDB($model->entry_date, $phpFmShortDate, ['class'=>'pull-right']); ?>
+				<?= DateTimeUtils::htmlDateFormatFromDB($model->entry_date, DateTimeUtils::FM_VIEW_DATE_WD, ['class'=>'pull-right']); ?>
 			</a></li>
 			<li><a href="javascript:void(0);">
 				<?= $model->getAttributeLabel('account_source'); ?>

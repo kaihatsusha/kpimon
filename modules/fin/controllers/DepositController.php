@@ -13,9 +13,6 @@ use app\models\FinAccountEntry;
 use app\models\FinTimeDepositTran;
 
 class DepositController extends MobiledetectController {
-	public $objectId = false;
-	public $defaultAction = 'index';
-	
 	public function behaviors() {
 		return [
 			'access' => [
@@ -85,6 +82,7 @@ class DepositController extends MobiledetectController {
 
 		// init value
 		FinTimeDepositTran::$_PHP_FM_SHORTDATE = $phpFmShortDate;
+		FinTimeDepositTran::$_ARR_SAVING_ACOUNT = $arrSavingAccount;
 		$model->scenario = FinTimeDepositTran::SCENARIO_CREATE;
 		if (empty($model->opening_date)) {
 			$today = new \DateTime();

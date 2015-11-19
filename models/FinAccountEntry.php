@@ -51,6 +51,7 @@ class FinAccountEntry extends \yii\db\ActiveRecord {
             [['description'], 'string'],
             [['delete_flag'], 'string', 'max' => 1],
 			[['entry_date', 'entry_value'], 'required', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_COPY]],
+			[['entry_value'], 'integer', 'min' => 0, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_COPY]],
 			[['entry_date'], 'required', 'on' => [self::SCENARIO_UPDATE]],
 			[['account_source', 'account_target'], 'default', 'value' => 0, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_COPY, self::SCENARIO_LIST]],
 			[['account_source'], 'validateSourceRelatedTarget', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_COPY]],

@@ -88,7 +88,7 @@
 					},
 					'format'=>'raw',
 					'value'=>function($model) use ($phpFmShortDate) {
-						return DateTimeUtils::htmlDateFormatFromDB($model->entry_date, $phpFmShortDate, true);
+						return DateTimeUtils::htmlDateFormatFromDB($model->entry_date, DateTimeUtils::FM_VIEW_DATE, true);
 					},
 					'footer'=>NumberUtils::format($sumEntryValue['entry_target'] - $sumEntryValue['entry_source'])
 				],

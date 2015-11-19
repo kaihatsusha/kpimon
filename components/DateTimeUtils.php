@@ -14,6 +14,7 @@ class DateTimeUtils {
 	const FM_DEV_DATE = 'Ymd';
 	const FM_DEV_TIME = 'His';
 	const FM_VIEW_DATE = 'Y-m-d';
+	const FM_VIEW_DATE_WD = 'Y-m-d (D)';
 	
 	const FN_KEY_GETDATE_YEAR = 'year';					// A full numeric representation of a year, 4 digits (Examples: 1999 or 2003)
 	const FN_KEY_GETDATE_MONTH_INT = 'mon';				// Numeric representation of a month (1 through 12)
@@ -353,7 +354,7 @@ class DateTimeUtils {
 	 * format html for date
 	 * @param string $datetime: value from database (EX: Y-m-d)
 	 * @param string $format: new format
-	 * @param type $htmlOpts [tag=>'span', class=>'abc']
+	 * @param mixed $htmlOpts [tag=>'span', class=>'abc']
 	 * @return string
 	 */
 	public static function htmlDateFormatFromDB($datetime, $format, $htmlOpts = false) {
@@ -374,7 +375,7 @@ class DateTimeUtils {
 		$fulltag .= '</' . $tag .'>';
 		$css = (isset($htmlOpts['class']) ? $htmlOpts['class'] : '') . ' ' . $textcolor;
 		
-		return StringUtils::format($fulltag, [$css, $datetime]);
+		return StringUtils::format($fulltag, [$css, $datestr]);
 	}
 }
 ?>
