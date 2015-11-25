@@ -3,6 +3,7 @@ namespace app\models;
 
 use Yii;
 use yii\db\Expression;
+use app\components\MasterValueUtils;
 use app\components\StringUtils;
 
 /**
@@ -23,10 +24,10 @@ use app\components\StringUtils;
  * @property string $delete_flag
  */
 class FinTimeDepositTran extends \yii\db\ActiveRecord {
-    const SCENARIO_LIST = 'list';
-    const SCENARIO_CREATE = 'create';
-    const SCENARIO_UPDATE = 'update';
-    const SCENARIO_COPY = 'copy';
+    public $opening_date_from = null;
+    public $opening_date_to = null;
+    public $withdrawal_value = null;
+    public $adding_value = null;
 
     public static $_PHP_FM_SHORTDATE = 'Y-m-d';
     public static $_ARR_SAVING_ACOUNT = null;
@@ -43,17 +44,17 @@ class FinTimeDepositTran extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['saving_account', 'current_assets'], 'required'],
             [['saving_account', 'current_assets', 'interest_add', 'entry_value', 'add_flag'], 'integer'],
             [['interest_unit', 'interest_rate'], 'number'],
-            [['opening_date', 'closing_date', 'create_date', 'update_date'], 'safe'],
+            [['opening_date', 'opening_date_from', 'opening_date_to', 'closing_date', 'create_date', 'update_date'], 'safe'],
             [['delete_flag'], 'string', 'max' => 1],
-            [['opening_date', 'closing_date', 'interest_rate', 'interest_add', 'entry_value'], 'required', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_COPY]],
-            [['interest_add', 'entry_value'], 'integer', 'min' => 0, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_COPY]],
-            [['interest_rate'], 'number', 'min' => 0, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_COPY]],
-            [['saving_account'], 'unique', 'targetAttribute' => ['saving_account', 'opening_date'], 'message' => Yii::t('yii', '{attribute} "{{value}}" has already been taken.'), 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_COPY]],
-            [['opening_date'], 'unique', 'targetAttribute' => ['saving_account', 'opening_date'], 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_COPY]],
-            [['opening_date', 'closing_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE, self::SCENARIO_COPY]],
+            [['opening_date', 'closing_date', 'interest_rate', 'interest_add', 'entry_value', 'saving_account', 'current_assets'], 'required', 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE, MasterValueUtils::SCENARIO_COPY]],
+            [['interest_add', 'entry_value'], 'integer', 'min' => 0, 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE, MasterValueUtils::SCENARIO_COPY]],
+            [['interest_rate'], 'number', 'min' => 0, 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE, MasterValueUtils::SCENARIO_COPY]],
+            [['saving_account'], 'unique', 'targetAttribute' => ['saving_account', 'opening_date'], 'message' => Yii::t('yii', '{attribute} "{{value}}" has already been taken.'), 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE, MasterValueUtils::SCENARIO_COPY]],
+            [['opening_date'], 'unique', 'targetAttribute' => ['saving_account', 'opening_date'], 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE, MasterValueUtils::SCENARIO_COPY]],
+            [['opening_date', 'closing_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE, MasterValueUtils::SCENARIO_COPY]],
+            [['opening_date_from', 'opening_date_to'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_LIST]],
         ];
     }
 
@@ -71,6 +72,8 @@ class FinTimeDepositTran extends \yii\db\ActiveRecord {
             'entry_value' => Yii::t('fin.models', 'Principal Amount'),
             'add_flag' => Yii::t('fin.models', 'Amount Type'),
             'opening_date' => Yii::t('fin.models', 'Opening Date'),
+            'opening_date_from' => Yii::t('fin.models', 'Opening Date From'),
+            'opening_date_to' => Yii::t('fin.models', 'Opening Date To'),
             'closing_date' => Yii::t('fin.models', 'Closing Date'),
             'create_date' => Yii::t('fin.models', 'Create Date'),
             'update_date' => Yii::t('fin.models', 'Update Date'),

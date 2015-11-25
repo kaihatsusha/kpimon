@@ -3,6 +3,7 @@ namespace app\modules\fin\controllers;
 
 use Yii;
 use yii\base\Exception;
+use yii\db\Query;
 use yii\helpers\Url;
 use app\components\DateTimeUtils;
 use app\components\MasterValueUtils;
@@ -28,34 +29,68 @@ class DepositController extends MobiledetectController {
     }
 	
 	public function actionIndex() {
-		$arrDeposits = [];
-		$sumDeposits = ['opening_balance'=>0, 'closing_interest_unit'=>0, 'closing_interest'=>0, 'closing_balance'=>0,
-			'now_interest_unit'=>0, 'now_interest'=>0, 'capital'=>0, 'result_interest'=>0];
-		$minClosingTimestamp = null;
-		
-		$arrFinAccount = FinAccount::find()->where(['delete_flag'=>0, 'account_type'=>MasterValueUtils::MV_FIN_ACCOUNT_TYPE_TIME_DEPOSIT])->orderBy('order_num')->all();
-		foreach ($arrFinAccount as $finAccount) {
-			$instance = $finAccount->instance();
-			$instance->initialize();
-			$arrDeposits[] = $instance;
-			// sum deposits
-			$sumDeposits['opening_balance'] += $instance->opening_balance;
-			$sumDeposits['closing_interest_unit'] += $instance->closing_interest_unit;
-			$sumDeposits['closing_interest'] += $instance->closing_interest;
-			$sumDeposits['closing_balance'] += $instance->closing_balance;
-			$sumDeposits['now_interest_unit'] += $instance->now_interest_unit;
-			$sumDeposits['now_interest'] += $instance->now_interest;
-			$sumDeposits['capital'] += $instance->capital;
-			$sumDeposits['result_interest'] += $instance->result_interest;
-			
-			// next closing
-			$timestamp = DateTimeUtils::getDateTimeFromDB($instance->closing_date)->getTimestamp();
-			if (is_null($minClosingTimestamp) || ($minClosingTimestamp > $timestamp)) {
-				$minClosingTimestamp = $timestamp;
-			}
+		$searchModel = new FinTimeDepositTran();
+		$phpFmShortDate = DateTimeUtils::getPhpDateFormat();
+		$arrTimedepositTrantype = MasterValueUtils::getArrData('fin_timedeposit_trantype');
+		$arrSavingAccount = ModelUtils::getArrData(FinAccount::find()->select(['account_id', 'account_name'])
+			->where(['delete_flag'=>0, 'account_type'=>4])
+			->orderBy('account_type, order_num'), 'account_id', 'account_name');
+		$arrCurrentAssets = ModelUtils::getArrData(FinAccount::find()->select(['account_id', 'account_name'])
+			->where(['delete_flag'=>0, 'account_type'=>[1,2]])
+			->orderBy('account_type, order_num'), 'account_id', 'account_name');
+
+		// submit data
+		$postData = Yii::$app->request->post();
+
+		// populate model attributes with user inputs
+		$searchModel->load($postData);
+
+		// init value
+		if (Yii::$app->request->getIsGet()) {
+			$today = new \DateTime();
+			$searchModel->opening_date_to = $today->format($phpFmShortDate);
+			$lastMonth = DateTimeUtils::getNow(DateTimeUtils::FM_DEV_YM . '01', DateTimeUtils::FM_DEV_DATE);
+			DateTimeUtils::subDateTime($lastMonth, 'P3M', null, false);
+			$searchModel->opening_date_from = $lastMonth->format($phpFmShortDate);
 		}
-		
-		return $this->render('index', ['arrDeposits'=>$arrDeposits, 'sumDeposits'=>$sumDeposits, 'minClosingTimestamp'=>$minClosingTimestamp]);
+		FinTimeDepositTran::$_PHP_FM_SHORTDATE = $phpFmShortDate;
+		$searchModel->scenario = MasterValueUtils::SCENARIO_LIST;
+
+		// sum Interest & Principal Amount (Adding funds OR Partial withdrawal)
+		$sumTimeDepositValue = false;
+		// query for dataprovider
+		$dataQuery = null;
+		if ($searchModel->validate()) {
+			$dataQuery = FinTimeDepositTran::find()->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+			$sumTimeDepositQuery = (new Query())->select(['SUM(interest_add) AS interest_add, SUM(IF(add_flag = 1, entry_value, 0)) AS adding_value, SUM(IF(add_flag = 2, entry_value, 0)) AS withdrawal_value']);
+			$sumTimeDepositQuery->from('fin_time_deposit_tran')->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+			if (!empty($searchModel->opening_date_from)) {
+				$dataQuery->andWhere(['>=', 'opening_date', $searchModel->opening_date_from]);
+				$sumTimeDepositQuery->andWhere(['>=', 'opening_date', $searchModel->opening_date_from]);
+			}
+			if (!empty($searchModel->opening_date_to)) {
+				$dataQuery->andWhere(['<=', 'opening_date', $searchModel->opening_date_to]);
+				$sumTimeDepositQuery->andWhere(['<=', 'opening_date', $searchModel->opening_date_to]);
+			}
+			if ($searchModel->saving_account > 0) {
+				$dataQuery->andWhere(['=', 'saving_account', $searchModel->saving_account]);
+				$sumTimeDepositQuery->andWhere(['=', 'saving_account', $searchModel->saving_account]);
+			}
+			if ($searchModel->current_assets > 0) {
+				$dataQuery->andWhere(['=', 'current_assets', $searchModel->current_assets]);
+				$sumTimeDepositQuery->andWhere(['=', 'current_assets', $searchModel->current_assets]);
+			}
+			$dataQuery->orderBy('opening_date DESC, create_date DESC');
+			$sumTimeDepositValue = $sumTimeDepositQuery->createCommand()->queryOne();
+		} else {
+			$dataQuery = FinTimeDepositTran::find()->where(['transactions_id'=>-1]);
+		}
+
+		// render GUI
+		$renderData = ['searchModel'=>$searchModel, 'dataQuery'=>$dataQuery, 'phpFmShortDate'=>$phpFmShortDate, 'sumTimeDepositValue'=>$sumTimeDepositValue,
+			'arrCurrentAssets'=>$arrCurrentAssets, 'arrSavingAccount'=>$arrSavingAccount, 'arrTimedepositTrantype'=>$arrTimedepositTrantype];
+
+		return $this->render('index', $renderData);
 	}
 
 	public function actionView($id) {
@@ -83,7 +118,7 @@ class DepositController extends MobiledetectController {
 		// init value
 		FinTimeDepositTran::$_PHP_FM_SHORTDATE = $phpFmShortDate;
 		FinTimeDepositTran::$_ARR_SAVING_ACOUNT = $arrSavingAccount;
-		$model->scenario = FinTimeDepositTran::SCENARIO_CREATE;
+		$model->scenario = MasterValueUtils::SCENARIO_CREATE;
 		if (empty($model->opening_date)) {
 			$today = new \DateTime();
 			$model->opening_date = $today->format($phpFmShortDate);
@@ -219,10 +254,86 @@ class DepositController extends MobiledetectController {
 
 	public function actionUpdate($id) {
 		$this->objectId = $id;
+		$model = FinTimeDepositTran::findOne(['transactions_id'=>$id, 'delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+
+		$renderView = 'update';
+		if (is_null($model)) {
+			$model = false;
+			$renderData = ['model'=>$model];
+			Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, Yii::t('common', 'The requested {record} does not exist.', ['record'=>Yii::t('fin.models', 'Fixed Deposit')]));
+		} else {
+			$renderData = ['model'=>$model];
+		}
+
+		// render GUI
+		return $this->render($renderView, $renderData);
 	}
 
 	public function actionCopy($id) {
 		$this->objectId = $id;
+		$model = FinTimeDepositTran::findOne(['transactions_id'=>$id, 'delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+
+		$renderView = 'copy';
+		if (is_null($model)) {
+			$model = false;
+			$renderData = ['model'=>$model];
+			Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, Yii::t('common', 'The requested {record} does not exist.', ['record'=>Yii::t('fin.models', 'Fixed Deposit')]));
+		} else {
+			// master value
+			$phpFmShortDate = DateTimeUtils::getPhpDateFormat();
+			$arrTimedepositTrantype = MasterValueUtils::getArrData('fin_timedeposit_trantype');
+			$arrSavingAccount = ModelUtils::getArrData(FinAccount::find()->select(['account_id', 'account_name'])
+				->where(['delete_flag'=>0, 'account_type'=>4])
+				->orderBy('account_type, order_num'), 'account_id', 'account_name');
+			$arrCurrentAssets = ModelUtils::getArrData(FinAccount::find()->select(['account_id', 'account_name'])
+				->where(['delete_flag'=>0, 'account_type'=>[1,2]])
+				->orderBy('account_type, order_num'), 'account_id', 'account_name');
+
+			// submit data
+			$postData = Yii::$app->request->post();
+			$submitMode = isset($postData[MasterValueUtils::SM_MODE_NAME]) ? $postData[MasterValueUtils::SM_MODE_NAME] : false;
+
+			// populate model attributes with user inputs
+			$model->load($postData);
+			// reset value
+			/*if (is_null($model->arr_entry_log)) {
+				$model->arr_entry_log = StringUtils::unserializeArr($model->description);
+			}*/
+			// init value
+			FinTimeDepositTran::$_PHP_FM_SHORTDATE = $phpFmShortDate;
+			$model->scenario = MasterValueUtils::SCENARIO_COPY;
+			$renderData = ['model'=>$model, 'phpFmShortDate'=>$phpFmShortDate, 'arrTimedepositTrantype'=>$arrTimedepositTrantype, 'arrSavingAccount'=>$arrSavingAccount, 'arrCurrentAssets'=>$arrCurrentAssets];
+			switch ($submitMode) {
+				case MasterValueUtils::SM_MODE_INPUT:
+					$isValid = $model->validate();
+					if ($isValid) {
+						$renderView = 'confirm';
+						$renderData['formMode'] = [MasterValueUtils::PG_MODE_NAME=>MasterValueUtils::PG_MODE_COPY];
+					}
+					break;
+				case MasterValueUtils::SM_MODE_CONFIRM:
+					/*$isValid = $model->validate();
+					if ($isValid) {
+						$result = $this->copyPayment($model);
+						if ($result === true) {
+							Yii::$app->session->setFlash(MasterValueUtils::FLASH_SUCCESS, Yii::t('common', '{record} has been saved successfully.', ['record'=>Yii::t('fin.models', 'Payment')]));
+							return Yii::$app->getResponse()->redirect(Url::to(['index']));
+						} else {
+							Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, $result);
+							$renderView = 'confirm';
+							$renderData['formMode'] = [MasterValueUtils::PG_MODE_NAME=>MasterValueUtils::PG_MODE_COPY];
+						}
+					}*/
+					break;
+				case MasterValueUtils::SM_MODE_BACK:
+					break;
+				default:
+					break;
+			}
+		}
+
+		// render GUI
+		return $this->render($renderView, $renderData);
 	}
 }
 ?>

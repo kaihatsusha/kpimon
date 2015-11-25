@@ -49,10 +49,9 @@ class PaymentController extends MobiledetectController {
 			$lastMonth = DateTimeUtils::getNow(DateTimeUtils::FM_DEV_YM . '01', DateTimeUtils::FM_DEV_DATE);
 			DateTimeUtils::subDateTime($lastMonth, 'P1M', null, false);
 			$searchModel->entry_date_from = $lastMonth->format($phpFmShortDate);
-			$searchModel->entry_date_to = DateTimeUtils::formatNow($phpFmShortDate);
 		}
 		FinAccountEntry::$_PHP_FM_SHORTDATE = $phpFmShortDate;
-		$searchModel->scenario = FinAccountEntry::SCENARIO_LIST;
+		$searchModel->scenario = MasterValueUtils::SCENARIO_LIST;
 		
 		// sum Debit Amount & Credit Amount
 		$sumEntryValue = false;
@@ -63,13 +62,18 @@ class PaymentController extends MobiledetectController {
 			$t2leftJoin .= ' (';
 			$t2leftJoin .= ' t1.entry_date = t2.opening_date AND t2.delete_flag = :deleteFlagFalse';
 			$t2leftJoin .= '   AND (';
-			$t2leftJoin .= '     (t2.add_flag = :trantypeAdding AND t1.account_source = t2.current_assets AND t1.account_target = t2.saving_account)';
+			$t2leftJoin .= '     (t1.entry_status = :entryTypeDeposit AND t2.add_flag = :trantypeAdding AND t1.account_source = t2.current_assets AND t1.account_target = t2.saving_account)';
 			$t2leftJoin .= '     OR';
-			$t2leftJoin .= '     (t2.add_flag = :trantypeWithdrawal AND t1.account_source = t2.saving_account AND t1.account_target = t2.current_assets)';
+			$t2leftJoin .= '     (t1.entry_status = :entryTypeDeposit AND t2.add_flag = :trantypeWithdrawal AND t1.account_source = t2.saving_account AND t1.account_target = t2.current_assets)';
+			$t2leftJoin .= '     OR';
+			$t2leftJoin .= '     (t1.entry_status = :entryTypeInterestDeposit AND t1.account_source = :accountNoneId AND t1.account_target = t2.saving_account)';
 			$t2leftJoin .= '   )';
 			$t2leftJoin .= ' )';
-			$dataQuery = FinAccountEntry::find()->select('t1.*, t2.*')->from('fin_account_entry t1')
+			$dataQuery = FinAccountEntry::find()->select('t1.*, t2.transactions_id AS time_deposit_tran_id')->from('fin_account_entry t1')
 				->leftJoin('fin_time_deposit_tran t2', $t2leftJoin, [
+					'entryTypeDeposit' => MasterValueUtils::MV_FIN_ENTRY_TYPE_DEPOSIT,
+					'entryTypeInterestDeposit' => MasterValueUtils::MV_FIN_ENTRY_TYPE_INTEREST_DEPOSIT,
+					'accountNoneId' => MasterValueUtils::MV_FIN_ACCOUNT_NONE,
 					'deleteFlagFalse' => MasterValueUtils::MV_FIN_FLG_DELETE_FALSE,
 					'trantypeAdding' => MasterValueUtils::MV_FIN_TIMEDP_TRANTYPE_ADDING,
 					'trantypeWithdrawal' => MasterValueUtils::MV_FIN_TIMEDP_TRANTYPE_WITHDRAWAL,
@@ -97,7 +101,7 @@ class PaymentController extends MobiledetectController {
 		} else {
 			$dataQuery = FinAccountEntry::find()->where(['entry_id'=>-1]);
 		}
-		echo $dataQuery->createCommand()->getRawSql();die();
+		
 		// render GUI
 		$renderData = ['searchModel'=>$searchModel, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount, 'dataQuery'=>$dataQuery, 'sumEntryValue'=>$sumEntryValue, 'arrEntryLog'=>$arrEntryLog];
 		
@@ -147,7 +151,7 @@ class PaymentController extends MobiledetectController {
 		
 		// init value
 		FinAccountEntry::$_PHP_FM_SHORTDATE = $phpFmShortDate;
-		$model->scenario = FinAccountEntry::SCENARIO_CREATE;
+		$model->scenario = MasterValueUtils::SCENARIO_CREATE;
 		if (empty($model->entry_date)) {
 			$model->entry_date = DateTimeUtils::formatNow($phpFmShortDate);
 		}
@@ -270,7 +274,7 @@ class PaymentController extends MobiledetectController {
 
 			// init value
 			FinAccountEntry::$_PHP_FM_SHORTDATE = $phpFmShortDate;
-			$model->scenario = FinAccountEntry::SCENARIO_UPDATE;
+			$model->scenario = MasterValueUtils::SCENARIO_UPDATE;
 			$renderData = ['model'=>$model, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount, 'arrEntryLog'=>$arrEntryLog];
 			switch ($submitMode) {
 				case MasterValueUtils::SM_MODE_INPUT:
@@ -418,7 +422,7 @@ class PaymentController extends MobiledetectController {
 			
 			// init value
 			FinAccountEntry::$_PHP_FM_SHORTDATE = $phpFmShortDate;
-			$model->scenario = FinAccountEntry::SCENARIO_COPY;
+			$model->scenario = MasterValueUtils::SCENARIO_COPY;
 			$renderData = ['model'=>$model, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount, 'arrEntryLog'=>$arrEntryLog];
 			switch ($submitMode) {
 				case MasterValueUtils::SM_MODE_INPUT:

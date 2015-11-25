@@ -14,6 +14,10 @@
 	
 	$this->title = Yii::t('fin.payment', 'Payments List');
 	$phpFmShortDateGui = 'php:' . $phpFmShortDate;
+
+	$htmlFooterDebit = '<span class="text-danger">' . NumberUtils::format($sumEntryValue['entry_source']) . '</span>';
+	$htmlFooterCredit = '<span class="text-info">' . NumberUtils::format($sumEntryValue['entry_target']) . '</span>';
+	$htmlFooterCreditBalance = '<span class="text-success">' . NumberUtils::format($sumEntryValue['entry_target'] - $sumEntryValue['entry_source']) . '</span>';
 ?>
 
 <div class="row"><div class="col-md-12"><div class="box">
@@ -50,7 +54,7 @@
 			'footerRowOptions'=>['class'=>'warning', 'style'=>'font-weight:bold'],
 			'dataProvider'=>new ActiveDataProvider([
 				'query'=>$dataQuery,
-				'pagination'=>['pagesize'=>10]
+				'pagination'=>['pagesize'=>20]
 			]),
 			'columns'=>[
 				[
@@ -90,7 +94,7 @@
 					'value'=>function($model) use ($phpFmShortDate) {
 						return DateTimeUtils::htmlDateFormatFromDB($model->entry_date, DateTimeUtils::FM_VIEW_DATE, true);
 					},
-					'footer'=>NumberUtils::format($sumEntryValue['entry_target'] - $sumEntryValue['entry_source'])
+					'footer'=>$htmlFooterCreditBalance
 				],
 				[
 					'label'=>Yii::t('fin.grid', 'Debit Account'),
@@ -102,7 +106,7 @@
 					'value'=>function($model) use ($arrFinAccount) {
 						return isset($arrFinAccount[$model->account_source]) ? $arrFinAccount[$model->account_source] : '';
 					},
-					'footer'=>NumberUtils::format($sumEntryValue['entry_source'])
+					'footer'=>$htmlFooterDebit
 				],
 				[
 					'class'=>DataColumn::className(),
@@ -127,7 +131,7 @@
 					'value'=>function($model) use ($arrFinAccount) {
 						return isset($arrFinAccount[$model->account_target]) ? $arrFinAccount[$model->account_target] : '';
 					},
-					'footer'=>NumberUtils::format($sumEntryValue['entry_target'])
+					'footer'=>$htmlFooterCredit
 				],
 				[
 					'class'=>DataColumn::className(),
@@ -170,15 +174,33 @@
 						$lblCopy = Yii::t('button', 'Copy');
 						$urlEdit = false;
 						$arrBtns = [];
-						if ($model->entry_status == MasterValueUtils::MV_FIN_ENTRY_TYPE_SIMPLE) {
-							$urlEdit = BaseUrl::toRoute(['payment/update', 'id'=>$model->entry_id]);
-							$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlEdit, $lblEdit]);
-							
-							$urlView = BaseUrl::toRoute(['payment/view', 'id'=>$model->entry_id]);
-							$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlView, $lblView]);
-							
-							$urlCopy = BaseUrl::toRoute(['payment/copy', 'id'=>$model->entry_id]);
-							$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlCopy, $lblCopy]);
+
+						$entryId = $model->entry_id;
+						$timeDepositTranId = $model->time_deposit_tran_id;
+						switch ($model->entry_status) {
+							case MasterValueUtils::MV_FIN_ENTRY_TYPE_SIMPLE:
+								$urlEdit = BaseUrl::toRoute(['payment/update', 'id'=>$entryId]);
+								$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlEdit, $lblEdit]);
+
+								$urlView = BaseUrl::toRoute(['payment/view', 'id'=>$entryId]);
+								$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlView, $lblView]);
+
+								$urlCopy = BaseUrl::toRoute(['payment/copy', 'id'=>$entryId]);
+								$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlCopy, $lblCopy]);
+								break;
+							case MasterValueUtils::MV_FIN_ENTRY_TYPE_DEPOSIT:
+							case MasterValueUtils::MV_FIN_ENTRY_TYPE_INTEREST_DEPOSIT:
+								$urlEdit = BaseUrl::toRoute(['deposit/update', 'id'=>$timeDepositTranId]);
+								$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlEdit, $lblEdit]);
+
+								$urlView = BaseUrl::toRoute(['deposit/view', 'id'=>$timeDepositTranId]);
+								$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlView, $lblView]);
+
+								$urlCopy = BaseUrl::toRoute(['deposit/copy', 'id'=>$timeDepositTranId]);
+								$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlCopy, $lblCopy]);
+								break;
+							default;
+								break;
 						}
 						
 						$html = '<div class="btn-group">';
