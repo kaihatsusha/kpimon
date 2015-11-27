@@ -1,8 +1,8 @@
 <?php
-    //use yii\bootstrap\ActiveForm;
-    //use yii\helpers\Html;
-    //use yii\jui\DatePicker;
-    //use app\components\MasterValueUtils;
+    use yii\bootstrap\ActiveForm;
+    use yii\helpers\Html;
+    use yii\jui\DatePicker;
+    use app\components\MasterValueUtils;
 
     $this->title = Yii::t('fin.deposit', 'Copy Fixed Deposit');
 ?>

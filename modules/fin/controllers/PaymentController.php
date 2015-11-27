@@ -111,23 +111,25 @@ class PaymentController extends MobiledetectController {
 	public function actionView($id) {
 		$this->objectId = $id;
 		$model = FinAccountEntry::findOne(['entry_id'=>$id, 'delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
-		$phpFmShortDate = null;
-		$arrFinAccount = null;
 		
 		$renderView = 'view';
 		if (is_null($model)) {
 			$model = false;
+			$renderData = ['model'=>$model];
 			Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, Yii::t('common', 'The requested {record} does not exist.', ['record'=>Yii::t('fin.models', 'Payment')]));
 		} else {
+			// master value
 			$phpFmShortDate = DateTimeUtils::getPhpDateFormat();
 			$arrEntryLog = MasterValueUtils::getArrData('fin_entry_log');
 			$arrEntryLogVal = StringUtils::unserializeArr($model->description);
 			$model->description = StringUtils::showArrValueAsString($arrEntryLogVal, $arrEntryLog);
 			$arrFinAccount = ModelUtils::getArrData(FinAccount::find()->select(['account_id', 'account_name']), 'account_id', 'account_name');
+
+			// data for rendering
+			$renderData = ['model'=>$model, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount];
 		}
 		
 		// render GUI
-		$renderData = ['model'=>$model, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount];
 		return $this->render($renderView, $renderData);
 	}
 	

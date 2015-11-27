@@ -150,21 +150,31 @@ class DateTimeUtils {
 	 * get datetime from database
 	 * @param string $datetime: value from database (EX: Y-m-d H:i:s)
 	 * @param string $format: new format
-	 * @return mixed string OR DateTime
+	 * @return string datetime with new format
 	 */
 	public static function formatDateTimeFromDB($datetime, $format) {
-		$dt = \DateTime::createFromFormat(self::FM_DB_DATETIME, $datetime);
+		$dt = self::getDateTimeFromDB($datetime);
 		return $dt->format($format);
+	}
+
+	/**
+	 * convert datetime (DB-string) to DateTime
+	 * @param String $datetime
+	 * @return DateTime
+	 */
+	public static function getDateFromDB($datetime) {
+		$dt = \DateTime::createFromFormat(self::FM_DB_DATE, $datetime);
+		return $dt;
 	}
 	
 	/**
 	 * get datetime from database
 	 * @param string $datetime: value from database (EX: Y-m-d)
 	 * @param string $format: new format
-	 * @return mixed string OR DateTime
+	 * @return string datetime with new format
 	 */
 	public static function formatDateFromDB($datetime, $format) {
-		$dt = \DateTime::createFromFormat(self::FM_DB_DATE, $datetime);
+		$dt = self::getDateFromDB($datetime);
 		return $dt->format($format);
 	}
 	
@@ -174,7 +184,7 @@ class DateTimeUtils {
 	 * @param String $outformat
 	 * @return DateTime
 	 */
-	public static function getNow($informat, $outformat) {
+	public static function getNow($informat = null, $outformat = null) {
 		$dt = new \DateTime();
 		if (is_null($informat) || is_null($outformat)) {
 			return $dt;

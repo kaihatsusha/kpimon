@@ -12,6 +12,10 @@
     } elseif ($formModeValue === MasterValueUtils::PG_MODE_COPY) {
         $this->title = Yii::t('fin.deposit', 'Copy Fixed Deposit');
     }
+
+    $openingDate = DateTimeUtils::getDateFromDB($model->opening_date);
+    $closingDate = DateTimeUtils::getDateFromDB($model->closing_date);
+    $dateDiff = $closingDate->diff($openingDate);
 ?>
 
 <div class="box box-default">
@@ -29,11 +33,15 @@
                 </tr>
                 <tr>
                     <th class="warning"><?= $model->getAttributeLabel('opening_date'); ?></th>
-                    <td class="info"><?= DateTimeUtils::htmlDateFormatFromDB($model->opening_date, $phpFmShortDate, true); ?></td>
+                    <td class="info"><?= DateTimeUtils::htmlDateFormatFromDB($model->opening_date, DateTimeUtils::FM_VIEW_DATE_WD, true); ?></td>
                 </tr>
                 <tr>
                     <th class="warning"><?= $model->getAttributeLabel('closing_date'); ?></th>
-                    <td class="info"><?= DateTimeUtils::htmlDateFormatFromDB($model->closing_date, $phpFmShortDate, true); ?></td>
+                    <td class="info"><?= DateTimeUtils::htmlDateFormatFromDB($model->closing_date, DateTimeUtils::FM_VIEW_DATE_WD, true); ?></td>
+                </tr>
+                <tr>
+                    <th class="warning"><?= $model->getAttributeLabel('interest_days'); ?></th>
+                    <td class="info"><?= $dateDiff->days; ?></td>
                 </tr>
                 <tr>
                     <th class="warning"><?= $model->getAttributeLabel('interest_add'); ?></th>

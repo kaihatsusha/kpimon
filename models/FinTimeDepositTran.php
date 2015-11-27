@@ -28,6 +28,7 @@ class FinTimeDepositTran extends \yii\db\ActiveRecord {
     public $opening_date_to = null;
     public $withdrawal_value = null;
     public $adding_value = null;
+    public $BACK_UP = null;
 
     public static $_PHP_FM_SHORTDATE = 'Y-m-d';
     public static $_ARR_SAVING_ACOUNT = null;
@@ -78,6 +79,7 @@ class FinTimeDepositTran extends \yii\db\ActiveRecord {
             'create_date' => Yii::t('fin.models', 'Create Date'),
             'update_date' => Yii::t('fin.models', 'Update Date'),
             'delete_flag' => Yii::t('fin.models', 'Delete Flag'),
+            'interest_days' => Yii::t('fin.models', 'Interest Days'),
         ];
     }
 
@@ -128,5 +130,18 @@ class FinTimeDepositTran extends \yii\db\ActiveRecord {
                 $this->addError('saving_account', $newError);
             }
         }
+    }
+
+    public function backup() {
+        $this->BACK_UP = [];
+        $this->BACK_UP['saving_account'] = $this->saving_account;
+        $this->BACK_UP['current_assets'] = $this->current_assets;
+        $this->BACK_UP['interest_unit'] = $this->interest_unit;
+        $this->BACK_UP['interest_rate'] = $this->interest_rate;
+        $this->BACK_UP['interest_add'] = $this->interest_add;
+        $this->BACK_UP['entry_value'] = $this->entry_value;
+        $this->BACK_UP['add_flag'] = $this->add_flag;
+        $this->BACK_UP['opening_date'] = $this->opening_date;
+        $this->BACK_UP['closing_date'] = $this->closing_date;
     }
 }

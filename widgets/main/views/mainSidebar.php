@@ -26,12 +26,12 @@
 			[
 				'label'=>Yii::t('common', 'Home'),
 				'url'=>['/site/index'],
-				'icon'=>'<i class="fa fa-bar-chart-o"></i>'
+				'icon'=>'<i class="fa fa-home"></i>'
 			],
 			[
 				'label'=>Yii::t('fin.menuLeft', 'Account'),
 				'url'=>['/fin/account/index'],
-				'icon'=>'<i class="fa fa-files-o"></i>',
+				'icon'=>'<i class="fa fa-money"></i>',
 			],
 			[
 				'label'=>Yii::t('fin.menuLeft', 'Payment'),
@@ -101,6 +101,29 @@
 						'label'=>Yii::t('fin.menuLeft', 'Copy'),
 						'url'=>['/fin/deposit/copy'],
 						'requireId'=>true,
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					]
+				]
+			],
+			[
+				'label'=>Yii::t('fin.menuLeft', 'Report'),
+				'url'=>['#'],
+				'icon'=>'<i class="fa fa-bar-chart-o"></i>',
+				'right-icon'=>'<i class="fa fa-angle-left pull-right"></i>',
+				'items'=>[
+					[
+						'label'=>Yii::t('fin.menuLeft', 'Payment'),
+						'url'=>['/fin/report/Payment'],
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('fin.menuLeft', 'Deposit'),
+						'url'=>['/fin/report/deposit'],
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('fin.menuLeft', 'Assets'),
+						'url'=>['/fin/report/Assets'],
 						'icon'=>'<i class="fa fa-circle-o"></i>'
 					]
 				]
