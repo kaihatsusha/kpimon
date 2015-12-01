@@ -15,6 +15,12 @@ class DateTimeUtils {
 	const FM_DEV_TIME = 'His';
 	const FM_VIEW_DATE = 'Y-m-d';
 	const FM_VIEW_DATE_WD = 'Y-m-d (D)';
+
+	const FM_KEY_SHORT = 'short';
+	const FM_KEY_FMONTH = 'fmonth';
+	const FM_KEY_PHP = 'php';
+	const FM_KEY_JUI = 'jui';
+	const FM_KEY_WEEKDAY = 'weekday';
 	
 	const FN_KEY_GETDATE_YEAR = 'year';					// A full numeric representation of a year, 4 digits (Examples: 1999 or 2003)
 	const FN_KEY_GETDATE_MONTH_INT = 'mon';				// Numeric representation of a month (1 through 12)
@@ -38,7 +44,8 @@ class DateTimeUtils {
 		if (is_null(self::$DATE_FORMAT)) {
 			self::$DATE_FORMAT = [
 				'en'=>[
-					'short'=>['php'=>'m{0}d{0}Y','jui'=>'MM{0}dd{0}yyyy','pattern'=>'/^\d{2}{0}\d{2}{0}\d{4}$/'], // 09/03/2014 (Sep 3rd 2014)
+					'short'=>['php'=>'d{0}m{0}Y','jui'=>'dd{0}mm{0}yyyy','pattern'=>'/^\d{2}{0}\d{2}{0}\d{4}$/'], // 09/03/2014 (Sep 3rd 2014)
+					'fmonth'=>['php'=>'m{0}Y','jui'=>'mm{0}yyyy','pattern'=>'/^\d{2}{0}\d{4}$/'], // 03/2014
 					'weekday'=>[
 						['text-color'=>'text-red'],
 						['text-color'=>''],
@@ -50,7 +57,8 @@ class DateTimeUtils {
 					] // 0 (for Sunday) through 6 (for Saturday)
 				],
 				'ja'=>[
-					'short'=>['php'=>'Y{0}m{0}d','jui'=>'yyyy{0}MM{0}dd','pattern'=>'/^\d{4}{0}\d{2}{0}\d{2}$/'], // 2014/09/03 (Sep 3rd 2014)
+					'short'=>['php'=>'Y{0}m{0}d','jui'=>'yyyy{0}mm{0}dd','pattern'=>'/^\d{4}{0}\d{2}{0}\d{2}$/'], // 2014/09/03 (Sep 3rd 2014)
+					'fmonth'=>['php'=>'Y{0}m','jui'=>'yyyy{0}mm','pattern'=>'/^\d{4}{0}\d{2}$/'], // 2014/09
 					'weekday'=>[
 						['text-color'=>'text-red'],
 						['text-color'=>''],
@@ -62,7 +70,8 @@ class DateTimeUtils {
 					] // 0 (for Sunday) through 6 (for Saturday)
 				],
 				'vi'=>[
-					'short'=>['php'=>'d{0}m{0}Y','jui'=>'dd{0}MM{0}yyyy','pattern'=>'/^\d{2}{0}\d{2}{0}\d{4}$/'], // 03/09/2014 (Sep 3rd 2014)
+					'short'=>['php'=>'d{0}m{0}Y','jui'=>'dd{0}mm{0}yyyy','pattern'=>'/^\d{2}{0}\d{2}{0}\d{4}$/'], // 09/03/2014 (Sep 3rd 2014)
+					'fmonth'=>['php'=>'m{0}Y','jui'=>'mm{0}yyyy','pattern'=>'/^\d{2}{0}\d{4}$/'], // 03/2014
 					'weekday'=>[
 						['text-color'=>'text-red'],
 						['text-color'=>''],

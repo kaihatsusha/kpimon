@@ -9,6 +9,7 @@ class MasterValueUtils {
 	const SM_MODE_INPUT = 1;
 	const SM_MODE_CONFIRM = 2;
 	const SM_MODE_BACK = 3;
+	const SM_MODE_LIST = 4;
 	
 	const PG_MODE_NAME = 'pagemode';
 	const PG_MODE_CREATE = 1;

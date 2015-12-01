@@ -113,7 +113,7 @@
 				'items'=>[
 					[
 						'label'=>Yii::t('fin.menuLeft', 'Payment'),
-						'url'=>['/fin/report/Payment'],
+						'url'=>['/fin/report/payment'],
 						'icon'=>'<i class="fa fa-circle-o"></i>'
 					],
 					[
@@ -123,7 +123,7 @@
 					],
 					[
 						'label'=>Yii::t('fin.menuLeft', 'Assets'),
-						'url'=>['/fin/report/Assets'],
+						'url'=>['/fin/report/assets'],
 						'icon'=>'<i class="fa fa-circle-o"></i>'
 					]
 				]

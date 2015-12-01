@@ -7,8 +7,7 @@ class AdminLte extends AssetBundle
 {
     public $sourcePath = '@bower/admin-lte';
     public $js = [
-        'dist/js/app.js', 'plugins/sparkline/jquery.sparkline.min.js',
-		//E:\working\devsource\kpi_mon\vendor\bower\admin-lte\plugins\sparkline\jquery.sparkline.min.js
+        'dist/js/app.js',
     ];
     public $css = [
         'dist/css/AdminLTE.min.css',
