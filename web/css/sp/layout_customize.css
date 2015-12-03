@@ -57,3 +57,19 @@
 .content-wrapper-sp .widget-detail .widget-detail-title {
 	font-size: 18px; font-weight: 300; margin-bottom: 2px; margin-top: 2px;
 }
+/****************************************************************************************
+**** DEFINE NEW BOX STYLE
+****************************************************************************************/
+.box.box-maroon {
+	border-top-color: #d81b60;
+}
+
+.box.box-maroon > .box-header {
+	background: #d81b60 none repeat scroll 0 0;
+	color: #fff;
+}
+
+.box.box-maroon > .box-header a,
+.box.box-maroon > .box-header .btn {
+	color: #fff;
+}

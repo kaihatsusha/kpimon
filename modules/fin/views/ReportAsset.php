@@ -1,29 +1,41 @@
 <?php
+namespace app\modules\fin\views;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+use yii\web\AssetBundle;
 
-/**
- * Description of GaRealtimeAsset
- *
- * @author ThuongQBD
- */
-namespace app\widgets\gaRealTime;
+class ReportAsset extends AssetBundle {
+    public static $CONTEXT = null;
 
-class GaRealtimeAsset extends \yii\web\AssetBundle{
     public $basePath = '@webroot';
     public $baseUrl = '@web';
+
     public $css = [
-        'css/gawidgets.css',
     ];
+
     public $js = [
-        'js/GaRealtime.js',
-        'js/accounting.min.js',
+        'js/fin/report.js'
     ];
+
     public $depends = [
-        'app\assets\AppAsset',
+        'app\assets\AppAsset'
     ];
+
+    public function init() {
+        $moreJs = self::$CONTEXT['js'];
+        if (is_array($moreJs)) {
+            foreach ($moreJs as $more) {
+                $this->js[] = $more;
+            }
+        }
+
+        $moreDepends = self::$CONTEXT['depends'];
+        if (is_array($moreDepends)) {
+            foreach ($moreDepends as $more) {
+                $this->depends[] = $more;
+            }
+        }
+
+        self::$CONTEXT = null;
+        parent::init();
+    }
 }

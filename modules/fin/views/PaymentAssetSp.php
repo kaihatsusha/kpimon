@@ -1,7 +1,9 @@
 <?php
 namespace app\modules\fin\views;
 
-class PaymentAssetSp extends \yii\web\AssetBundle {
+use yii\web\AssetBundle;
+
+class PaymentAssetSp extends AssetBundle {
 	public $basePath = '@webroot';
 	public $baseUrl = '@web';
 	

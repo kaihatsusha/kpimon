@@ -1,19 +1,22 @@
 <?php
     use yii\bootstrap\ActiveForm;
     use yii\helpers\Html;
-    use app\components\DateTimeUtils;
     use app\components\MasterValueUtils;
     use app\components\NumberUtils;
-    use app\components\StringUtils;
+    use app\modules\fin\views\ReportAsset;
     use kartik\datetime\DateTimePicker;
 
-    $this->title = Yii::t('fin.report', 'Report Payments Monthly');
+    // css & js
+    ReportAsset::$CONTEXT = ['js'=>['js/fin/reportPayment.js'], 'depends'=>['app\assets\ChartJsAsset']];
+    ReportAsset::register($this);
+
+    $this->title = Yii::t('fin.report', 'Report Payments');
     $rowindex = 0;
 ?>
 
 <div class="row"><div class="col-md-12"><div class="box"><?php $form = ActiveForm::begin(['requiredCssClass' => 'form-group-required']); ?>
     <div class="box-header with-border">
-        <h3 class="box-title"><?= Yii::t('fin.report', 'Monthly'); ?></h3>
+        <h3 class="box-title"><?= Yii::t('fin.form', 'Monthly'); ?></h3>
         <div class="box-tools"><div style="width: 150px;" class="input-group input-group-sm">
             <?= DateTimePicker::widget(['model'=>$model, 'attribute'=>'fmonth', 'type'=>1, 'readonly'=>true,
                 'pluginOptions'=>['autoclose'=>true, 'format'=>$fmKeyJui, 'startView'=>3, 'minView'=>3],
@@ -40,6 +43,12 @@
             </div></div>
         </div>
         <?php if (!is_null($gridData)): ?>
+            <script type="text/javascript">
+                CHART_DATA = <?= $chartData; ?>;
+            </script>
+            <div class="row"><div class="chart">
+                <canvas id="paymentLineChart" style="height:500px"></canvas>
+            </div></div>
             <div class="row"><div id="w1"><div class="grid-view col-xs-12 table-responsive" id="w2"><table class="table table-bordered">
                 <thead><tr class="warning">
                     <th style="text-align: center"><?= Yii::t('fin.grid', 'Month'); ?></th>
@@ -85,12 +94,12 @@
                             $compareBalanceHtml = '';
                         } else {
                             $compareCreditConfig = ['template'=>'<i class="fa fa-fw {icon}"></i><span class="{color}">{number}</span>',
-                                'incColor'=>'text-blue', 'decColor'=>'text-red', 'incIcon'=>'fa-angle-double-up', 'decIcon'=>'fa-angle-double-down'];
+                                'incColor'=>'text-blue', 'decColor'=>'text-red', 'incIcon'=>'fa-thumbs-o-up', 'decIcon'=>'fa-thumbs-o-down'];
                             $compareCreditHtml = NumberUtils::getIncDecNumber($girdRow['compareCredit'], $compareCreditConfig);
                             $compareBalanceHtml = NumberUtils::getIncDecNumber($girdRow['compareBalance'], $compareCreditConfig);
 
                             $compareDebitConfig = ['template'=>'<i class="fa fa-fw {icon}"></i><span class="{color}">{number}</span>',
-                                'incColor'=>'text-red', 'decColor'=>'text-blue', 'incIcon'=>'fa-angle-double-up', 'decIcon'=>'fa-angle-double-down'];
+                                'incColor'=>'text-red', 'decColor'=>'text-blue', 'incIcon'=>'fa-thumbs-o-down', 'decIcon'=>'fa-thumbs-o-up'];
                             $compareDebitHtml = NumberUtils::getIncDecNumber($girdRow['compareDebit'], $compareDebitConfig);
                         }
                         $balanceHtml = NumberUtils::getIncDecNumber($girdRow['balance'], ['template'=>'<span class="{color}">{number}</span>', 'incColor'=>'text-blue', 'decColor'=>'text-red']);
