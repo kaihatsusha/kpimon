@@ -19,7 +19,7 @@
         <h3 class="box-title"><?= Yii::t('fin.form', 'Monthly'); ?></h3>
         <div class="box-tools"><div style="width: 150px;" class="input-group input-group-sm">
             <?= DateTimePicker::widget(['model'=>$model, 'attribute'=>'fmonth', 'type'=>1, 'readonly'=>true,
-                'pluginOptions'=>['autoclose'=>true, 'format'=>$fmKeyJui, 'startView'=>3, 'minView'=>3],
+                'pluginOptions'=>['autoclose'=>true, 'format'=>$fmKeyJui, 'startView'=>3, 'minView'=>3, 'startDate'=>$startDateJui],
                 'options'=>['class'=>'pull-right']]); ?>
             <div class="input-group-btn">
                 <button class='btn btn-default' type='submit' name='<?= MasterValueUtils::SM_MODE_NAME;?>' value='<?= MasterValueUtils::SM_MODE_INPUT;?>'><i class="fa fa-edit"></i></button>
