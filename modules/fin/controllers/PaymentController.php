@@ -43,8 +43,8 @@ class PaymentController extends MobiledetectController {
 		$searchModel->load($postData);
 		
 		// init value
+		$today = new \DateTime();
 		if (Yii::$app->request->getIsGet()) {
-			$today = new \DateTime();
 			$searchModel->entry_date_to = $today->format($phpFmShortDate);
 			$lastMonth = DateTimeUtils::getNow(DateTimeUtils::FM_DEV_YM . '01', DateTimeUtils::FM_DEV_DATE);
 			DateTimeUtils::subDateTime($lastMonth, 'P1M', null, false);
@@ -52,7 +52,18 @@ class PaymentController extends MobiledetectController {
 		}
 		FinAccountEntry::$_PHP_FM_SHORTDATE = $phpFmShortDate;
 		$searchModel->scenario = MasterValueUtils::SCENARIO_LIST;
-		
+
+		// sum current month
+		$beginMonth = DateTimeUtils::parse($today->format(DateTimeUtils::FM_DEV_YM) . '01', DateTimeUtils::FM_DEV_DATE);
+		$endMonth = DateTimeUtils::addDateTime($beginMonth, 'P1M');
+		DateTimeUtils::subDateTime($endMonth, 'P1D', null, false);
+		$sumCurrentMonthQuery = (new Query())->select(['SUM(IF(account_source > 0, entry_value, 0)) AS debit', 'SUM(IF(account_target > 0, entry_value, 0)) AS credit']);
+		$sumCurrentMonthQuery->from('fin_account_entry')->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+		$sumCurrentMonthQuery->andWhere(['OR', ['=', 'account_source', MasterValueUtils::MV_FIN_ACCOUNT_NONE], ['=', 'account_target', MasterValueUtils::MV_FIN_ACCOUNT_NONE]]);
+		$sumCurrentMonthQuery->andWhere(['>=', 'entry_date', $beginMonth->format(DateTimeUtils::FM_DB_DATE)]);
+		$sumCurrentMonthQuery->andWhere(['<=', 'entry_date', $endMonth->format(DateTimeUtils::FM_DB_DATE)]);
+		$sumCurrentMonthData = $sumCurrentMonthQuery->createCommand()->queryOne();
+
 		// sum Debit Amount & Credit Amount
 		$sumEntryValue = false;
 		// query for dataprovider
@@ -103,7 +114,8 @@ class PaymentController extends MobiledetectController {
 		}
 		
 		// render GUI
-		$renderData = ['searchModel'=>$searchModel, 'phpFmShortDate'=>$phpFmShortDate, 'arrFinAccount'=>$arrFinAccount, 'dataQuery'=>$dataQuery, 'sumEntryValue'=>$sumEntryValue, 'arrEntryLog'=>$arrEntryLog];
+		$renderData = ['searchModel'=>$searchModel, 'phpFmShortDate'=>$phpFmShortDate, 'arrEntryLog'=>$arrEntryLog,
+			'arrFinAccount'=>$arrFinAccount, 'dataQuery'=>$dataQuery, 'sumEntryValue'=>$sumEntryValue, 'sumCurrentMonthData'=>$sumCurrentMonthData];
 		
 		return $this->render('index', $renderData);
 	}

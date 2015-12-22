@@ -4,7 +4,6 @@ namespace app\modules\fin\controllers;
 use app\components\NumberUtils;
 use app\models\FinTotalAssetsMonth;
 use Yii;
-use yii\base\Exception;
 use yii\db\Query;
 use yii\helpers\Url;
 use app\components\DateTimeUtils;

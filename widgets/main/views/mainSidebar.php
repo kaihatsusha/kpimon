@@ -106,6 +106,42 @@
 				]
 			],
 			[
+				'label'=>Yii::t('fin.menuLeft', 'Interest Unit'),
+				'url'=>['#'],
+				'icon'=>'<i class="fa fa-rocket"></i>',
+				'right-icon'=>'<i class="fa fa-angle-left pull-right"></i>',
+				'items'=>[
+					[
+						'label'=>Yii::t('fin.menuLeft', 'List'),
+						'url'=>['/fin/interest/index'],
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('fin.menuLeft', 'Create'),
+						'url'=>['/fin/interest/create'],
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('fin.menuLeft', 'View'),
+						'url'=>['/fin/interest/view'],
+						'requireId'=>true,
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('fin.menuLeft', 'Edit'),
+						'url'=>['/fin/interest/update'],
+						'requireId'=>true,
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('fin.menuLeft', 'Copy'),
+						'url'=>['/fin/interest/copy'],
+						'requireId'=>true,
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					]
+				]
+			],
+			[
 				'label'=>Yii::t('fin.menuLeft', 'Report'),
 				'url'=>['#'],
 				'icon'=>'<i class="fa fa-bar-chart-o"></i>',

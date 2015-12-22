@@ -42,9 +42,15 @@
 				]); ?>
 				<?= $form->field($searchModel, 'account_target')->dropDownList($arrFinAccount, ['prompt'=>'']); ?>
 			</div>
-			<div class="col-md-12"><div class="form-group">
+			<div class="col-md-6"><div class="form-group">
 				<?= Html::submitButton(Yii::t('button', 'Search'), ['class'=>'btn btn-info', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_INPUT]); ?>
 			</div></div>
+			<div class="col-md-6"><table class="table table-bordered"><thead><tr>
+				<th class="warning" style="text-align: left; width: 120px"><?= Yii::t('fin.grid', 'This Month'); ?></th>
+				<th class="info" style="text-align: right;"><?= NumberUtils::format($sumCurrentMonthData['credit']); ?></th>
+				<th class="danger" style="text-align: right;"><?= NumberUtils::format($sumCurrentMonthData['debit']); ?></th>
+				<th class="success" style="text-align: right;"><?= NumberUtils::format($sumCurrentMonthData['credit'] - $sumCurrentMonthData['debit']); ?></th>
+			</tr></thead></table></div>
 		</div>
 		<div class="row"><?php Pjax::begin(); ?><?= GridView::widget([
 			'options'=>['class'=>'grid-view col-xs-12 table-responsive'],

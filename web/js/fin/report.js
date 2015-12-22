@@ -2,6 +2,7 @@ var finReport = (function () {
     // private propertise
     _paymentData = {};
     _depositData = {};
+    _interestUnitData = {};
 
     // private functions
     function drawLineChart(canvas, arrLabel, arrDataset) {
@@ -101,7 +102,52 @@ var finReport = (function () {
             }
         }
     }
+    function drawAreaChart(canvas, arrLabel, arrDataset) {
+        var chartOptions = {
+            scaleBeginAtZero: true,//Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+            scaleShowGridLines: true,//Boolean - Whether grid lines are shown across the chart
+            scaleGridLineColor: "rgba(0,0,0,.05)",//String - Colour of the grid lines
+            scaleGridLineWidth: 1,//Number - Width of the grid lines
+            scaleShowHorizontalLines: true,//Boolean - Whether to show horizontal lines (except X axis)
+            scaleShowVerticalLines: true,//Boolean - Whether to show vertical lines (except Y axis)
+            barShowStroke: true,//Boolean - If there is a stroke on each bar
+            barStrokeWidth: 2,//Number - Pixel width of the bar stroke
+            barValueSpacing: 5,//Number - Spacing between each of the X value sets
+            barDatasetSpacing: 1,//Number - Spacing between data sets within X values
+            legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",//String - A legend template
+            responsive: true,//Boolean - whether to make the chart responsive
+            maintainAspectRatio: true,
+            datasetFill: true,
+            tooltipTemplate: '<%= aliasValue %>',
+            multiTooltipTemplate : '<%= aliasValue %>'
+        };
 
+        var datasets = [];
+        for (var i = 0; i < arrDataset.length; i++) {
+            var dataset = arrDataset[i];
+            datasets.push({
+                label: dataset.label,
+                fillColor: dataset.fillColor,
+                strokeColor: dataset.strokeColor,
+                pointColor: dataset.pointColor,
+                pointStrokeColor: "#c1c7d1",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: dataset.data,
+            });
+        }
+
+        var chartCanvas = $(canvas).get(0).getContext('2d');
+        var chart = new Chart(chartCanvas).Line({labels: arrLabel, datasets: datasets}, chartOptions);
+        var outDatasets = chart.datasets;
+        for (var i = 0; i < outDatasets.length; i++) {
+            var points = outDatasets[i].points;
+            var arrAlias = arrDataset[i].alias;
+            for (var j = 0; j < points.length; j++) {
+                points[j].aliasValue = arrAlias[j];
+            }
+        }
+    }
     function drawSparklineChart(canvas, arrDataset) {
         var chartCanvas = $(canvas);
         var tooltipFormatter = function (sparkline, options, fields) {
@@ -154,6 +200,20 @@ var finReport = (function () {
             if (typeof barSparklineChart !== 'undefined') {
                 drawSparklineChart(barSparklineChart.canvas, barSparklineChart.arrDataset);
             }
-        }
+        },
+        setInterestUnitData : function(key, value) {
+            _interestUnitData[key] = value;
+        },
+        drawInterestUnitChart : function() {
+            var areaChart = _interestUnitData.areaChart;
+            if (typeof areaChart !== 'undefined') {
+                drawAreaChart(areaChart.canvas, areaChart.arrLabel, areaChart.arrDataset);
+            }
+
+            var linecustomSparklineChart = _interestUnitData.linecustomSparklineChart;
+            if (typeof linecustomSparklineChart !== 'undefined') {
+                drawSparklineChart(linecustomSparklineChart.canvas, linecustomSparklineChart.arrDataset);
+            }
+        },
     };
 }());

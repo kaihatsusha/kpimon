@@ -47,128 +47,135 @@
 			</div>
 		</div></div>
 	<?php ActiveForm::end(); ?></div>	
-	<div class="box-body-notool"><div class="row"><?php Pjax::begin(); ?><?= GridView::widget([
-		'layout'=>'{summary}<div class="table-responsive">{items}</div>{pager}',
-		'options'=>['class'=>'grid-view col-xs-12'],
-		'tableOptions'=>['class'=>'table table-bordered'],
-		'showFooter'=>true,
-		'footerRowOptions'=>['style'=>'font-weight:bold'],
-		'pager'=>['options'=>['class'=>'pagination pagination-bottom'], 'maxButtonCount'=>6],
-		'dataProvider'=>new ActiveDataProvider([
-			'query'=>$dataQuery,
-			'pagination'=>['pagesize'=>20]
-		]),
-		'columns'=>[
-			[
-				'label'=>Yii::t('fin.grid', 'Ref'),
-				'headerOptions'=>['style'=>'text-align: center'],
-				'footerOptions'=>['style'=>'text-align: right'],
-				'contentOptions'=>['style'=>'vertical-align: middle; text-align: center'],
-				'format'=>'raw',
-				'value'=>function($model, $key, $index, $column) {
-					$pagination = $column->grid->dataProvider->pagination;
-					$html = $pagination->page * $pagination->pageSize + $index + 1;
-					$html .= '<br/>' . str_pad($model->entry_id, 6, '0', STR_PAD_LEFT);
+	<div class="box-body-notool">
+		<div class="row"><div class="col-md-12"><table class="table"><thead><tr>
+			<th style="text-align: right;"><span class="badge bg-aqua"><?= NumberUtils::format($sumCurrentMonthData['credit']); ?></span></th>
+			<th style="text-align: right;"><span class="badge bg-red"><?= NumberUtils::format($sumCurrentMonthData['debit']); ?></span></th>
+			<th style="text-align: right;"><span class="badge bg-green"><?= NumberUtils::format($sumCurrentMonthData['credit'] - $sumCurrentMonthData['debit']); ?></span></th>
+		</tr></thead></table></div></div>
+		<div class="row"><?php Pjax::begin(); ?><?= GridView::widget([
+			'layout'=>'{summary}<div class="table-responsive">{items}</div>{pager}',
+			'options'=>['class'=>'grid-view col-xs-12'],
+			'tableOptions'=>['class'=>'table table-bordered'],
+			'showFooter'=>true,
+			'footerRowOptions'=>['style'=>'font-weight:bold'],
+			'pager'=>['options'=>['class'=>'pagination pagination-bottom'], 'maxButtonCount'=>6],
+			'dataProvider'=>new ActiveDataProvider([
+				'query'=>$dataQuery,
+				'pagination'=>['pagesize'=>20]
+			]),
+			'columns'=>[
+				[
+					'label'=>Yii::t('fin.grid', 'Ref'),
+					'headerOptions'=>['style'=>'text-align: center'],
+					'footerOptions'=>['style'=>'text-align: right'],
+					'contentOptions'=>['style'=>'vertical-align: middle; text-align: center'],
+					'format'=>'raw',
+					'value'=>function($model, $key, $index, $column) {
+						$pagination = $column->grid->dataProvider->pagination;
+						$html = $pagination->page * $pagination->pageSize + $index + 1;
+						$html .= '<br/>' . str_pad($model->entry_id, 6, '0', STR_PAD_LEFT);
 
-					return $html;
-				},
-				'footer'=>Yii::t('fin.grid', 'Total')
-			],
-			[
-				'attribute'=>'entry_date',
-				'label'=>Yii::t('fin.grid', 'Date'),
-				'headerOptions'=>['style'=>'text-align: center'],
-				'footerOptions'=>['style'=>'text-align: right'],
-				'contentOptions'=>['style'=>'vertical-align: middle; text-align: center'],
-				'format'=>'raw',
-				'value'=>function($model) use ($phpFmShortDate) {
-					$html = DateTimeUtils::htmlDateFormatFromDB($model->entry_date, DateTimeUtils::FM_VIEW_DATE, true);
+						return $html;
+					},
+					'footer'=>Yii::t('fin.grid', 'Total')
+				],
+				[
+					'attribute'=>'entry_date',
+					'label'=>Yii::t('fin.grid', 'Date'),
+					'headerOptions'=>['style'=>'text-align: center'],
+					'footerOptions'=>['style'=>'text-align: right'],
+					'contentOptions'=>['style'=>'vertical-align: middle; text-align: center'],
+					'format'=>'raw',
+					'value'=>function($model) use ($phpFmShortDate) {
+						$html = DateTimeUtils::htmlDateFormatFromDB($model->entry_date, DateTimeUtils::FM_VIEW_DATE, true);
 
-					$lblView = Yii::t('button', 'View');
-					$lblEdit = Yii::t('button', 'Edit');
-					$lblCopy = Yii::t('button', 'Copy');
-					$urlEdit = false;
-					$arrBtns = [];
+						$lblView = Yii::t('button', 'View');
+						$lblEdit = Yii::t('button', 'Edit');
+						$lblCopy = Yii::t('button', 'Copy');
+						$urlEdit = false;
+						$arrBtns = [];
 
-					$entryId = $model->entry_id;
-					$timeDepositTranId = $model->time_deposit_tran_id;
-					switch ($model->entry_status) {
-						case MasterValueUtils::MV_FIN_ENTRY_TYPE_SIMPLE:
-							$urlEdit = BaseUrl::toRoute(['payment/update', 'id'=>$entryId]);
-							$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlEdit, $lblEdit]);
+						$entryId = $model->entry_id;
+						$timeDepositTranId = $model->time_deposit_tran_id;
+						switch ($model->entry_status) {
+							case MasterValueUtils::MV_FIN_ENTRY_TYPE_SIMPLE:
+								$urlEdit = BaseUrl::toRoute(['payment/update', 'id'=>$entryId]);
+								$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlEdit, $lblEdit]);
 
-							$urlView = BaseUrl::toRoute(['payment/view', 'id'=>$entryId]);
-							$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlView, $lblView]);
+								$urlView = BaseUrl::toRoute(['payment/view', 'id'=>$entryId]);
+								$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlView, $lblView]);
 
-							$urlCopy = BaseUrl::toRoute(['payment/copy', 'id'=>$entryId]);
-							$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlCopy, $lblCopy]);
-							break;
-						case MasterValueUtils::MV_FIN_ENTRY_TYPE_DEPOSIT:
-						case MasterValueUtils::MV_FIN_ENTRY_TYPE_INTEREST_DEPOSIT:
-							$urlEdit = BaseUrl::toRoute(['deposit/update', 'id'=>$timeDepositTranId]);
-							$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlEdit, $lblEdit]);
+								$urlCopy = BaseUrl::toRoute(['payment/copy', 'id'=>$entryId]);
+								$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlCopy, $lblCopy]);
+								break;
+							case MasterValueUtils::MV_FIN_ENTRY_TYPE_DEPOSIT:
+							case MasterValueUtils::MV_FIN_ENTRY_TYPE_INTEREST_DEPOSIT:
+								$urlEdit = BaseUrl::toRoute(['deposit/update', 'id'=>$timeDepositTranId]);
+								$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlEdit, $lblEdit]);
 
-							$urlView = BaseUrl::toRoute(['deposit/view', 'id'=>$timeDepositTranId]);
-							$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlView, $lblView]);
+								$urlView = BaseUrl::toRoute(['deposit/view', 'id'=>$timeDepositTranId]);
+								$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlView, $lblView]);
 
-							$urlCopy = BaseUrl::toRoute(['deposit/copy', 'id'=>$timeDepositTranId]);
-							$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlCopy, $lblCopy]);
-							break;
-						default;
-							break;
+								$urlCopy = BaseUrl::toRoute(['deposit/copy', 'id'=>$timeDepositTranId]);
+								$arrBtns[] = StringUtils::format('<li><a href="{0}">{1}</a></li>', [$urlCopy, $lblCopy]);
+								break;
+							default;
+								break;
+						}
+
+						$html .= '<br/><div class="btn-group">';
+						$html .= Html::a($lblEdit, [$urlEdit], ['class'=>'btn btn-xs btn-info']);
+						$html .= '<button type="button" class="btn btn-xs btn-info dropdown-toggle" data-toggle="dropdown">';
+						$html .= '<span class="caret"></span><span class="sr-only">Toggle Dropdown</span>';
+						$html .= '</button>';
+						$html .= '<ul class="dropdown-menu" role="menu">';
+						$html .= implode('', $arrBtns);
+						$html .= '</ul></div>';
+
+						return $html;
+					},
+					'footer'=>$htmlFooterDate
+				],
+				[
+					'label'=>Yii::t('fin.grid', 'Credit / Debit'),
+					'headerOptions'=>['style'=>'text-align: center'],
+					'footerOptions'=>['style'=>'text-align: right'],
+					'contentOptions'=>['style'=>'vertical-align: middle; text-align: left; min-width:162px'],
+					'format'=>'raw',
+					'value'=>function($model) use ($arrFinAccount) {
+						$htmls = [];
+
+						$htmlCredit = isset($arrFinAccount[$model->account_target]) ? $arrFinAccount[$model->account_target] : '';
+						if (!empty($htmlCredit)) {
+							$amount = $model->account_target == 0 ? '' : NumberUtils::format($model->entry_value);
+							$htmlCredit .= '<span class="label label-info pull-right">' . $amount . '</span>';
+							$htmls[] = $htmlCredit;
+						}
+
+						$htmlDebit = isset($arrFinAccount[$model->account_source]) ? $arrFinAccount[$model->account_source] : '';
+						if (!empty($htmlDebit)) {
+							$amount = $model->account_source == 0 ? '' : NumberUtils::format($model->entry_value);
+							$htmlDebit .= '<span class="label label-danger pull-right">' . $amount . '</span>';
+							$htmls[] = $htmlDebit;
+						}
+
+						return implode('<br/>', $htmls);
+					},
+					'footer'=>$htmlFooterCreditDebit
+				],
+				[
+					'attribute'=>'description',
+					'label'=>Yii::t('fin.grid', 'Description'),
+					'headerOptions'=>['style'=>'text-align: center'],
+					'contentOptions'=>['style'=>'vertical-align: middle; text-align: left'],
+					'enableSorting'=>false,
+					'value'=>function($model) use ($arrEntryLog) {
+						$arrEntryLogVal = StringUtils::unserializeArr($model->description);
+						return StringUtils::showArrValueAsString($arrEntryLogVal, $arrEntryLog);
 					}
-
-					$html .= '<br/><div class="btn-group">';
-					$html .= Html::a($lblEdit, [$urlEdit], ['class'=>'btn btn-xs btn-info']);
-					$html .= '<button type="button" class="btn btn-xs btn-info dropdown-toggle" data-toggle="dropdown">';
-					$html .= '<span class="caret"></span><span class="sr-only">Toggle Dropdown</span>';
-					$html .= '</button>';
-					$html .= '<ul class="dropdown-menu" role="menu">';
-					$html .= implode('', $arrBtns);
-					$html .= '</ul></div>';
-
-					return $html;
-				},
-				'footer'=>$htmlFooterDate
-			],
-			[
-				'label'=>Yii::t('fin.grid', 'Credit / Debit'),
-				'headerOptions'=>['style'=>'text-align: center'],
-				'footerOptions'=>['style'=>'text-align: right'],
-				'contentOptions'=>['style'=>'vertical-align: middle; text-align: left; min-width:162px'],
-				'format'=>'raw',
-				'value'=>function($model) use ($arrFinAccount) {
-					$htmls = [];
-
-					$htmlCredit = isset($arrFinAccount[$model->account_target]) ? $arrFinAccount[$model->account_target] : '';
-					if (!empty($htmlCredit)) {
-						$amount = $model->account_target == 0 ? '' : NumberUtils::format($model->entry_value);
-						$htmlCredit .= '<span class="label label-info pull-right">' . $amount . '</span>';
-						$htmls[] = $htmlCredit;
-					}
-
-					$htmlDebit = isset($arrFinAccount[$model->account_source]) ? $arrFinAccount[$model->account_source] : '';
-					if (!empty($htmlDebit)) {
-						$amount = $model->account_source == 0 ? '' : NumberUtils::format($model->entry_value);
-						$htmlDebit .= '<span class="label label-danger pull-right">' . $amount . '</span>';
-						$htmls[] = $htmlDebit;
-					}
-
-					return implode('<br/>', $htmls);
-				},
-				'footer'=>$htmlFooterCreditDebit
-			],
-			[
-				'attribute'=>'description',
-				'label'=>Yii::t('fin.grid', 'Description'),
-				'headerOptions'=>['style'=>'text-align: center'],
-				'contentOptions'=>['style'=>'vertical-align: middle; text-align: left'],
-				'enableSorting'=>false,
-				'value'=>function($model) use ($arrEntryLog) {
-					$arrEntryLogVal = StringUtils::unserializeArr($model->description);
-					return StringUtils::showArrValueAsString($arrEntryLogVal, $arrEntryLog);
-				}
+				]
 			]
-		]
-	]); ?><?php Pjax::end(); ?></div></div>
+		]); ?><?php Pjax::end(); ?></div>
+	</div>
 </div></div></div>

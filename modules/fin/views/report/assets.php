@@ -3,12 +3,7 @@
     use yii\helpers\Html;
     use app\components\MasterValueUtils;
     use app\components\NumberUtils;
-    use app\modules\fin\views\ReportAsset;
     use kartik\datetime\DateTimePicker;
-
-    // css & js
-    ReportAsset::$CONTEXT = ['js'=>['js/fin/reportPayment.js'], 'depends'=>['app\assets\ChartJsAsset']];
-    ReportAsset::register($this);
 
     $this->title = Yii::t('fin.report', 'Report Assets');
     $rowindex = 0;
