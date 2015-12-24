@@ -97,8 +97,8 @@
                     'value'=>function($model) {
                         $html = DateTimeUtils::htmlDateFormatFromDB($model->start_date, DateTimeUtils::FM_VIEW_DATE, true);
                         $html = $html . '<br/>';
-                        $endDate = is_null($model->end_date) ? DateTimeUtils::getNow()->format(DateTimeUtils::FM_DB_DATE) : $model->end_date;
-                        $html = $html . DateTimeUtils::htmlDateFormatFromDB($endDate, DateTimeUtils::FM_VIEW_DATE, true);
+                        $endDate = is_null($model->end_date) ? '<span class="text-fuchsia">' . DateTimeUtils::getNow()->format(DateTimeUtils::FM_DB_DATE) . '</span>' : DateTimeUtils::htmlDateFormatFromDB($model->end_date, DateTimeUtils::FM_VIEW_DATE, true);
+                        $html = $html . $endDate;
 
                         return $html;
                     }

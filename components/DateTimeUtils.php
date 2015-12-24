@@ -346,17 +346,23 @@ class DateTimeUtils {
 	
 	/**
 	 * format html for date
-	 * @param String $datetime
-	 * @param String $df
+	 * @param String or DateTime $datetime
+	 * @param String $outformat
+	 * @param String $informat
 	 * @param mixed $htmlOpts [tag=>'span', class=>'abc']
 	 * @return String
 	 */
-	public static function htmlDateFormat($datetime, $df, $htmlOpts = false) {
+	public static function htmlDateFormat($datetime, $outformat, $informat = null, $htmlOpts = false) {
 		if ($htmlOpts === false) {
+			if (is_object($datetime)) {
+				return $datetime->format($outformat);
+			}
 			return $datetime;
 		}
-		
-		$dt = getdate(self::parse($datetime, $df)->getTimestamp());
+		$date = is_object($datetime) ? $datetime : \DateTime::createFromFormat($informat, $datetime);
+		$datestr = $date->format($outformat);
+
+		$dt = getdate($date->getTimestamp());
 		$daysweek = $dt[self::FN_KEY_GETDATE_DAYSOFWEEK_INT];
 		$dateFormatInstall = self::getDateFormatInstall();
 		$textcolor = $dateFormatInstall['weekday'][$daysweek]['text-color'];
@@ -366,7 +372,7 @@ class DateTimeUtils {
 		$fulltag .= '</' . $tag .'>';
 		$css = (isset($htmlOpts['class']) ? $htmlOpts['class'] : '') . ' ' . $textcolor;
 		
-		return StringUtils::format($fulltag, [$css, $datetime]);
+		return StringUtils::format($fulltag, [$css, $datestr]);
 	}
 	
 	/**

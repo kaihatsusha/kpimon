@@ -77,8 +77,7 @@
                     },
                     'format'=>'raw',
                     'value'=>function($model) {
-                        $endDate = is_null($model->end_date) ? DateTimeUtils::getNow()->format(DateTimeUtils::FM_DB_DATE) : $model->end_date;
-                        return DateTimeUtils::htmlDateFormatFromDB($endDate, DateTimeUtils::FM_VIEW_DATE, true);
+                        return is_null($model->end_date) ? '<span class="text-fuchsia">' . DateTimeUtils::getNow()->format(DateTimeUtils::FM_DB_DATE) . '</span>' : DateTimeUtils::htmlDateFormatFromDB($model->end_date, DateTimeUtils::FM_VIEW_DATE, true);
                     }
                 ],
                 [
