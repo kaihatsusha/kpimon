@@ -16,7 +16,7 @@
             $endDateHtml = '<span class="text-fuchsia pull-right">' . $endDate->format(DateTimeUtils::FM_VIEW_DATE_WD) . '</span>';
         } else {
             $endDate = DateTimeUtils::parse($model->end_date, DateTimeUtils::FM_DB_DATE);
-            $endDateHtml = DateTimeUtils::htmlDateFormatFromDB($model->end_date, DateTimeUtils::FM_VIEW_DATE_WD, true);
+            $endDateHtml = DateTimeUtils::htmlDateFormat($endDate, DateTimeUtils::FM_VIEW_DATE_WD, null, ['class'=>'pull-right']);
         }
         $interval = $endDate->diff($startDate);
         $days = ($interval->invert === 1 ? 1 : -1) * $interval->days + 1;

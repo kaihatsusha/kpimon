@@ -34,7 +34,7 @@
             <table class="table table-bordered">
                 <tr>
                     <th class="warning" style="width: 200px;"><?= $model->getAttributeLabel('start_date'); ?></th>
-                    <td class="info"><?= DateTimeUtils::htmlDateFormatFromDB($model->start_date, DateTimeUtils::FM_VIEW_DATE_WD, true); ?></td>
+                    <td class="info"><?= DateTimeUtils::htmlDateFormat($model->start_date, DateTimeUtils::FM_VIEW_DATE_WD, $fmShortDatePhp, true); ?></td>
                 </tr>
                 <tr>
                     <th class="warning"><?= $model->getAttributeLabel('end_date'); ?></th>

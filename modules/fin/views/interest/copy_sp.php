@@ -4,12 +4,12 @@
     use app\components\MasterValueUtils;
     use kartik\datetime\DateTimePicker;
 
-    $this->title = Yii::t('fin.interest', 'Create Interest Unit');
+    $this->title = Yii::t('fin.interest', 'Copy Interest Unit');
 ?>
 
-<div class="row"><div class="col-md-12"><div class="box box-widget widget-detail">
+<?php if ($model): ?><div class="row"><div class="col-md-12"><div class="box box-widget widget-detail">
     <div class="widget-detail-header bg-maroon"><h3 class="widget-detail-title"><?= Yii::t('fin.form', 'Input Values'); ?></h3></div>
-    <div class="box-footer" id="finInterestCreateForm">
+    <div class="box-footer" id="finInterestCopyForm">
         <?php $form = ActiveForm::begin(['requiredCssClass' => 'form-group-required']); ?>
         <?= $form->field($model, 'start_date')->widget(DateTimePicker::className(), ['type'=>1,
             'pluginOptions'=>['autoclose'=>true, 'format'=>$fmShortDateJui, 'startView'=>2, 'minView'=>2, 'todayHighlight'=>true]
@@ -24,4 +24,4 @@
         </div>
         <?php ActiveForm::end(); ?>
     </div>
-</div></div></div>
+</div></div></div><?php endif; ?>

@@ -34,7 +34,9 @@ class FinTotalInterestUnit extends \yii\db\ActiveRecord {
             [['interest_unit'], 'number'],
             [['start_date', 'interest_unit'], 'required', 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE, MasterValueUtils::SCENARIO_COPY]],
             [['interest_unit'], 'number', 'min' => 0, 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE, MasterValueUtils::SCENARIO_COPY]],
-            [['start_date', 'end_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE, MasterValueUtils::SCENARIO_COPY]]
+            [['start_date', 'end_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE, MasterValueUtils::SCENARIO_COPY]],
+            [['start_date'], 'unique', 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE, MasterValueUtils::SCENARIO_COPY]],
+            [['end_date'], 'unique', 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE, MasterValueUtils::SCENARIO_COPY]]
         ];
     }
 
@@ -66,5 +68,19 @@ class FinTotalInterestUnit extends \yii\db\ActiveRecord {
                 'value' => new Expression('NOW()'),
             ],
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert) {
+        if (parent::beforeSave($insert)) {
+            if ($insert) {
+                $this->id = null;
+            }
+            return true;
+        }
+
+        return false;
     }
 }
