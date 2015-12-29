@@ -3,7 +3,6 @@
     use yii\helpers\Html;
     use app\components\MasterValueUtils;
     use app\components\NumberUtils;
-    use app\modules\fin\views\ReportAsset;
     use kartik\datetime\DateTimePicker;
 
     $this->title = Yii::t('fin.report', 'Report Assets');
@@ -42,6 +41,11 @@
         </div></div>
     <?php ActiveForm::end(); ?></div>
     <?php if (!is_null($gridData)): ?><div class="box-body-notool">
+        <div class="row"><div class="col-md-12"><table class="table"><thead><tr>
+            <th style="text-align: right;"><span class="badge bg-green"><?= NumberUtils::format($sumCurrentAssetsData['assets']); ?></span></th>
+            <th style="text-align: right;"><span class="badge bg-aqua"><?= NumberUtils::format($sumCurrentAssetsData['credit']); ?></span></th>
+            <th style="text-align: right;"><span class="badge bg-red"><?= NumberUtils::format($sumCurrentAssetsData['debit']); ?></span></th>
+        </tr></thead></table></div></div>
         <div class="row">
             <div id="w1"><div id="w2" class="grid-view col-xs-12"><table class="table table-bordered">
                 <thead><tr class="warning">

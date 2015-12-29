@@ -2,10 +2,12 @@
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use app\assets\AppAsset;
+use app\assets\DefaultAsset;
 /* @var $this \yii\web\View */
 /* @var $content string */
 
 AppAsset::register($this);
+DefaultAsset::register($this);
 ?>
 
 <?php $this->beginPage() ?>

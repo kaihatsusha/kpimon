@@ -50,6 +50,11 @@
             CHART_DATA = <?= $chartData; ?>;
         </script>
         <div class="row"><div id="paymentCompositeInlineChart" style="margin-left: 10px; padding-bottom: 10px;"></div></div>
+        <div class="row"><div class="col-md-12"><table class="table"><thead><tr>
+            <th style="text-align: right;"><span class="badge bg-aqua"><?= NumberUtils::format($sumCurrentMonthData['credit']); ?></span></th>
+            <th style="text-align: right;"><span class="badge bg-red"><?= NumberUtils::format($sumCurrentMonthData['debit']); ?></span></th>
+            <th style="text-align: right;"><span class="badge bg-green"><?= NumberUtils::format($sumCurrentMonthData['credit'] - $sumCurrentMonthData['debit']); ?></span></th>
+        </tr></thead></table></div></div>
         <div class="row">
             <div id="w1"><div id="w2" class="grid-view col-xs-12"><table class="table table-bordered">
                 <thead><tr class="warning">

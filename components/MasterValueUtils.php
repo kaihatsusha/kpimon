@@ -49,6 +49,9 @@ class MasterValueUtils {
 	
 	const MV_FIN_FLG_DELETE_TRUE = 1;	// is deleted
 	const MV_FIN_FLG_DELETE_FALSE = 0;	// not delete
+
+	const MV_NET_CUSTOMER_STATUS_ON = 1;	// ON
+	const MV_NET_CUSTOMER_STATUS_OFF = 2;	// OFF
 	
 	/**
 	 * get color of a row

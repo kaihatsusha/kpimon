@@ -30,7 +30,7 @@ class FinAccount02I00 extends FinAccount {
 		// calculate Closing Interest
 		$this->closing_interest_unit = NumberUtils::getInterest($this->opening_balance, $this->term_interest_rate);
 		$this->closing_interest = NumberUtils::rounds($this->closing_interest_unit * $this->closing_diff, NumberUtils::NUM_ROUND);
-		$this->closing_balance = $this->opening_balance + $this->closing_interest;
+		$this->closing_balance = $this->opening_balance + $this->capital + $this->closing_interest;
 
 		// calculate Interest of current date
 		$this->now_interest_unit = NumberUtils::getInterest($this->opening_balance, $this->noterm_interest_rate);
@@ -41,7 +41,7 @@ class FinAccount02I00 extends FinAccount {
 			$this->now_interest = $this->closing_interest + NumberUtils::getInterest($this->closing_balance, $this->noterm_interest_rate, NumberUtils::NUM_ROUND, $delta);
 		}
 
-		$this->now_balance = $this->opening_balance + $this->now_interest;
+		$this->now_balance = $this->opening_balance + $this->capital + $this->now_interest;
 	}
 }
 ?>

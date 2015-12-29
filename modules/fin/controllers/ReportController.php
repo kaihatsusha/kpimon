@@ -9,6 +9,7 @@ use yii\helpers\Url;
 use app\components\DateTimeUtils;
 use app\components\MasterValueUtils;
 use app\controllers\MobiledetectController;
+use app\models\FinAccount;
 use app\models\FinTotalEntryMonth;
 use app\models\FinTotalInterestMonth;
 
@@ -33,10 +34,10 @@ class ReportController extends MobiledetectController {
         $startDateJui = DateTimeUtils::parse('20151001', DateTimeUtils::FM_DEV_DATE, $fmShortDatePhp);
         $fmKeyPhp = DateTimeUtils::getDateFormat(DateTimeUtils::FM_KEY_PHP, null, DateTimeUtils::FM_KEY_FMONTH);
         $fmKeyJui = DateTimeUtils::getDateFormat(DateTimeUtils::FM_KEY_JUI, null, DateTimeUtils::FM_KEY_FMONTH);
+        $td = DateTimeUtils::getNow();
 
         // is get page than reset value
         if (Yii::$app->request->getIsGet()) {
-            $td = DateTimeUtils::getNow();
             $tdTimestamp = $td->getTimestamp();
             $tdInfo = getdate($tdTimestamp);
             $thismonth = $td->format($fmKeyPhp);
@@ -177,8 +178,20 @@ class ReportController extends MobiledetectController {
                 'debit'=>$arrDebitDataChart, 'debitAlias'=>$arrDebitAliasDataChart,
                 'balance'=>$arrBalanceDataChart, 'balanceAlias'=>$arrBalanceAliasDataChart], JSON_NUMERIC_CHECK);
         }
-
         $renderData['gridData'] = $gridData;
+
+        // sum payment current month
+        $beginCurrentMonth = DateTimeUtils::parse($td->format(DateTimeUtils::FM_DEV_YM) . '01', DateTimeUtils::FM_DEV_DATE);
+        $endCurrentMonth = DateTimeUtils::addDateTime($beginCurrentMonth, 'P1M');
+        DateTimeUtils::subDateTime($endCurrentMonth, 'P1D', null, false);
+        $sumCurrentMonthQuery = (new Query())->select(['SUM(IF(account_source > 0, entry_value, 0)) AS debit', 'SUM(IF(account_target > 0, entry_value, 0)) AS credit']);
+        $sumCurrentMonthQuery->from('fin_account_entry')->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+        $sumCurrentMonthQuery->andWhere(['OR', ['=', 'account_source', MasterValueUtils::MV_FIN_ACCOUNT_NONE], ['=', 'account_target', MasterValueUtils::MV_FIN_ACCOUNT_NONE]]);
+        $sumCurrentMonthQuery->andWhere(['>=', 'entry_date', $beginCurrentMonth->format(DateTimeUtils::FM_DB_DATE)]);
+        $sumCurrentMonthQuery->andWhere(['<=', 'entry_date', $endCurrentMonth->format(DateTimeUtils::FM_DB_DATE)]);
+        $sumCurrentMonthData = $sumCurrentMonthQuery->createCommand()->queryOne();
+        $renderData['sumCurrentMonthData'] = $sumCurrentMonthData;
+
         return $this->render('payment', $renderData);
     }
 
@@ -188,10 +201,10 @@ class ReportController extends MobiledetectController {
         $startDateJui = DateTimeUtils::parse('20151001', DateTimeUtils::FM_DEV_DATE, $fmShortDatePhp);
         $fmKeyPhp = DateTimeUtils::getDateFormat(DateTimeUtils::FM_KEY_PHP, null, DateTimeUtils::FM_KEY_FMONTH);
         $fmKeyJui = DateTimeUtils::getDateFormat(DateTimeUtils::FM_KEY_JUI, null, DateTimeUtils::FM_KEY_FMONTH);
+        $td = DateTimeUtils::getNow();
 
         // is get page than reset value
         if (Yii::$app->request->getIsGet()) {
-            $td = DateTimeUtils::getNow();
             $tdTimestamp = $td->getTimestamp();
             $tdInfo = getdate($tdTimestamp);
             $thismonth = $td->format($fmKeyPhp);
@@ -348,8 +361,43 @@ class ReportController extends MobiledetectController {
                 'term'=>$arrTermDataChart, 'termAlias'=>$arrTermAliasDataChart,
                 'total'=>$arrTotalDataChart, 'totalAlias'=>$arrTotalAliasDataChart], JSON_NUMERIC_CHECK);
         }
-
         $renderData['gridData'] = $gridData;
+
+        // sum Term Interest current month
+        $beginCurrentMonth = DateTimeUtils::parse($td->format(DateTimeUtils::FM_DEV_YM) . '01', DateTimeUtils::FM_DEV_DATE);
+        $endCurrentMonth = DateTimeUtils::addDateTime($beginCurrentMonth, 'P1M');
+        DateTimeUtils::subDateTime($endCurrentMonth, 'P1D', null, false);
+        $currentInterestUnitQuery = (new Query())->select(['start_date', 'end_date', 'interest_unit']);
+        $currentInterestUnitQuery->from('fin_total_interest_unit')->where(['<=', 'start_date', $endCurrentMonth->format(DateTimeUtils::FM_DB_DATE)]);
+        $currentInterestUnitQuery->andWhere(['OR', ['>=', 'end_date', $beginCurrentMonth->format(DateTimeUtils::FM_DB_DATE)], ['is', 'end_date', null]]);
+        $currentTermInterestMonth = 0;
+        $arrCurrentInterestUnit = $currentInterestUnitQuery->createCommand()->queryAll();
+        $requireCurrentMonthStr = $beginCurrentMonth->format(DateTimeUtils::FM_DEV_YM);
+        foreach ($arrCurrentInterestUnit as $currentInterestUnit) {
+            $currentUnit = $currentInterestUnit['interest_unit'];
+            $currentDateObj = DateTimeUtils::getDateFromDB($currentInterestUnit['start_date']);
+            $currentStartDate = $currentDateObj->format(DateTimeUtils::FM_DEV_DATE);
+            $currentEndDate = empty($currentInterestUnit['end_date']) ? DateTimeUtils::formatNow(DateTimeUtils::FM_DEV_DATE) : DateTimeUtils::formatDateFromDB($currentInterestUnit['end_date'], DateTimeUtils::FM_DEV_DATE);
+            while ($currentStartDate <= $currentEndDate) {
+                $currentMonthStr = $currentDateObj->format(DateTimeUtils::FM_DEV_YM);
+                if ($currentMonthStr == $requireCurrentMonthStr) {
+                    $currentTermInterestMonth += $currentUnit;
+                }
+
+                DateTimeUtils::addDateTime($currentDateObj, 'P1D', null, false);
+                $currentStartDate = $currentDateObj->format(DateTimeUtils::FM_DEV_DATE);
+            }
+        }
+        // sum No Term Interest current month
+        $currentNotermInterestMonth = 0;
+        $arrFinAccount = FinAccount::find()->where(['delete_flag'=>0, 'account_type'=>MasterValueUtils::MV_FIN_ACCOUNT_TYPE_CURRENT])->all();
+        foreach ($arrFinAccount as $finAccount) {
+            $instance = $finAccount->instance();
+            $instance->initialize();
+            $currentNotermInterestMonth += $instance->capital + $instance->now_interest;
+        }
+        $renderData['sumCurrentInterestData'] = ['term'=>$currentTermInterestMonth, 'noterm'=>$currentNotermInterestMonth];
+
         return $this->render('deposit', $renderData);
     }
 
@@ -359,10 +407,10 @@ class ReportController extends MobiledetectController {
         $startDateJui = DateTimeUtils::parse('20151101', DateTimeUtils::FM_DEV_DATE, $fmShortDatePhp);
         $fmKeyPhp = DateTimeUtils::getDateFormat(DateTimeUtils::FM_KEY_PHP, null, DateTimeUtils::FM_KEY_FMONTH);
         $fmKeyJui = DateTimeUtils::getDateFormat(DateTimeUtils::FM_KEY_JUI, null, DateTimeUtils::FM_KEY_FMONTH);
+        $td = DateTimeUtils::getNow();
 
         // is get page than reset value
         if (Yii::$app->request->getIsGet()) {
-            $td = DateTimeUtils::getNow();
             $tdTimestamp = $td->getTimestamp();
             $tdInfo = getdate($tdTimestamp);
             $thismonth = $td->format($fmKeyPhp);
@@ -501,8 +549,29 @@ class ReportController extends MobiledetectController {
                 'debit'=>$arrDebitDataChart, 'debitAlias'=>$arrDebitAliasDataChart,
                 'assets'=>$arrAssetsDataChart, 'assetsAlias'=>$arrAssetsAliasDataChart], JSON_NUMERIC_CHECK);
         }
-
         $renderData['gridData'] = $gridData;
+
+        // sum payment current month
+        $beginCurrentMonth = DateTimeUtils::parse($td->format(DateTimeUtils::FM_DEV_YM) . '01', DateTimeUtils::FM_DEV_DATE);
+        $endCurrentMonth = DateTimeUtils::addDateTime($beginCurrentMonth, 'P1M');
+        DateTimeUtils::subDateTime($endCurrentMonth, 'P1D', null, false);
+        $sumCurrentMonthQuery = (new Query())->select(['SUM(IF(account_source > 0, entry_value, 0)) AS debit', 'SUM(IF(account_target > 0, entry_value, 0)) AS credit']);
+        $sumCurrentMonthQuery->from('fin_account_entry')->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+        $sumCurrentMonthQuery->andWhere(['OR', ['=', 'account_source', MasterValueUtils::MV_FIN_ACCOUNT_NONE], ['=', 'account_target', MasterValueUtils::MV_FIN_ACCOUNT_NONE]]);
+        $sumCurrentMonthQuery->andWhere(['>=', 'entry_date', $beginCurrentMonth->format(DateTimeUtils::FM_DB_DATE)]);
+        $sumCurrentMonthQuery->andWhere(['<=', 'entry_date', $endCurrentMonth->format(DateTimeUtils::FM_DB_DATE)]);
+        $sumCurrentAssetsData = $sumCurrentMonthQuery->createCommand()->queryOne();
+        // sum Assets current month
+        $sumCurrentAssets = 0;
+        $arrFinAccount = FinAccount::find()->where(['delete_flag'=>0])->all();
+        foreach ($arrFinAccount as $finAccount) {
+            $instance = $finAccount->instance();
+            $instance->initialize();
+            $sumCurrentAssets += $instance->opening_balance;
+        }
+        $sumCurrentAssetsData['assets'] = $sumCurrentAssets;
+        $renderData['sumCurrentAssetsData'] = $sumCurrentAssetsData;
+
         return $this->render('assets', $renderData);
     }
 }

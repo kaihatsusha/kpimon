@@ -38,6 +38,16 @@
             </div></div>
         </div>
         <?php if (!is_null($gridData)): ?>
+            <div class="row">
+                <div class="col-md-6"></div>
+                <div class="col-md-6"><table class="table table-bordered"><thead><tr>
+                    <th class="warning" style="text-align: left; width: 100px"><?= Yii::t('fin.grid', 'This Month'); ?></th>
+                    <th class="success" style="text-align: right;"><?= NumberUtils::format($sumCurrentAssetsData['assets']); ?></th>
+                    <th class="info" style="text-align: right;"><?= NumberUtils::format($sumCurrentAssetsData['credit']); ?></th>
+                    <th class="danger" style="text-align: right;"><?= NumberUtils::format($sumCurrentAssetsData['debit']); ?></th>
+                    <th class="success" style="text-align: right;"><?= NumberUtils::format($sumCurrentAssetsData['credit'] - $sumCurrentAssetsData['debit']); ?></th>
+                </tr></thead></table></div>
+            </div>
             <div class="row"><div id="w1"><div class="grid-view col-xs-12 table-responsive" id="w2"><table class="table table-bordered">
                 <thead><tr class="warning">
                     <th style="text-align: center"><?= Yii::t('fin.grid', 'Month'); ?></th>

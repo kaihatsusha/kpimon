@@ -65,6 +65,14 @@ class Menu extends \yii\widgets\Menu
      * @inheritdoc
      */
     protected function renderItem($item) {
+        if (isset($item['type'])) {
+            switch ($item['type']) {
+                case 'split':
+                    return $item['label'];
+                    break;
+            }
+        }
+
         $item['badgeOptions'] = isset($item['badgeOptions']) ? $item['badgeOptions'] : [];
         if (!ArrayHelper::getValue($item, 'badgeOptions.class')) {
             $bg = isset($item['badgeBgClass']) ? $item['badgeBgClass'] : $this->badgeBgClass;
@@ -103,7 +111,6 @@ class Menu extends \yii\widgets\Menu
             ]);
         } else {
             $template = ArrayHelper::getValue($item, 'template', $this->labelTemplate);
-
             return strtr($template, [
                 '{badge}'=> isset($item['badge'])
                     ? Html::tag('small', $item['badge'], $item['badgeOptions'])

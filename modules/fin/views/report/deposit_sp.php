@@ -50,6 +50,11 @@
             CHART_DATA = <?= $chartData; ?>;
         </script>
         <div class="row"><div id="interestBarChart" style="margin-left: 14px; padding-bottom: 10px;"></div></div>
+        <div class="row"><div class="col-md-12"><table class="table"><thead><tr>
+            <th style="text-align: right;"><span class="badge bg-aqua"><?= NumberUtils::format($sumCurrentInterestData['term']); ?></span></th>
+            <th style="text-align: right;"><span class="badge bg-red"><?= NumberUtils::format($sumCurrentInterestData['noterm']); ?></span></th>
+            <th style="text-align: right;"><span class="badge bg-green"><?= NumberUtils::format($sumCurrentInterestData['term'] + $sumCurrentInterestData['noterm']); ?></span></th>
+        </tr></thead></table></div></div>
         <div class="row">
             <div id="w1"><div id="w2" class="grid-view col-xs-12"><table class="table table-bordered">
                 <thead><tr class="warning">

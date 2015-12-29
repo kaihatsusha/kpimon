@@ -8,9 +8,9 @@ return [
 		],
 	],
 	'fin' => [
-		'class' => 'app\modules\fin\Module',
-		'modules' => [
-			'ga' => 'app\modules\fin\ga\Module'
-		],
+		'class' => 'app\modules\fin\Module'
+	],
+	'net' => [
+		'class' => 'app\modules\net\Module',
 	]
 ];

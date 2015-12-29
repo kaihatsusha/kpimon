@@ -49,6 +49,15 @@
             <div class="row"><div class="chart">
                 <canvas id="paymentLineChart" style="height:500px"></canvas>
             </div></div>
+            <div class="row">
+                <div class="col-md-6"></div>
+                <div class="col-md-6"><table class="table table-bordered"><thead><tr>
+                    <th class="warning" style="text-align: left; width: 120px"><?= Yii::t('fin.grid', 'This Month'); ?></th>
+                    <th class="info" style="text-align: right;"><?= NumberUtils::format($sumCurrentMonthData['credit']); ?></th>
+                    <th class="danger" style="text-align: right;"><?= NumberUtils::format($sumCurrentMonthData['debit']); ?></th>
+                    <th class="success" style="text-align: right;"><?= NumberUtils::format($sumCurrentMonthData['credit'] - $sumCurrentMonthData['debit']); ?></th>
+                </tr></thead></table></div>
+            </div>
             <div class="row"><div id="w1"><div class="grid-view col-xs-12 table-responsive" id="w2"><table class="table table-bordered">
                 <thead><tr class="warning">
                     <th style="text-align: center"><?= Yii::t('fin.grid', 'Month'); ?></th>

@@ -18,13 +18,13 @@
     <div class="box-header with-border">
         <h3 class="box-title"><?= Yii::t('fin.form', 'Monthly'); ?></h3>
         <div class="box-tools"><div style="width: 150px;" class="input-group input-group-sm">
-                <?= DateTimePicker::widget(['model'=>$model, 'attribute'=>'fmonth', 'type'=>1, 'readonly'=>true,
-                    'pluginOptions'=>['autoclose'=>true, 'format'=>$fmKeyJui, 'startView'=>3, 'minView'=>3, 'startDate'=>$startDateJui],
-                    'options'=>['class'=>'pull-right']]); ?>
-                <div class="input-group-btn">
-                    <button class='btn btn-default' type='submit' name='<?= MasterValueUtils::SM_MODE_NAME;?>' value='<?= MasterValueUtils::SM_MODE_INPUT;?>'><i class="fa fa-edit"></i></button>
-                </div>
-            </div></div>
+            <?= DateTimePicker::widget(['model'=>$model, 'attribute'=>'fmonth', 'type'=>1, 'readonly'=>true,
+                'pluginOptions'=>['autoclose'=>true, 'format'=>$fmKeyJui, 'startView'=>3, 'minView'=>3, 'startDate'=>$startDateJui],
+                'options'=>['class'=>'pull-right']]); ?>
+            <div class="input-group-btn">
+                <button class='btn btn-default' type='submit' name='<?= MasterValueUtils::SM_MODE_NAME;?>' value='<?= MasterValueUtils::SM_MODE_INPUT;?>'><i class="fa fa-edit"></i></button>
+            </div>
+        </div></div>
     </div>
     <div class="box-body">
         <div class="row">
@@ -49,6 +49,15 @@
             <div class="row"><div class="chart">
                 <canvas id="depositBarChart" style="height:500px"></canvas>
             </div></div>
+            <div class="row">
+                <div class="col-md-6"></div>
+                <div class="col-md-6"><table class="table table-bordered"><thead><tr>
+                    <th class="warning" style="text-align: left; width: 120px"><?= Yii::t('fin.grid', 'This Month'); ?></th>
+                    <th class="info" style="text-align: right;"><?= NumberUtils::format($sumCurrentInterestData['term']); ?></th>
+                    <th class="danger" style="text-align: right;"><?= NumberUtils::format($sumCurrentInterestData['noterm']); ?></th>
+                    <th class="success" style="text-align: right;"><?= NumberUtils::format($sumCurrentInterestData['term'] + $sumCurrentInterestData['noterm']); ?></th>
+                </tr></thead></table></div>
+            </div>
             <div class="row"><div id="w1"><div class="grid-view col-xs-12 table-responsive" id="w2"><table class="table table-bordered">
                 <thead><tr class="warning">
                     <th style="text-align: center"><?= Yii::t('fin.grid', 'Month'); ?></th>
