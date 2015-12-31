@@ -34,7 +34,7 @@
                 ]); ?>
             </div>
             <div class="col-md-12"><div class="form-group">
-                    <?= Html::submitButton(Yii::t('button', 'Search'), ['class'=>'btn btn-info', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_LIST]); ?>
+                <?= Html::submitButton(Yii::t('button', 'Search'), ['class'=>'btn btn-info', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_LIST]); ?>
             </div></div>
         </div>
         <?php if (!is_null($gridData)): ?>

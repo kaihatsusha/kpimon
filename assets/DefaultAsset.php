@@ -13,7 +13,8 @@ class DefaultAsset extends AssetBundle {
     ];
 
     public $css = [
-        'css/pc/layout_customize.css',
+        'css/layout_customize.css',
+        'css/pc/layout_customize.css'
     ];
 
     public $jsOptions = [

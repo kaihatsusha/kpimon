@@ -13,7 +13,8 @@ class SmartPhoneAsset extends AssetBundle {
 	];
 	
 	public $css = [
-		'css/sp/layout_customize.css',
+		'css/layout_customize.css',
+		'css/sp/layout_customize.css'
 	];
 	
 	public $jsOptions = [

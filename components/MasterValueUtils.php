@@ -10,6 +10,8 @@ class MasterValueUtils {
 	const SM_MODE_CONFIRM = 2;
 	const SM_MODE_BACK = 3;
 	const SM_MODE_LIST = 4;
+	const SM_MODE_ADD_ITEM = 5;
+	const SM_MODE_DEL_ITEM = 6;
 	
 	const PG_MODE_NAME = 'pagemode';
 	const PG_MODE_CREATE = 1;

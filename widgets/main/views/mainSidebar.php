@@ -180,9 +180,39 @@
 				'type'=>'split'
 			],
 			[
+				'label'=>Yii::t('net.menuLeft', 'Customer'),
+				'url'=>['#'],
+				'icon'=>'<i class="fa fa-users"></i>',
+				'right-icon'=>'<i class="fa fa-angle-left pull-right"></i>',
+				'items'=>[
+					[
+						'label'=>Yii::t('net.menuLeft', 'List'),
+						'url'=>['/net/customer/index'],
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('net.menuLeft', 'Create'),
+						'url'=>['/net/customer/create'],
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('net.menuLeft', 'View'),
+						'url'=>['/net/customer/view'],
+						'requireId'=>true,
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('net.menuLeft', 'Edit'),
+						'url'=>['/net/customer/update'],
+						'requireId'=>true,
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					]
+				]
+			],
+			[
 				'label'=>Yii::t('net.menuLeft', 'Bill'),
 				'url'=>['#'],
-				'icon'=>'<i class="fa fa-edit"></i>',
+				'icon'=>'<i class="fa fa-credit-card"></i>',
 				'right-icon'=>'<i class="fa fa-angle-left pull-right"></i>',
 				'items'=>[
 					[
@@ -212,7 +242,7 @@
 			[
 				'label'=>Yii::t('net.menuLeft', 'Payment'),
 				'url'=>['#'],
-				'icon'=>'<i class="fa fa-edit"></i>',
+				'icon'=>'<i class="fa fa-briefcase"></i>',
 				'right-icon'=>'<i class="fa fa-angle-left pull-right"></i>',
 				'items'=>[
 					[
@@ -234,36 +264,6 @@
 					[
 						'label'=>Yii::t('net.menuLeft', 'Edit'),
 						'url'=>['/net/payment/update'],
-						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
-					]
-				]
-			],
-			[
-				'label'=>Yii::t('net.menuLeft', 'Customer'),
-				'url'=>['#'],
-				'icon'=>'<i class="fa fa-edit"></i>',
-				'right-icon'=>'<i class="fa fa-angle-left pull-right"></i>',
-				'items'=>[
-					[
-						'label'=>Yii::t('net.menuLeft', 'List'),
-						'url'=>['/net/customer/index'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
-					],
-					[
-						'label'=>Yii::t('net.menuLeft', 'Create'),
-						'url'=>['/net/customer/create'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
-					],
-					[
-						'label'=>Yii::t('net.menuLeft', 'View'),
-						'url'=>['/net/customer/view'],
-						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
-					],
-					[
-						'label'=>Yii::t('net.menuLeft', 'Edit'),
-						'url'=>['/net/customer/update'],
 						'requireId'=>true,
 						'icon'=>'<i class="fa fa-circle-o"></i>'
 					]
