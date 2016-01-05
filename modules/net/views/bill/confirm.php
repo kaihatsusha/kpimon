@@ -123,7 +123,7 @@
                             <?= $htmlPrice; ?>
                             <span style="display: none"><?= $form->field($item, "[$i]price")->hiddenInput(); ?></span>
                         </td>
-                        <td style="vertical-align: middle; text-align: center" <?= $colPayDateStyle; ?>>
+                        <td style="vertical-align: middle; text-align: left" <?= $colPayDateStyle; ?>>
                             <?= $htmlPayDate; ?>
                             <span style="display: none"><?= $form->field($item, "[$i]pay_date")->hiddenInput(); ?></span>
                         </td>

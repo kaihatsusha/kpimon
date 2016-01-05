@@ -11,16 +11,18 @@
     use kartik\datetime\DateTimePicker;
 
     // css & js
-    MoreAsset::$CONTEXT = ['css'=>['css/net/bill.css'], 'js'=>['js/net/bill.js']];
-    MoreAsset::register($this);
+    if ($model) {
+        MoreAsset::$CONTEXT = ['css'=>['css/net/bill.css'], 'js'=>['js/net/bill.js']];
+        MoreAsset::register($this);
+    }
 
-    $this->title = Yii::t('net.bill', 'Create Bill');
+    $this->title = Yii::t('net.bill', 'Edit Bill');
     $rowindex = 0;
 ?>
 
-<div class="box box-default"><?php $form = ActiveForm::begin(['requiredCssClass' => 'form-group-required']); ?>
+<?php if ($model): ?><div class="box box-default"><?php $form = ActiveForm::begin(['requiredCssClass' => 'form-group-required']); ?>
     <div class="box-header with-border"><h3 class="box-title"><?= Yii::t('fin.form', 'Basic Info'); ?></h3></div>
-    <div id="netBillCreateForm" class="box-body"><div class="row"><div class="col-md-12">
+    <div id="netBillUpdateForm" class="box-body"><div class="row"><div class="col-md-12">
         <?= $form->field($model, 'bill_date')->widget(DateTimePicker::className(), ['type'=>1,
             'pluginOptions'=>['autoclose'=>true, 'format'=>$fmShortDateJui, 'startView'=>2, 'minView'=>2, 'todayHighlight'=>true]
         ]); ?>
@@ -150,4 +152,4 @@
         </div></div></div>
     </div>
     <?= BillItemModal::widget(['form'=>$form, 'model'=>$billDetail, 'title'=>Yii::t('fin.form', 'Add An Item'), 'fmShortDateJui'=>$fmShortDateJui]); ?>
-<?php ActiveForm::end(); ?></div>
+<?php ActiveForm::end(); ?></div><?php endif; ?>

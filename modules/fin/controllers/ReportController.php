@@ -104,8 +104,8 @@ class ReportController extends MobiledetectController {
 
         $gridData = null;
         $resultModel = FinTotalEntryMonth::find()->where(['delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE])
-            ->andWhere(['>=', 'year', $fYear])->andWhere(['>=', 'month', $fMonth])
-            ->andWhere(['<=', 'year', $tYear])->andWhere(['<=', 'month', $tMonth])
+            ->andWhere(['>=', 'year', $fYear])->andWhere(['OR', ['>', 'year', $fYear], ['>=', 'month', $fMonth]])
+            ->andWhere(['<=', 'year', $tYear])->andWhere(['OR', ['<', 'year', $tYear], ['<=', 'month', $tMonth]])
             ->orderBy('year, month')->all();
         if (count($resultModel) > 0) {
             // Init data for chart
@@ -152,8 +152,8 @@ class ReportController extends MobiledetectController {
             // Total & Average
             $sumGridData = (new Query())->select(['SUM(value_in) AS sum_credit', 'AVG(value_in) AS avg_credit', 'SUM(value_out) AS sum_debit', 'AVG(value_out) AS avg_debit'])
                 ->from('fin_total_entry_month')->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE])
-                ->andWhere(['>=', 'year', $fYear])->andWhere(['>=', 'month', $fMonth])
-                ->andWhere(['<=', 'year', $tYear])->andWhere(['<=', 'month', $tMonth])
+                ->andWhere(['>=', 'year', $fYear])->andWhere(['OR', ['>', 'year', $fYear], ['>=', 'month', $fMonth]])
+                ->andWhere(['<=', 'year', $tYear])->andWhere(['OR', ['<', 'year', $tYear], ['<=', 'month', $tMonth]])
                 ->createCommand()->queryOne();
             $renderData['sumGridData'] = $sumGridData;
             // data for chart
@@ -287,8 +287,8 @@ class ReportController extends MobiledetectController {
 
         $gridData = null;
         $resultModel = FinTotalInterestMonth::find()->where(['delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE])
-            ->andWhere(['>=', 'year', $fYear])->andWhere(['>=', 'month', $fMonth])
-            ->andWhere(['<=', 'year', $tYear])->andWhere(['<=', 'month', $tMonth])
+            ->andWhere(['>=', 'year', $fYear])->andWhere(['OR', ['>', 'year', $fYear], ['>=', 'month', $fMonth]])
+            ->andWhere(['<=', 'year', $tYear])->andWhere(['OR', ['<', 'year', $tYear], ['<=', 'month', $tMonth]])
             ->orderBy('year, month')->all();
         if (count($resultModel) > 0) {
             // Init data for chart
@@ -335,8 +335,8 @@ class ReportController extends MobiledetectController {
             // Total & Average
             $sumGridData = (new Query())->select(['SUM(noterm_interest) AS sum_noterm', 'AVG(noterm_interest) AS avg_noterm', 'SUM(term_interest) AS sum_term', 'AVG(term_interest) AS avg_term'])
                 ->from('fin_total_interest_month')->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE])
-                ->andWhere(['>=', 'year', $fYear])->andWhere(['>=', 'month', $fMonth])
-                ->andWhere(['<=', 'year', $tYear])->andWhere(['<=', 'month', $tMonth])
+                ->andWhere(['>=', 'year', $fYear])->andWhere(['OR', ['>', 'year', $fYear], ['>=', 'month', $fMonth]])
+                ->andWhere(['<=', 'year', $tYear])->andWhere(['OR', ['<', 'year', $tYear], ['<=', 'month', $tMonth]])
                 ->createCommand()->queryOne();
             $renderData['sumGridData'] = $sumGridData;
             // data for chart
@@ -479,8 +479,8 @@ class ReportController extends MobiledetectController {
         $gridData = null;
         $resultModel = FinTotalAssetsMonth::find()->select('t1.*, t2.value_in AS credit, t2.value_out AS debit')->from('fin_total_assets_month t1')
             ->leftJoin('fin_total_entry_month t2', '(t1.year = t2.year AND t1.month = t2.month)')->where(['t1.delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE])
-            ->andWhere(['>=', 't1.year', $fYear])->andWhere(['>=', 't1.month', $fMonth])
-            ->andWhere(['<=', 't1.year', $tYear])->andWhere(['<=', 't1.month', $tMonth])
+            ->andWhere(['>=', 't1.year', $fYear])->andWhere(['OR', ['>', 't1.year', $fYear], ['>=', 't1.month', $fMonth]])
+            ->andWhere(['<=', 't1.year', $tYear])->andWhere(['OR', ['<', 't1.year', $tYear], ['<=', 't1.month', $tMonth]])
             ->orderBy('t1.year, t1.month')->all();
         if (count($resultModel) > 0) {
             // Init data for chart

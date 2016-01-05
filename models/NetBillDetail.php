@@ -19,6 +19,7 @@ class NetBillDetail extends \yii\db\ActiveRecord {
 
     public $delete_flag = 0;
     public $is_valid = true;
+    public $price_old = 0;
 
     /**
      * @inheritdoc

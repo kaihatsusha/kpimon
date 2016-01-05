@@ -21,11 +21,12 @@
         <div style="display: none">
             <?= $form->field($model, 'item_no')->hiddenInput(); ?>
             <?= $form->field($model, 'delete_flag')->hiddenInput(); ?>
-            <?= Html::submitButton(Yii::t('button', 'Delete'), ['id'=>'btnDeleteBillItem', 'class'=>'btn btn-info', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_DEL_ITEM]); ?>
+
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal"><?= Yii::t('button', 'Close'); ?></button>
-            <?= Html::submitButton(Yii::t('button', 'Save'), ['class'=>'btn btn-info', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_ADD_ITEM]); ?>
+            <?= Html::submitButton(Yii::t('button', 'Save'), ['id'=>'btnEditModal', 'class'=>'btn btn-info', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_ADD_ITEM]); ?>
+            <?= Html::submitButton(Yii::t('button', 'Delete'), ['id'=>'btnDeleteModal', 'class'=>'btn btn-info', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_DEL_ITEM]); ?>
         </div>
     </div></div>
 </div>

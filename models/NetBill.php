@@ -21,6 +21,9 @@ class NetBill extends \yii\db\ActiveRecord {
     public $bill_date_from = null;
     public $bill_date_to = null;
     public $arr_member_list = null;
+    public $arr_member_list_old = null;
+    public $total_old = 0;
+    public $member_num_old = 0;
 
     public static $_PHP_FM_SHORTDATE = 'Y-m-d';
 
@@ -41,8 +44,9 @@ class NetBill extends \yii\db\ActiveRecord {
             [['member_list'], 'string'],
             [['delete_flag'], 'string', 'max' => 1],
             [['bill_date_from', 'bill_date_to'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_LIST]],
-            [['bill_date', 'arr_member_list'], 'required', 'on' => [MasterValueUtils::SCENARIO_CREATE]],
-            [['bill_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_CREATE]]
+            [['bill_date', 'arr_member_list'], 'required', 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]],
+            [['bill_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]],
+            [['bill_date'], 'unique', 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]]
         ];
     }
 
