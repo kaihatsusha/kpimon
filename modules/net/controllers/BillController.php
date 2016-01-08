@@ -6,6 +6,7 @@ use yii\base\Exception;
 use yii\db\Query;
 use yii\helpers\Url;
 use app\components\DateTimeUtils;
+use app\components\EnDescrypt;
 use app\components\MasterValueUtils;
 use app\components\ModelUtils;
 use app\components\NumberUtils;
@@ -35,7 +36,7 @@ class BillController extends MobiledetectController {
         $fmShortDatePhp = DateTimeUtils::getDateFormat(DateTimeUtils::FM_KEY_PHP, null);
         $fmShortDateJui = DateTimeUtils::getDateFormat(DateTimeUtils::FM_KEY_JUI, null);
         $arrNetCustomer = ModelUtils::getArrData(NetCustomer::find()->select(['id', 'name'])
-            ->where(['delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE, 'status'=>MasterValueUtils::MV_NET_CUSTOMER_STATUS_ON])
+            ->where(['delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE])
             ->orderBy('order_num'), 'id', 'name');
         NetBill::$_PHP_FM_SHORTDATE = $fmShortDatePhp;
         $searchModel = new NetBill();
@@ -62,12 +63,14 @@ class BillController extends MobiledetectController {
             $dataQuery = NetBill::find()->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
             $sumBillQuery = (new Query())->select(['SUM(total) AS total'])->from('net_bill')->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
             if (!empty($searchModel->bill_date_from)) {
-                $dataQuery->andWhere(['>=', 'bill_date', $searchModel->bill_date_from]);
-                $sumBillQuery->andWhere(['>=', 'bill_date', $searchModel->bill_date_from]);
+                $searchDate = DateTimeUtils::parse($searchModel->bill_date_from, $fmShortDatePhp, DateTimeUtils::FM_DB_DATE);
+                $dataQuery->andWhere(['>=', 'bill_date', $searchDate]);
+                $sumBillQuery->andWhere(['>=', 'bill_date', $searchDate]);
             }
             if (!empty($searchModel->bill_date_to)) {
-                $dataQuery->andWhere(['<=', 'bill_date', $searchModel->bill_date_to]);
-                $sumBillQuery->andWhere(['<=', 'bill_date', $searchModel->bill_date_to]);
+                $searchDate = DateTimeUtils::parse($searchModel->bill_date_to, $fmShortDatePhp, DateTimeUtils::FM_DB_DATE);
+                $dataQuery->andWhere(['<=', 'bill_date', $searchDate]);
+                $sumBillQuery->andWhere(['<=', 'bill_date', $searchDate]);
             }
             $dataQuery->orderBy('bill_date DESC');
             $sumBillValue = $sumBillQuery->createCommand()->queryOne();
@@ -94,15 +97,15 @@ class BillController extends MobiledetectController {
         } else {
             // master value
             $arrNetCustomer = ModelUtils::getArrData(NetCustomer::find()->select(['id', 'name'])
-                ->where(['delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE, 'status'=>MasterValueUtils::MV_NET_CUSTOMER_STATUS_ON])
+                ->where(['delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE])
                 ->orderBy('order_num'), 'id', 'name');
-            $arrMemberList = StringUtils::unserializeArr($model->member_list);
-            $model->member_list = StringUtils::showArrValueAsString($arrMemberList, $arrNetCustomer);
+            $model->arr_member_list = StringUtils::unserializeArr($model->member_list);
+            $model->member_list = StringUtils::showArrValueAsString($model->arr_member_list, $arrNetCustomer);
             // Detail of Items
             $arrBillDetail = NetBillDetail::find()->where(['=', 'bill_id', $id])->orderBy('item_no ASC')->all();
 
             // data for rendering
-            $renderData = ['model'=>$model, 'arrBillDetail'=>$arrBillDetail];
+            $renderData = ['model'=>$model, 'arrBillDetail'=>$arrBillDetail, 'arrNetCustomer'=>$arrNetCustomer];
         }
 
         // render GUI
@@ -370,6 +373,7 @@ class BillController extends MobiledetectController {
                     }
                     $payment->debit = $pricePerMember;
                     $payment->order_id = $model->id;
+                    $payment->secret_key = EnDescrypt::encryptSha1($payment->customer_id . $payment->entry_date);
                     $save = $payment->save(false);
                     if ($save === false) {
                         break;
@@ -596,6 +600,7 @@ class BillController extends MobiledetectController {
                         }
                         $payment->debit = $pricePerMember;
                         $payment->order_id = $model->id;
+                        $payment->secret_key = EnDescrypt::encryptSha1($payment->customer_id . $payment->entry_date);
                         $save = $payment->save(false);
                         if ($save === false) {
                             break;

@@ -34,10 +34,10 @@ class NetBillDetail extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['item_no', 'item_name', 'price', 'pay_date', 'description', 'delete_flag'], 'safe'],
-            [['item_name', 'price', 'pay_date'], 'required', 'on' => [MasterValueUtils::SCENARIO_CREATE]],
-            [['item_name'], 'string', 'max' => 50, 'on' => [MasterValueUtils::SCENARIO_CREATE]],
-            [['description'], 'string', 'max' => 100, 'on' => [MasterValueUtils::SCENARIO_CREATE]],
-            [['item_no', 'price'], 'integer', 'on' => [MasterValueUtils::SCENARIO_CREATE]]
+            [['item_name', 'price', 'pay_date'], 'required', 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]],
+            [['item_name'], 'string', 'max' => 50, 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]],
+            [['description'], 'string', 'max' => 100, 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]],
+            [['item_no', 'price'], 'integer', 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]]
         ];
     }
 

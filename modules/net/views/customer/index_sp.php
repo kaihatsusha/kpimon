@@ -19,6 +19,7 @@
             'layout'=>'{summary}<div class="table-responsive">{items}</div>{pager}',
             'options'=>['class'=>'grid-view col-xs-12'],
             'tableOptions'=>['class'=>'table table-bordered'],
+            'showFooter'=>true,
             'pager'=>['options'=>['class'=>'pagination pagination-bottom'], 'maxButtonCount'=>6],
             'dataProvider'=>new ActiveDataProvider([
                 'query'=>$dataQuery,
@@ -39,12 +40,13 @@
                     }
                 ],
                 [
-                    'label'=>Yii::t('fin.grid', 'Name'),
+                    'label'=>Yii::t('fin.grid', 'Status'),
                     'headerOptions'=>['style'=>'text-align: center'],
                     'contentOptions'=>['style'=>'vertical-align: middle; text-align: center'],
                     'format'=>'raw',
-                    'value'=>function($model) {
-                        $html = '<span>' . $model->name . '</span>';
+                    'value'=>function($model) use ($arrCustomerStatus) {
+                        $status = isset($arrCustomerStatus[$model->status]) ? $arrCustomerStatus[$model->status] : '';
+                        $html = '<span>' . $status . '</span>';
 
                         $lblView = Yii::t('button', 'View');
                         $lblEdit = Yii::t('button', 'Edit');
@@ -72,22 +74,15 @@
                 [
                     'label'=>Yii::t('fin.grid', 'Balance'),
                     'headerOptions'=>['style'=>'text-align: center'],
-                    'contentOptions'=>['style'=>'vertical-align: middle; text-align: left'],
+                    'footerOptions'=>['style'=>'vertical-align: middle; text-align: right'],
+                    'contentOptions'=>['style'=>'vertical-align: middle; text-align: right'],
                     'format'=>'raw',
-                    'value'=>function($model) use ($arrCustomerStatus) {
-                        $status = isset($arrCustomerStatus[$model->status]) ? $arrCustomerStatus[$model->status] : '';
+                    'value'=>function($model) {
                         $labelClass = $model->balance < 0 ? 'label-danger' : 'label-info';
                         $labelValue = NumberUtils::format(abs($model->balance));
-                        return StringUtils::format('{2} <span class="label {0} pull-right">{1}</span>', [$labelClass, $labelValue, $status]);
-                    }
-                ],
-                [
-                    'label'=>Yii::t('fin.grid', 'Description'),
-                    'headerOptions'=>['style'=>'text-align: center'],
-                    'contentOptions'=>['style'=>'vertical-align: middle; text-align: left'],
-                    'value'=>function($model) {
-                        return $model->description;
-                    }
+                        return StringUtils::format('{2}<br/><span class="label {0} pull-right">{1}</span>', [$labelClass, $labelValue, $model->name]);
+                    },
+                    'footer'=>NumberUtils::getIncDecNumber($sumCustomerValue['balance'], ['template'=>'<span class="label pull-right {color}">{number}</span>', 'incColor'=>'label-info', 'decColor'=>'label-danger'])
                 ]
             ]
         ]); ?><?php Pjax::end(); ?></div>

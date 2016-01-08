@@ -12,5 +12,8 @@ return [
 	],
 	'net' => [
 		'class' => 'app\modules\net\Module',
+	],
+	'oth' => [
+		'class' => 'app\modules\oth\Module',
 	]
 ];

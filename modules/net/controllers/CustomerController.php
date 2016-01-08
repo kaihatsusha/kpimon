@@ -3,10 +3,12 @@ namespace app\modules\net\controllers;
 
 use Yii;
 use yii\base\Exception;
+use yii\db\Query;
 use yii\helpers\Url;
 use app\components\MasterValueUtils;
 use app\controllers\MobiledetectController;
 use app\models\NetCustomer;
+use app\models\NetPayment;
 
 class CustomerController extends MobiledetectController {
     public function behaviors() {
@@ -25,16 +27,41 @@ class CustomerController extends MobiledetectController {
 
     public function actionIndex() {
         $arrCustomerStatus = MasterValueUtils::getArrData('net_customer_status');
-        $dataQuery = NetCustomer::find()->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE])->orderBy('order_num');
+        $dataQuery = NetCustomer::find()->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE])->orderBy('status, order_num');
+        $sumCustomerQuery = (new Query())->select(['SUM(balance) AS balance'])->from('net_customer')->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+        $sumCustomerValue = $sumCustomerQuery->createCommand()->queryOne();
 
         // render GUI
-        $renderData = ['dataQuery'=>$dataQuery, 'arrCustomerStatus'=>$arrCustomerStatus];
+        $renderData = ['dataQuery'=>$dataQuery, 'arrCustomerStatus'=>$arrCustomerStatus, 'sumCustomerValue'=>$sumCustomerValue];
 
         return $this->render('index', $renderData);
     }
 
     public function actionView($id) {
+        $this->objectId = $id;
+        $model = NetCustomer::findOne(['id'=>$id, 'delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
 
+        $renderView = 'view';
+        if (is_null($model)) {
+            $model = false;
+            $renderData = ['model'=>$model];
+            Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, Yii::t('common', 'The requested {record} does not exist.', ['record'=>Yii::t('fin.models', 'Customer')]));
+        } else {
+            // master value
+            $arrCustomerStatus = MasterValueUtils::getArrData('net_customer_status');
+            $dataPaymentQuery = NetPayment::find()->select('t1.*, t2.bill_date')->from('net_payment t1')
+                ->leftJoin('net_bill t2', 't1.order_id = t2.id')->where(['=', 't1.delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+            $sumPaymentQuery = (new Query())->select(['SUM(credit) AS credit, SUM(debit) AS debit'])->from('net_payment')->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+            $dataPaymentQuery->andWhere(['=', 't1.customer_id', $model->id]);
+            $sumPaymentQuery->andWhere(['=', 'customer_id', $model->id]);
+            $dataPaymentQuery->orderBy('entry_date DESC, update_date DESC');
+            $sumPaymentValue = $sumPaymentQuery->createCommand()->queryOne();
+            // data for rendering
+            $renderData = ['model'=>$model, 'arrCustomerStatus'=>$arrCustomerStatus, 'dataPaymentQuery'=>$dataPaymentQuery, 'sumPaymentValue'=>$sumPaymentValue];
+        }
+
+        // render GUI
+        return $this->render($renderView, $renderData);
     }
 
     public function actionCreate() {
@@ -123,6 +150,7 @@ class CustomerController extends MobiledetectController {
     }
 
     public function actionUpdate($id) {
+        $this->objectId = $id;
         $model = NetCustomer::findOne(['id'=>$id, 'delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
 
         $renderView = 'update';

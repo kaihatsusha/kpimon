@@ -1,7 +1,6 @@
 <?php
 namespace app\components;
 
-use app\components\ModelUtils;
 use app\models\MasterValue;
 
 class MasterValueUtils {

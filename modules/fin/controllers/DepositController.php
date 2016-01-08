@@ -320,18 +320,18 @@ class DepositController extends MobiledetectController {
 					}
 					break;
 				case MasterValueUtils::SM_MODE_CONFIRM:
-					/*$isValid = $model->validate();
+					$isValid = $model->validate();
 					if ($isValid) {
-						$result = $this->updatePayment($model);
+						$result = $this->updateFixedDeposit($model);
 						if ($result === true) {
-							Yii::$app->session->setFlash(MasterValueUtils::FLASH_SUCCESS, Yii::t('common', '{record} has been saved successfully.', ['record'=>Yii::t('fin.models', 'Payment')]));
+							Yii::$app->session->setFlash(MasterValueUtils::FLASH_SUCCESS, Yii::t('common', '{record} has been saved successfully.', ['record'=>Yii::t('fin.models', 'Fixed Deposit')]));
 							return Yii::$app->getResponse()->redirect(Url::to(['update', 'id'=>$id]));
 						} else {
 							Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, $result);
 							$renderView = 'confirm';
 							$renderData['formMode'] = [MasterValueUtils::PG_MODE_NAME=>MasterValueUtils::PG_MODE_EDIT];
 						}
-					}*/
+					}
 					break;
 				case MasterValueUtils::SM_MODE_BACK:
 					break;
@@ -342,6 +342,94 @@ class DepositController extends MobiledetectController {
 
 		// render GUI
 		return $this->render($renderView, $renderData);
+	}
+
+	/**
+	 * update a Fixed Deposit
+	 * @param type $fixedDepositModel
+	 * @throws Exception
+	 * @return string|true
+	 */
+	private function updateFixedDeposit($fixedDepositModel) {
+		$transaction = Yii::$app->db->beginTransaction();
+		$save = true;
+		$message = null;
+
+		// begin transaction
+		try {
+			// saving account
+			$savingAccount = FinAccount::findOne($fixedDepositModel->saving_account);
+			$savingAccount->opening_date = $fixedDepositModel->opening_date . ' 00:00:00';
+			$savingAccount->closing_date = $fixedDepositModel->closing_date . ' 00:00:00';
+			$savingAccount->term_interest_rate = $fixedDepositModel->interest_rate;
+			// TM or ATM
+			$currentAssets = FinAccount::findOne($fixedDepositModel->current_assets);
+			// history entry (interest)
+			$interestEntry = FinAccountEntry::findOne(['entry_date'=>$fixedDepositModel->opening_date,
+				'entry_status'=>MasterValueUtils::MV_FIN_ENTRY_TYPE_INTEREST_DEPOSIT, 'account_source'=>0,
+				'account_target'=>$fixedDepositModel->saving_account]);
+			$interestEntry->entry_value = $fixedDepositModel->interest_add;
+			// history entry (capital)
+			$capitalCondition = ['entry_date'=>$fixedDepositModel->opening_date, 'entry_status'=>MasterValueUtils::MV_FIN_ENTRY_TYPE_DEPOSIT];
+			if ($fixedDepositModel->add_flag == MasterValueUtils::MV_FIN_TIMEDP_TRANTYPE_ADDING) {
+				$capitalCondition['account_source'] = $fixedDepositModel->current_assets;
+				$capitalCondition['account_target'] = $fixedDepositModel->saving_account;
+			} else {
+				$capitalCondition['account_source'] = $fixedDepositModel->saving_account;
+				$capitalCondition['account_target'] = $fixedDepositModel->current_assets;
+			}
+			$capitalEntry = FinAccountEntry::findOne($capitalCondition);
+			$capitalEntry->entry_value = $fixedDepositModel->entry_value;
+
+			$bkData = $fixedDepositModel->BACK_UP;
+			if ($fixedDepositModel->add_flag == MasterValueUtils::MV_FIN_TIMEDP_TRANTYPE_ADDING) {
+				$savingAccount->opening_balance = $savingAccount->opening_balance + $fixedDepositModel->interest_add + $fixedDepositModel->entry_value - $bkData['interest_add'] - $bkData['entry_value'];
+				$savingAccount->capital = $savingAccount->capital + $fixedDepositModel->entry_value - $bkData['entry_value'];
+
+				$currentAssets->opening_balance = $currentAssets->opening_balance - $fixedDepositModel->entry_value + $bkData['entry_value'];
+			} else {
+				$savingAccount->opening_balance = $savingAccount->opening_balance + $fixedDepositModel->interest_add - $fixedDepositModel->entry_value -$bkData['interest_add'] + $bkData['entry_value'];
+				$savingAccount->capital = $savingAccount->capital - $fixedDepositModel->entry_value + $bkData['entry_value'];
+
+				$currentAssets->opening_balance = $currentAssets->opening_balance + $fixedDepositModel->entry_value - $bkData['entry_value'];
+			}
+
+			// interest unit
+			$instance = $savingAccount->instance();
+			$instance->initialize();
+			$fixedDepositModel->interest_unit = $instance->closing_interest_unit;
+
+			$save = $savingAccount->save();
+			if ($save !== false) {
+				$save = $currentAssets->save();
+			}
+			if ($save !== false) {
+				$save = $interestEntry->save();
+			}
+			if ($save !== false) {
+				$save = $capitalEntry->save();
+			}
+			if ($save !== false) {
+				$save = $fixedDepositModel->save();
+			}
+		} catch(Exception $e) {
+			$save = false;
+			$message = Yii::t('common', 'Unable to save {record}.', ['record'=>Yii::t('fin.models', 'Fixed Deposit')]);
+		}
+
+		// end transaction
+		try {
+			if ($save === false) {
+				$transaction->rollback();
+				return $message;
+			} else {
+				$transaction->commit();
+			}
+		} catch(Exception $e) {
+			throw Exception(Yii::t('common', 'Unable to excute Transaction.'));
+		}
+
+		return true;
 	}
 
 	public function actionCopy($id) {

@@ -268,7 +268,17 @@
 						'icon'=>'<i class="fa fa-circle-o"></i>'
 					]
 				]
+			],
+			[
+				'label'=>Yii::t('common', 'OTHER'),
+				'options'=>['class'=>'header'],
+				'type'=>'split'
+			],
+			[
+				'label'=>Yii::t('fin.menuLeft', 'Note'),
+				'url'=>['/oth/note/index'],
+				'icon'=>'<i class="fa fa-comments"></i>',
 			]
 		]
 	]); ?>
- </section></aside><!-- /.sidebar -->   
+ </section></aside><!-- /.sidebar -->

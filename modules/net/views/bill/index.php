@@ -108,6 +108,16 @@
                     }
                 ],
                 [
+                    'label'=>Yii::t('fin.grid', 'Per Member'),
+                    'headerOptions'=>['style'=>'text-align: center'],
+                    'contentOptions'=>function($model, $key, $index) {
+                        return ['style'=>'vertical-align: middle; text-align: right', 'class'=>MasterValueUtils::getColorRow($index)];
+                    },
+                    'value'=>function($model) {
+                        return NumberUtils::format(NumberUtils::rounds($model->total / $model->member_num, NumberUtils::NUM_CEIL));
+                    }
+                ],
+                [
                     'label'=>Yii::t('fin.grid', 'Member'),
                     'headerOptions'=>['style'=>'text-align: center'],
                     'contentOptions'=>function($model, $key, $index) {
