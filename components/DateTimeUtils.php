@@ -236,6 +236,18 @@ class DateTimeUtils {
 		$dt->setTimestamp($timestamp);
 		return is_null($outformat) ? $dt : $dt->format($outformat);
 	}
+
+	/**
+	 * create datetime from DateInterval
+	 * @param $interval
+	 * @return DateTime
+	 */
+	public static function createFromDateInterval($interval) {
+		$result = new \DateTime();
+		$result->setDate($interval->y, $interval->m, $interval->d);
+		$result->setTime($interval->h, $interval->i, $interval->s);
+		return $result;
+	}
 	
 	/**
 	 * clone a DateTime
@@ -400,6 +412,34 @@ class DateTimeUtils {
 		$fulltag .= '</' . $tag .'>';
 		$css = (isset($htmlOpts['class']) ? $htmlOpts['class'] : '') . ' ' . $textcolor;
 		
+		return StringUtils::format($fulltag, [$css, $datestr]);
+	}
+
+	/**
+	 * format html for date
+	 * @param string $datetime: value from database (EX: Y-m-d)
+	 * @param string $format: new format
+	 * @param mixed $htmlOpts [tag=>'span', class=>'abc']
+	 * @return string
+	 */
+	public static function htmlDateTimeFormatFromDB($datetime, $format, $htmlOpts = false) {
+		$date = \DateTime::createFromFormat(self::FM_DB_DATETIME, $datetime);
+		$datestr = $date->format($format);
+
+		if ($htmlOpts === false) {
+			return $datestr;
+		}
+
+		$dt = getdate($date->getTimestamp());
+		$daysweek = $dt[self::FN_KEY_GETDATE_DAYSOFWEEK_INT];
+		$dateFormatInstall = self::getDateFormatInstall();
+		$textcolor = $dateFormatInstall['weekday'][$daysweek]['text-color'];
+
+		$tag = isset($htmlOpts['tag']) ? $htmlOpts['tag'] : 'span';
+		$fulltag = '<' . $tag .' class="{0}">{1}';
+		$fulltag .= '</' . $tag .'>';
+		$css = (isset($htmlOpts['class']) ? $htmlOpts['class'] : '') . ' ' . $textcolor;
+
 		return StringUtils::format($fulltag, [$css, $datestr]);
 	}
 }

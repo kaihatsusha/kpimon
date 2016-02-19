@@ -175,6 +175,76 @@
 				]
 			],
 			[
+				'label'=>Yii::t('common', 'JARS'),
+				'options'=>['class'=>'header'],
+				'type'=>'split'
+			],
+			[
+				'label'=>Yii::t('jar.menuLeft', 'Account'),
+				'url'=>['/jar/account/index'],
+				'icon'=>'<i class="fa fa-money"></i>',
+			],
+			[
+				'label'=>Yii::t('jar.menuLeft', 'Distribution'),
+				'url'=>['#'],
+				'icon'=>'<i class="fa fa-edit"></i>',
+				'right-icon'=>'<i class="fa fa-angle-left pull-right"></i>',
+				'items'=>[
+					[
+						'label'=>Yii::t('jar.menuLeft', 'List'),
+						'url'=>['/jar/distribute/index'],
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('jar.menuLeft', 'Create'),
+						'url'=>['/jar/distribute/create'],
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('jar.menuLeft', 'View'),
+						'url'=>['/jar/distribute/view'],
+						'requireId'=>true,
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('jar.menuLeft', 'Edit'),
+						'url'=>['/jar/distribute/update'],
+						'requireId'=>true,
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					]
+				]
+			],
+			[
+				'label'=>Yii::t('jar.menuLeft', 'Payment'),
+				'url'=>['#'],
+				'icon'=>'<i class="fa fa-edit"></i>',
+				'right-icon'=>'<i class="fa fa-angle-left pull-right"></i>',
+				'items'=>[
+					[
+						'label'=>Yii::t('jar.menuLeft', 'List'),
+						'url'=>['/jar/payment/index'],
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('jar.menuLeft', 'Create'),
+						'url'=>['/jar/payment/create'],
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('jar.menuLeft', 'View'),
+						'url'=>['/jar/payment/view'],
+						'requireId'=>true,
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					],
+					[
+						'label'=>Yii::t('jar.menuLeft', 'Edit'),
+						'url'=>['/jar/payment/update'],
+						'requireId'=>true,
+						'icon'=>'<i class="fa fa-circle-o"></i>'
+					]
+				]
+			],
+			[
 				'label'=>Yii::t('common', 'INTERNET'),
 				'options'=>['class'=>'header'],
 				'type'=>'split'
@@ -275,7 +345,7 @@
 				'type'=>'split'
 			],
 			[
-				'label'=>Yii::t('fin.menuLeft', 'Note'),
+				'label'=>Yii::t('oth.menuLeft', 'Note'),
 				'url'=>['/oth/note/index'],
 				'icon'=>'<i class="fa fa-comments"></i>',
 			]

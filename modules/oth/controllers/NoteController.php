@@ -1,7 +1,9 @@
 <?php
 namespace app\modules\oth\controllers;
 
+use app\components\MasterValueUtils;
 use app\controllers\MobiledetectController;
+use app\models\OthNote;
 
 class NoteController extends MobiledetectController {
     public function behaviors() {
@@ -19,6 +21,13 @@ class NoteController extends MobiledetectController {
     }
 
     public function actionIndex() {
-        return $this->render('index');
+        $dataQuery = OthNote::find()->where(['=', 'delete_flag', MasterValueUtils::MV_FIN_FLG_DELETE_FALSE])
+            ->orderBy('order_num');
+        $arrModel = $dataQuery->all();
+
+        // render GUI
+        $renderData = ['arrModel'=>$arrModel];
+
+        return $this->render('index', $renderData);
     }
 }

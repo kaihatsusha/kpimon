@@ -12,6 +12,7 @@ use app\components\StringUtils;
 use app\controllers\MobiledetectController;
 use app\models\FinAccount;
 use app\models\FinAccountEntry;
+use app\models\OthNote;
 
 class PaymentController extends MobiledetectController {
 	public function behaviors() {
@@ -233,6 +234,11 @@ class PaymentController extends MobiledetectController {
 			if ($save !== false) {
 				$save = $paymentModel->save();
 			}
+			// save note
+			if ($save !== false && count($paymentModel->arr_entry_log) > 0) {
+				$startDateNote = $paymentModel->entry_date . ' 00:00:00';
+				OthNote::updateAll(['start_date'=>$startDateNote], ['entry_log'=>$paymentModel->arr_entry_log]);
+			}
 		} catch(Exception $e) {
 			$save = false;
 			$message = Yii::t('common', 'Unable to save {record}.', ['record'=>Yii::t('fin.models', 'Payment')]);
@@ -384,6 +390,11 @@ class PaymentController extends MobiledetectController {
 					$accountTarget->opening_balance += $paymentModel->entry_value;
 					$save = $accountTarget->update();
 				}
+			}
+			// save note
+			if ($save !== false && count($paymentModel->arr_entry_log) > 0) {
+				$startDateNote = $paymentModel->entry_date . ' 00:00:00';
+				OthNote::updateAll(['start_date'=>$startDateNote], ['entry_log'=>$paymentModel->arr_entry_log]);
 			}
 		} catch(Exception $e) {
 			$save = false;
