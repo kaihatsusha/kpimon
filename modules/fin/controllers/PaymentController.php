@@ -33,7 +33,7 @@ class PaymentController extends MobiledetectController {
 		$searchModel = new FinAccountEntry();
 		$phpFmShortDate = DateTimeUtils::getPhpDateFormat();
 		$arrFinAccount = ModelUtils::getArrData(FinAccount::find()->select(['account_id', 'account_name'])
-				->where(['delete_flag'=>0])->andWhere(['<>', 'account_type', 6])
+				->where(['delete_flag'=>0])
 				->orderBy('account_type, order_num'), 'account_id', 'account_name');
 		$arrEntryLog = MasterValueUtils::getArrData('fin_entry_log');
 		
