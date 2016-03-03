@@ -45,7 +45,7 @@ class FinTotalInterestUnit extends \yii\db\ActiveRecord {
      */
     public function attributeLabels() {
         return [
-            'id' => 'ID',
+            'id' => Yii::t('fin.models', 'ID'),
             'start_date' => Yii::t('fin.models', 'Start Date'),
             'end_date' => Yii::t('fin.models', 'End Date'),
             'interest_unit' => Yii::t('fin.models', 'Unit'),

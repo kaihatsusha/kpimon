@@ -15,5 +15,8 @@ return [
 	],
 	'oth' => [
 		'class' => 'app\modules\oth\Module',
+	],
+	'jar' => [
+		'class' => 'app\modules\jar\Module',
 	]
 ];

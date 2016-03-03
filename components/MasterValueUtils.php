@@ -53,6 +53,9 @@ class MasterValueUtils {
 
 	const MV_NET_CUSTOMER_STATUS_ON = 1;	// ON
 	const MV_NET_CUSTOMER_STATUS_OFF = 2;	// OFF
+
+	const MV_JAR_ACCOUNT_STATUS_ON = 1;		// ON
+	const MV_JAR_ACCOUNT_STATUS_OFF = 2;	// OFF
 	
 	/**
 	 * get color of a row

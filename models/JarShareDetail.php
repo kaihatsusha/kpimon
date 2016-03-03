@@ -1,5 +1,4 @@
 <?php
-
 namespace app\models;
 
 use Yii;
@@ -12,21 +11,18 @@ use Yii;
  * @property integer $share_unit
  * @property string $delete_flag
  */
-class JarShareDetail extends \yii\db\ActiveRecord
-{
+class JarShareDetail extends \yii\db\ActiveRecord {
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'jar_share_detail';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['share_id', 'account_id', 'share_unit'], 'required'],
             [['share_id', 'account_id', 'share_unit'], 'integer'],
@@ -37,13 +33,12 @@ class JarShareDetail extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
-            'share_id' => 'Share ID',
-            'account_id' => 'Account ID',
-            'share_unit' => 'Share Unit',
-            'delete_flag' => 'Delete Flag',
+            'share_id' => Yii::t('jar.models', 'Share'),
+            'account_id' => Yii::t('jar.models', 'Account'),
+            'share_unit' => Yii::t('jar.models', 'Share Unit'),
+            'delete_flag' => Yii::t('jar.models', 'Delete Flag'),
         ];
     }
 }

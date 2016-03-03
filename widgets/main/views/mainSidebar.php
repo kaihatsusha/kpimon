@@ -52,30 +52,30 @@
 					[
 						'label'=>Yii::t('fin.menuLeft', 'List'),
 						'url'=>['/fin/payment/index'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-red"></i>'
 					],
 					[
 						'label'=>Yii::t('fin.menuLeft', 'Create'),
 						'url'=>['/fin/payment/create'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-red"></i>'
 					],
 					[
 						'label'=>Yii::t('fin.menuLeft', 'View'),
 						'url'=>['/fin/payment/view'],
 						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-red"></i>'
 					],
 					[
 						'label'=>Yii::t('fin.menuLeft', 'Edit'),
 						'url'=>['/fin/payment/update'],
 						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-red"></i>'
 					],
 					[
 						'label'=>Yii::t('fin.menuLeft', 'Copy'),
 						'url'=>['/fin/payment/copy'],
 						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-red"></i>'
 					]
 				]
 			],
@@ -88,30 +88,30 @@
 					[
 						'label'=>Yii::t('fin.menuLeft', 'List'),
 						'url'=>['/fin/deposit/index'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-red"></i>'
 					],
 					[
 						'label'=>Yii::t('fin.menuLeft', 'Create'),
 						'url'=>['/fin/deposit/create'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-red"></i>'
 					],
 					[
 						'label'=>Yii::t('fin.menuLeft', 'View'),
 						'url'=>['/fin/deposit/view'],
 						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-red"></i>'
 					],
 					[
 						'label'=>Yii::t('fin.menuLeft', 'Edit'),
 						'url'=>['/fin/deposit/update'],
 						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-red"></i>'
 					],
 					[
 						'label'=>Yii::t('fin.menuLeft', 'Copy'),
 						'url'=>['/fin/deposit/copy'],
 						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-red"></i>'
 					]
 				]
 			],
@@ -124,30 +124,30 @@
 					[
 						'label'=>Yii::t('fin.menuLeft', 'List'),
 						'url'=>['/fin/interest/index'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-red"></i>'
 					],
 					[
 						'label'=>Yii::t('fin.menuLeft', 'Create'),
 						'url'=>['/fin/interest/create'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-red"></i>'
 					],
 					[
 						'label'=>Yii::t('fin.menuLeft', 'View'),
 						'url'=>['/fin/interest/view'],
 						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-red"></i>'
 					],
 					[
 						'label'=>Yii::t('fin.menuLeft', 'Edit'),
 						'url'=>['/fin/interest/update'],
 						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-red"></i>'
 					],
 					[
 						'label'=>Yii::t('fin.menuLeft', 'Copy'),
 						'url'=>['/fin/interest/copy'],
 						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-red"></i>'
 					]
 				]
 			],
@@ -160,17 +160,17 @@
 					[
 						'label'=>Yii::t('fin.menuLeft', 'Payment'),
 						'url'=>['/fin/report/payment'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-red"></i>'
 					],
 					[
 						'label'=>Yii::t('fin.menuLeft', 'Deposit'),
 						'url'=>['/fin/report/deposit'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-red"></i>'
 					],
 					[
 						'label'=>Yii::t('fin.menuLeft', 'Assets'),
 						'url'=>['/fin/report/assets'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-red"></i>'
 					]
 				]
 			],
@@ -182,65 +182,65 @@
 			[
 				'label'=>Yii::t('jar.menuLeft', 'Account'),
 				'url'=>['/jar/account/index'],
-				'icon'=>'<i class="fa fa-money"></i>',
+				'icon'=>'<i class="fa fa-trophy"></i>',
 			],
 			[
 				'label'=>Yii::t('jar.menuLeft', 'Distribution'),
 				'url'=>['#'],
-				'icon'=>'<i class="fa fa-edit"></i>',
+				'icon'=>'<i class="fa fa-sitemap"></i>',
 				'right-icon'=>'<i class="fa fa-angle-left pull-right"></i>',
 				'items'=>[
 					[
 						'label'=>Yii::t('jar.menuLeft', 'List'),
 						'url'=>['/jar/distribute/index'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-yellow"></i>'
 					],
 					[
 						'label'=>Yii::t('jar.menuLeft', 'Create'),
 						'url'=>['/jar/distribute/create'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-yellow"></i>'
 					],
 					[
 						'label'=>Yii::t('jar.menuLeft', 'View'),
 						'url'=>['/jar/distribute/view'],
 						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-yellow"></i>'
 					],
 					[
 						'label'=>Yii::t('jar.menuLeft', 'Edit'),
 						'url'=>['/jar/distribute/update'],
 						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-yellow"></i>'
 					]
 				]
 			],
 			[
 				'label'=>Yii::t('jar.menuLeft', 'Payment'),
 				'url'=>['#'],
-				'icon'=>'<i class="fa fa-edit"></i>',
+				'icon'=>'<i class="fa fa-pencil"></i>',
 				'right-icon'=>'<i class="fa fa-angle-left pull-right"></i>',
 				'items'=>[
 					[
 						'label'=>Yii::t('jar.menuLeft', 'List'),
 						'url'=>['/jar/payment/index'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-yellow"></i>'
 					],
 					[
 						'label'=>Yii::t('jar.menuLeft', 'Create'),
 						'url'=>['/jar/payment/create'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-yellow"></i>'
 					],
 					[
 						'label'=>Yii::t('jar.menuLeft', 'View'),
 						'url'=>['/jar/payment/view'],
 						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-yellow"></i>'
 					],
 					[
 						'label'=>Yii::t('jar.menuLeft', 'Edit'),
 						'url'=>['/jar/payment/update'],
 						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-yellow"></i>'
 					]
 				]
 			],
@@ -258,24 +258,24 @@
 					[
 						'label'=>Yii::t('net.menuLeft', 'List'),
 						'url'=>['/net/customer/index'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-aqua"></i>'
 					],
 					[
 						'label'=>Yii::t('net.menuLeft', 'Create'),
 						'url'=>['/net/customer/create'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-aqua"></i>'
 					],
 					[
 						'label'=>Yii::t('net.menuLeft', 'View'),
 						'url'=>['/net/customer/view'],
 						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-aqua"></i>'
 					],
 					[
 						'label'=>Yii::t('net.menuLeft', 'Edit'),
 						'url'=>['/net/customer/update'],
 						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-aqua"></i>'
 					]
 				]
 			],
@@ -288,24 +288,24 @@
 					[
 						'label'=>Yii::t('net.menuLeft', 'List'),
 						'url'=>['/net/bill/index'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-aqua"></i>'
 					],
 					[
 						'label'=>Yii::t('net.menuLeft', 'Create'),
 						'url'=>['/net/bill/create'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-aqua"></i>'
 					],
 					[
 						'label'=>Yii::t('net.menuLeft', 'View'),
 						'url'=>['/net/bill/view'],
 						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-aqua"></i>'
 					],
 					[
 						'label'=>Yii::t('net.menuLeft', 'Edit'),
 						'url'=>['/net/bill/update'],
 						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-aqua"></i>'
 					]
 				]
 			],
@@ -318,24 +318,24 @@
 					[
 						'label'=>Yii::t('net.menuLeft', 'List'),
 						'url'=>['/net/payment/index'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-aqua"></i>'
 					],
 					[
 						'label'=>Yii::t('net.menuLeft', 'Create'),
 						'url'=>['/net/payment/create'],
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-aqua"></i>'
 					],
 					[
 						'label'=>Yii::t('net.menuLeft', 'View'),
 						'url'=>['/net/payment/view'],
 						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-aqua"></i>'
 					],
 					[
 						'label'=>Yii::t('net.menuLeft', 'Edit'),
 						'url'=>['/net/payment/update'],
 						'requireId'=>true,
-						'icon'=>'<i class="fa fa-circle-o"></i>'
+						'icon'=>'<i class="fa fa-circle-o text-aqua"></i>'
 					]
 				]
 			],
