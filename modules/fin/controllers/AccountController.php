@@ -10,6 +10,7 @@ use app\models\extended\FinAccount03I00;
 use app\models\extended\FinAccount04I00;
 use app\models\extended\FinAccount05I00;
 use app\models\extended\FinAccount06I00;
+use app\models\extended\FinAccount07I00;
 
 class AccountController extends MobiledetectController {
 	public function behaviors() {
@@ -108,7 +109,7 @@ class AccountController extends MobiledetectController {
 				$sumTotal['opening_balance'] += $instance->opening_balance;
 				$sumTotal['closing_balance'] += $instance->closing_balance;
 				$sumTotal['now_balance'] += $instance->now_balance;
-			} elseif ($instance instanceof FinAccount06I00) {
+			} elseif (($instance instanceof FinAccount06I00) || ($instance instanceof FinAccount07I00)) {
 				// add instance OTHER FOUND
 				$arrOtherFound[] = $instance;
 				

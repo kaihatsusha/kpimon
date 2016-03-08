@@ -14,9 +14,11 @@
     </div>
     <div class="box-body table-responsive no-padding"><table class="table table-bordered"><tbody>
         <tr class="warning">
+            <th style="text-align: center; vertical-align: middle"><?= Yii::t('fin.grid', 'No.'); ?></th>
             <th style="text-align: center; vertical-align: middle"><?= Yii::t('fin.grid', 'JAR'); ?></th>
-            <th style="text-align: center; vertical-align: middle"><?= Yii::t('fin.grid', 'Credit'); ?><br/><?= Yii::t('fin.grid', 'Debit'); ?></th>
-            <th style="text-align: center; vertical-align: middle"><?= Yii::t('fin.grid', 'Share'); ?><br/><?= Yii::t('fin.grid', 'Balance'); ?></th>
+            <th style="text-align: center; vertical-align: middle"><?= Yii::t('fin.grid', 'Share'); ?></th>
+            <th style="text-align: center; vertical-align: middle"><?= Yii::t('fin.grid', 'Useable'); ?></th>
+            <th style="text-align: center; vertical-align: middle"><?= Yii::t('fin.grid', 'Real'); ?></th>
             <th style="text-align: center; vertical-align: middle"><?= Yii::t('fin.grid', 'Description'); ?></th>
         </tr>
         <?php foreach($arrAccount as $account): ?>
@@ -25,17 +27,25 @@
                 $rowindex++;
             ?>
             <tr class="<?= $rowClass; ?>">
+                <td style="text-align: center; vertical-align: middle"><?= $rowindex; ?></td>
                 <td style="text-align: left; vertical-align: middle"><?= $account->account_name; ?></td>
-                <td style="text-align: right; vertical-align: middle"><?= NumberUtils::format($account->credit); ?><br/><?= NumberUtils::format($account->debit); ?></td>
-                <td style="text-align: right; vertical-align: middle"><?= $account->share_unit; ?> %<br/><?= NumberUtils::getIncDecNumber($account->credit - $account->debit, $numberHtmlConfig); ?></td>
+                <td style="text-align: right; vertical-align: middle"><?= $account->share_unit; ?> %</td>
+                <td style="text-align: right; vertical-align: middle"><?= NumberUtils::getIncDecNumber($account->useable_balance, $numberHtmlConfig); ?></td>
+                <td style="text-align: right; vertical-align: middle"><?= NumberUtils::getIncDecNumber($account->real_balance, $numberHtmlConfig); ?></td>
                 <td style="text-align: left; vertical-align: middle"><?= $account->description; ?></td>
             </tr>
         <?php endforeach; ?>
         <tr class="warning">
-            <th style="text-align: center; vertical-align: middle"><?= Yii::t('fin.grid', 'Total'); ?></th>
-            <th style="text-align: right; vertical-align: middle"><?= NumberUtils::format($sumAccountValue['credit']); ?><br/><?= NumberUtils::format($sumAccountValue['debit']); ?></th>
-            <th style="text-align: right; vertical-align: middle"><?= $sumAccountValue['share']; ?> %<br/><?= NumberUtils::getIncDecNumber($sumAccountValue['credit'] - $sumAccountValue['debit'], $numberHtmlConfig); ?></th>
-            <th></th>
+            <th style="text-align: center; vertical-align: middle" colspan="2"><?= Yii::t('fin.grid', 'Total'); ?></th>
+            <th style="text-align: right; vertical-align: middle"><?= $sumAccountValue['share']; ?> %</th>
+            <th style="text-align: right; vertical-align: middle"><?= NumberUtils::getIncDecNumber($sumAccountValue['useable_balance'], $numberHtmlConfig); ?></th>
+            <th style="text-align: right; vertical-align: middle"><?= NumberUtils::getIncDecNumber($sumAccountValue['real_balance'], $numberHtmlConfig); ?></th>
+            <th>
+                <?= $tempAccount->account_name; ?>
+                <?= NumberUtils::getIncDecNumber($tempAccount->useable_balance, $numberHtmlConfig); ?> +
+                <?= NumberUtils::getIncDecNumber($sumAccountValue['useable_balance'], $numberHtmlConfig); ?> =
+                <?= NumberUtils::getIncDecNumber($tempAccount->useable_balance + $sumAccountValue['useable_balance'], $numberHtmlConfig); ?>
+            </th>
         </tr>
     </tbody></table></div>
 </div></div></div>

@@ -1,6 +1,7 @@
 <?php
 namespace app\modules\jar\controllers;
 
+use app\models\JarShareDetail;
 use Yii;
 use yii\base\Exception;
 use yii\db\Query;
@@ -77,7 +78,27 @@ class DistributeController extends MobiledetectController {
     }
 
     public function actionView($id) {
+        $this->objectId = $id;
+        $model = JarShare::findOne(['share_id'=>$id, 'delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
 
+        $renderView = 'view';
+        if (is_null($model)) {
+            $model = false;
+            $renderData = ['model'=>$model];
+            Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, Yii::t('common', 'The requested {record} does not exist.', ['record'=>Yii::t('jar.models', 'Shared Item')]));
+        } else {
+            // Detail of Items
+            $arrShareDetail = JarShareDetail::find()->select('d.*, a.account_name, p.entry_value AS share_value')->from('jar_share_detail d, jar_account a, jar_payment p')
+                ->where(['d.share_id'=>$id, 'd.delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE])
+                ->andWhere('d.account_id = a.account_id AND d.share_id = p.share_id AND a.account_id = p.account_target')
+                ->orderBy('a.order_num')->all();
+
+            // data for rendering
+            $renderData = ['model'=>$model, 'arrShareDetail'=>$arrShareDetail];
+        }
+
+        // render GUI
+        return $this->render($renderView, $renderData);
     }
 
     public function actionCreate() {

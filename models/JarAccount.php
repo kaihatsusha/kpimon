@@ -8,8 +8,9 @@ use Yii;
  *
  * @property integer $account_id
  * @property string $account_name
- * @property string $credit
- * @property string $debit
+ * @property integer $account_type
+ * @property integer $real_balance
+ * @property integer $useable_balance
  * @property integer $share_unit
  * @property integer $order_num
  * @property string $description
@@ -30,7 +31,7 @@ class JarAccount extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['account_name'], 'required'],
-            [['credit', 'debit', 'share_unit', 'order_num', 'status'], 'integer'],
+            [['account_type', 'real_balance', 'useable_balance', 'share_unit', 'order_num', 'status'], 'integer'],
             [['account_name', 'description'], 'string', 'max' => 200],
             [['delete_flag'], 'string', 'max' => 1]
         ];
@@ -43,8 +44,9 @@ class JarAccount extends \yii\db\ActiveRecord {
         return [
             'account_id' => Yii::t('jar.models', 'Account ID'),
             'account_name' => Yii::t('jar.models', 'Account Name'),
-            'credit' => Yii::t('jar.models', 'Credit'),
-            'debit' => Yii::t('jar.models', 'Debit'),
+            'account_type' => Yii::t('jar.models', 'Account Type'),
+            'real_balance' => Yii::t('jar.models', 'Real Balance'),
+            'useable_balance' => Yii::t('jar.models', 'Useable Balance'),
             'share_unit' => Yii::t('jar.models', 'Share Unit'),
             'order_num' => Yii::t('jar.models', 'Order Num'),
             'description' => Yii::t('jar.models', 'Description'),

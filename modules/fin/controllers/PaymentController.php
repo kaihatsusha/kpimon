@@ -150,7 +150,7 @@ class PaymentController extends MobiledetectController {
 		$model = new FinAccountEntry();
 		$phpFmShortDate = DateTimeUtils::getPhpDateFormat();
 		$arrFinAccount = ModelUtils::getArrData(FinAccount::find()->select(['account_id', 'account_name'])
-				->where(['delete_flag'=>0, 'account_type'=>[1,2,3,5]])
+				->where(['delete_flag'=>0, 'account_type'=>[1,2,3,5,6,7]])
 				->orderBy('account_type, order_num'), 'account_id', 'account_name');
 		$arrEntryLog = MasterValueUtils::getArrData('fin_entry_log');
 		
@@ -275,7 +275,7 @@ class PaymentController extends MobiledetectController {
 			// master value
 			$phpFmShortDate = DateTimeUtils::getPhpDateFormat();
 			$arrFinAccount = ModelUtils::getArrData(FinAccount::find()->select(['account_id', 'account_name'])
-					->where(['delete_flag'=>0, 'account_type'=>[1,2,3,5]])
+					->where(['delete_flag'=>0, 'account_type'=>[1,2,3,5,6,7]])
 					->orderBy('account_type, order_num'), 'account_id', 'account_name');
 			$arrEntryLog = MasterValueUtils::getArrData('fin_entry_log');
 			// submit data
@@ -429,7 +429,7 @@ class PaymentController extends MobiledetectController {
 			// master value
 			$phpFmShortDate = DateTimeUtils::getPhpDateFormat();
 			$arrFinAccount = ModelUtils::getArrData(FinAccount::find()->select(['account_id', 'account_name'])
-					->where(['delete_flag'=>0, 'account_type'=>[1,2,3,5]])
+					->where(['delete_flag'=>0, 'account_type'=>[1,2,3,5,6,7]])
 					->orderBy('account_type, order_num'), 'account_id', 'account_name');
 			$arrEntryLog = MasterValueUtils::getArrData('fin_entry_log');
 			// reset value

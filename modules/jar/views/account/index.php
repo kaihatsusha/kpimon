@@ -17,9 +17,8 @@
             <th style="text-align: center"><?= Yii::t('fin.grid', 'No.'); ?></th>
             <th style="text-align: center"><?= Yii::t('fin.grid', 'JAR'); ?></th>
             <th style="text-align: center"><?= Yii::t('fin.grid', 'Share'); ?></th>
-            <th style="text-align: center"><?= Yii::t('fin.grid', 'Credit'); ?></th>
-            <th style="text-align: center"><?= Yii::t('fin.grid', 'Debit'); ?></th>
-            <th style="text-align: center"><?= Yii::t('fin.grid', 'Balance'); ?></th>
+            <th style="text-align: center"><?= Yii::t('fin.grid', 'Useable'); ?></th>
+            <th style="text-align: center"><?= Yii::t('fin.grid', 'Real'); ?></th>
             <th style="text-align: center"><?= Yii::t('fin.grid', 'Description'); ?></th>
         </tr>
         <?php foreach($arrAccount as $account): ?>
@@ -31,19 +30,22 @@
                 <td style="text-align: center"><?= $rowindex; ?></td>
                 <td style="text-align: left"><?= $account->account_name; ?></td>
                 <td style="text-align: right"><?= $account->share_unit; ?> %</td>
-                <td style="text-align: right"><?= NumberUtils::format($account->credit); ?></td>
-                <td style="text-align: right"><?= NumberUtils::format($account->debit); ?></td>
-                <td style="text-align: right"><?= NumberUtils::getIncDecNumber($account->credit - $account->debit, $numberHtmlConfig); ?></td>
+                <td style="text-align: right"><?= NumberUtils::getIncDecNumber($account->useable_balance, $numberHtmlConfig); ?></td>
+                <td style="text-align: right"><?= NumberUtils::getIncDecNumber($account->real_balance, $numberHtmlConfig); ?></td>
                 <td style="text-align: left"><?= $account->description; ?></td>
             </tr>
         <?php endforeach; ?>
         <tr class="warning">
             <th colspan="2" style="text-align: center"><?= Yii::t('fin.grid', 'Total'); ?></th>
             <th style="text-align: right"><?= $sumAccountValue['share']; ?> %</th>
-            <th style="text-align: right"><?= NumberUtils::format($sumAccountValue['credit']); ?></th>
-            <th style="text-align: right"><?= NumberUtils::format($sumAccountValue['debit']); ?></th>
-            <th style="text-align: right"><?= NumberUtils::getIncDecNumber($sumAccountValue['credit'] - $sumAccountValue['debit'], $numberHtmlConfig); ?></th>
-            <th></th>
+            <th style="text-align: right"><?= NumberUtils::getIncDecNumber($sumAccountValue['useable_balance'], $numberHtmlConfig); ?></th>
+            <th style="text-align: right"><?= NumberUtils::getIncDecNumber($sumAccountValue['real_balance'], $numberHtmlConfig); ?></th>
+            <th>
+                <?= $tempAccount->account_name; ?>
+                <?= NumberUtils::getIncDecNumber($tempAccount->useable_balance, $numberHtmlConfig); ?> +
+                <?= NumberUtils::getIncDecNumber($sumAccountValue['useable_balance'], $numberHtmlConfig); ?> =
+                <?= NumberUtils::getIncDecNumber($tempAccount->useable_balance + $sumAccountValue['useable_balance'], $numberHtmlConfig); ?>
+            </th>
         </tr>
     </tbody></table></div>
 </div></div></div>

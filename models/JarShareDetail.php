@@ -12,6 +12,8 @@ use Yii;
  * @property string $delete_flag
  */
 class JarShareDetail extends \yii\db\ActiveRecord {
+    public $account_name;
+    public $share_value;
     /**
      * @inheritdoc
      */

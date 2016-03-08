@@ -91,6 +91,9 @@ class FinAccount extends \yii\db\ActiveRecord {
 			case MasterValueUtils::MV_FIN_ACCOUNT_TYPE_OIR :
 				$result = new extended\FinAccount06I00();
 				break;
+            case MasterValueUtils::MV_FIN_ACCOUNT_TYPE_CCQ :
+                $result = new extended\FinAccount07I00();
+                break;
 		}
 		
 		if (is_null($result)) {

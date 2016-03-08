@@ -189,6 +189,11 @@
 				<td style="text-align: right"><?= NumberUtils::format($sumTmAtm['opening_balance']); ?></td>
 				<td style="text-align: right"><?= NumberUtils::format($sumTmAtm['closing_balance']); ?></td>
 			</tr>
+			<tr class="success">
+				<td style="text-align: left"><?= Yii::t('fin.grid', 'DPS'); ?></td>
+				<td style="text-align: right"><?= NumberUtils::format($sumDeposits['opening_balance']); ?></td>
+				<td style="text-align: right"><?= NumberUtils::format($sumDeposits['closing_balance']); ?></td>
+			</tr>
 			<tr class="warning">
 				<td style="text-align: left"><?= Yii::t('fin.grid', 'TM-ATM-DPS'); ?></td>
 				<td style="text-align: right"><?= NumberUtils::format($sumTmAtmDeposit['opening_balance']); ?></td>

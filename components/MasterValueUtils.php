@@ -36,6 +36,7 @@ class MasterValueUtils {
 	const MV_FIN_ACCOUNT_TYPE_TIME_DEPOSIT = 4;	// Time deposits
 	const MV_FIN_ACCOUNT_TYPE_ADVANCE = 5;		// Advances
 	const MV_FIN_ACCOUNT_TYPE_OIR = 6;			// Other internal receivables
+	const MV_FIN_ACCOUNT_TYPE_CCQ = 7;			// CCQ
 	
 	const MV_FIN_ENTRY_TYPE_SIMPLE = 1;				// Simple
 	const MV_FIN_ENTRY_TYPE_DEPOSIT = 2;			// Deposits
@@ -56,6 +57,9 @@ class MasterValueUtils {
 
 	const MV_JAR_ACCOUNT_STATUS_ON = 1;		// ON
 	const MV_JAR_ACCOUNT_STATUS_OFF = 2;	// OFF
+
+	const MV_JAR_ACCOUNT_TYPE_JAR = 1;	// Cash
+	const MV_JAR_ACCOUNT_TYPE_TEMP = 2;	// Current account
 	
 	/**
 	 * get color of a row
