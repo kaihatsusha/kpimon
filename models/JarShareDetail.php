@@ -14,6 +14,7 @@ use Yii;
 class JarShareDetail extends \yii\db\ActiveRecord {
     public $account_name;
     public $share_value;
+    public $share_value_old;
     /**
      * @inheritdoc
      */

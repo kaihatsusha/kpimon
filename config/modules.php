@@ -18,5 +18,8 @@ return [
 	],
 	'jar' => [
 		'class' => 'app\modules\jar\Module',
+	],
+	'oef' => [
+		'class' => 'app\modules\oef\Module',
 	]
 ];

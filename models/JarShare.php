@@ -19,6 +19,7 @@ use app\components\MasterValueUtils;
 class JarShare extends \yii\db\ActiveRecord {
     public $share_date_from = null;
     public $share_date_to = null;
+    public $share_value_old = null;
 
     public static $_PHP_FM_SHORTDATE = 'Y-m-d';
 
@@ -34,11 +35,13 @@ class JarShare extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['share_value'], 'integer'],
-            [['share_date', 'create_date', 'update_date', 'share_date_from', 'share_date_to'], 'safe'],
-            [['description'], 'string', 'max' => 200],
+            [['share_date', 'create_date', 'update_date', 'share_date_from', 'share_date_to', 'share_value', 'description'], 'safe'],
             [['delete_flag'], 'string', 'max' => 1],
             [['share_date_from', 'share_date_to'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_LIST]],
+            [['share_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]],
+            [['share_date', 'share_value'], 'required', 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]],
+            [['description'], 'string', 'max' => 200, 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]],
+            [['share_value'], 'integer', 'min' => 0, 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]]
         ];
     }
 

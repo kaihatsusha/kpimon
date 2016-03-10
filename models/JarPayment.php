@@ -10,16 +10,22 @@ use app\components\MasterValueUtils;
  *
  * @property string $id
  * @property string $entry_date
- * @property integer $account_id
+ * @property integer $entry_value
+ * @property integer $account_source
+ * @property integer $account_target
  * @property string $share_id
- * @property integer $credit
- * @property integer $debit
  * @property string $description
+ * @property integer $entry_status
  * @property string $create_date
  * @property string $update_date
  * @property string $delete_flag
  */
 class JarPayment extends \yii\db\ActiveRecord {
+    public $entry_date_from = null;
+    public $entry_date_to = null;
+
+    public static $_PHP_FM_SHORTDATE = 'Y-m-d';
+
     /**
      * @inheritdoc
      */
@@ -32,9 +38,9 @@ class JarPayment extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['entry_date', 'account_id'], 'required'],
+            [['entry_date'], 'required'],
             [['entry_date', 'create_date', 'update_date'], 'safe'],
-            [['account_id', 'share_id', 'credit', 'debit'], 'integer'],
+            [['entry_value', 'account_source', 'account_target', 'share_id', 'entry_status'], 'integer'],
             [['description'], 'string', 'max' => 100],
             [['delete_flag'], 'string', 'max' => 1]
         ];
@@ -47,11 +53,12 @@ class JarPayment extends \yii\db\ActiveRecord {
         return [
             'id' => Yii::t('jar.models', 'ID'),
             'entry_date' => Yii::t('jar.models', 'Entry Date'),
-            'account_id' => Yii::t('jar.models', 'Account'),
+            'entry_value' => Yii::t('jar.models', 'Entry Value'),
+            'account_source' => Yii::t('jar.models', 'Debit Account'),
+            'account_target' => Yii::t('jar.models', 'Credit Account'),
             'share_id' => Yii::t('jar.models', 'Share'),
-            'credit' => Yii::t('jar.models', 'Credit'),
-            'debit' => Yii::t('jar.models', 'Debit'),
             'description' => Yii::t('jar.models', 'Description'),
+            'entry_status' => Yii::t('jar.models', 'Status'),
             'create_date' => Yii::t('jar.models', 'Create Date'),
             'update_date' => Yii::t('jar.models', 'Update Date'),
             'delete_flag' => Yii::t('jar.models', 'Delete Flag'),
