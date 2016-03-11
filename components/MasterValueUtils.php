@@ -62,6 +62,7 @@ class MasterValueUtils {
 	const MV_JAR_ACCOUNT_TYPE_TEMP = 2;	// Current account
 
 	const MV_JAR_ACCOUNT_NONE = 0;	// NONE
+	const MV_JAR_ACCOUNT_TEMP = 9;	// TEMP
 
 	const MV_JAR_ENTRY_TYPE_SIMPLE = 1;	// Simple
 	const MV_JAR_ENTRY_TYPE_TEMP = 2;	// Temp
