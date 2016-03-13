@@ -48,10 +48,9 @@ class DepositController extends MobiledetectController {
 		// init value
 		if (Yii::$app->request->getIsGet()) {
 			$today = new \DateTime();
+			$tdInfo = getdate($today->getTimestamp());
 			$searchModel->opening_date_to = $today->format($phpFmShortDate);
-			$lastMonth = DateTimeUtils::getNow(DateTimeUtils::FM_DEV_YM . '01', DateTimeUtils::FM_DEV_DATE);
-			DateTimeUtils::subDateTime($lastMonth, 'P3M', null, false);
-			$searchModel->opening_date_from = $lastMonth->format($phpFmShortDate);
+			$searchModel->opening_date_from = DateTimeUtils::parse(($tdInfo[DateTimeUtils::FN_KEY_GETDATE_YEAR] - 1) . '0101', DateTimeUtils::FM_DEV_DATE, $phpFmShortDate);
 		}
 		FinTimeDepositTran::$_PHP_FM_SHORTDATE = $phpFmShortDate;
 		$searchModel->scenario = MasterValueUtils::SCENARIO_LIST;

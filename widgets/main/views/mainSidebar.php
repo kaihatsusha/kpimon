@@ -175,6 +175,41 @@
 				]
 			],
 			[
+				'label'=>Yii::t('common', 'VCBF-TBF'),
+				'options'=>['class'=>'header'],
+				'type'=>'split'
+			],
+			[
+				'label'=>Yii::t('oef.menuLeft', 'NAV'),
+				'url'=>['#'],
+				'icon'=>'<i class="fa fa-file"></i>',
+				'right-icon'=>'<i class="fa fa-angle-left pull-right"></i>',
+				'items'=>[
+					[
+						'label'=>Yii::t('oef.menuLeft', 'List'),
+						'url'=>['/oef/nav/index'],
+						'icon'=>'<i class="fa fa-circle-o text-green"></i>'
+					],
+					[
+						'label'=>Yii::t('oef.menuLeft', 'Create'),
+						'url'=>['/oef/nav/create'],
+						'icon'=>'<i class="fa fa-circle-o text-green"></i>'
+					],
+					[
+						'label'=>Yii::t('oef.menuLeft', 'View'),
+						'url'=>['/oef/nav/view'],
+						'requireId'=>true,
+						'icon'=>'<i class="fa fa-circle-o text-green"></i>'
+					],
+					[
+						'label'=>Yii::t('oef.menuLeft', 'Edit'),
+						'url'=>['/oef/nav/update'],
+						'requireId'=>true,
+						'icon'=>'<i class="fa fa-circle-o text-green"></i>'
+					]
+				]
+			],
+			[
 				'label'=>Yii::t('common', 'JARS'),
 				'options'=>['class'=>'header'],
 				'type'=>'split'

@@ -40,7 +40,7 @@ class JarPayment extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['entry_date', 'entry_date_from', 'entry_date_to', 'create_date', 'update_date'], 'safe'],
+            [['entry_adjust', 'entry_date', 'entry_date_from', 'entry_date_to', 'create_date', 'update_date'], 'safe'],
             [['entry_value', 'account_source', 'account_target', 'share_id', 'entry_status'], 'integer'],
             [['description'], 'string', 'max' => 100],
             [['delete_flag'], 'string', 'max' => 1],

@@ -38,6 +38,16 @@
                 <th class="warning"><?= $model->getAttributeLabel('entry_value'); ?></th>
                 <td class="info"><?= NumberUtils::format($model->entry_value); ?></td>
             </tr>
+            <?php if ($formModeValue === MasterValueUtils::PG_MODE_EDIT): ?>
+                <tr>
+                    <th class="warning"><?= $model->getAttributeLabel('entry_adjust'); ?></th>
+                    <td class="info"><?= NumberUtils::format($model->entry_adjust); ?></td>
+                </tr>
+                <tr>
+                    <th class="warning"><?= $model->getAttributeLabel('entry_updated'); ?></th>
+                    <td class="info"><?= NumberUtils::format($model->entry_value + $model->entry_adjust); ?></td>
+                </tr>
+            <?php endif; ?>
             <tr>
                 <th class="warning"><?= $model->getAttributeLabel('description'); ?></th>
                 <td class="info"><?= $model->description; ?></td>
@@ -48,6 +58,7 @@
             <?= $form->field($model, 'account_source')->hiddenInput(); ?>
             <?= $form->field($model, 'account_target')->hiddenInput(); ?>
             <?= $form->field($model, 'entry_value')->hiddenInput(); ?>
+            <?= $form->field($model, 'entry_adjust')->hiddenInput(); ?>
             <?= $form->field($model, 'description')->hiddenInput(); ?>
         </div>
         <div class="form-group">

@@ -251,6 +251,137 @@ class PaymentController extends MobiledetectController {
     }
 
     public function actionUpdate($id) {
+        $this->objectId = $id;
+        // master value
+        $fmShortDatePhp = DateTimeUtils::getDateFormat(DateTimeUtils::FM_KEY_PHP, null);
+        $fmShortDateJui = DateTimeUtils::getDateFormat(DateTimeUtils::FM_KEY_JUI, null);
+        JarPayment::$_PHP_FM_SHORTDATE = $fmShortDatePhp;
+        $model = JarPayment::findOne(['id'=>$id, 'delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
 
+        $renderView = 'update';
+        if (is_null($model)) {
+            $model = false;
+            $renderData = ['model'=>$model];
+            Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, Yii::t('common', 'The requested {record} does not exist.', ['record'=>Yii::t('jar.models', 'Payment')]));
+        } else {
+            if ($model->share_id > 0) {
+                return Yii::$app->getResponse()->redirect(Url::to(['/jar/distribute/update', 'id'=>$model->share_id]));
+            }
+            // master value
+            $arrAccount = ModelUtils::getArrData(JarAccount::find()->select(['account_id', 'account_name'])
+                ->where(['delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE])
+                ->orderBy('account_type, order_num'), 'account_id', 'account_name');
+            // submit data
+            $postData = Yii::$app->request->post();
+            $submitMode = isset($postData[MasterValueUtils::SM_MODE_NAME]) ? $postData[MasterValueUtils::SM_MODE_NAME] : false;
+            // populate model attributes with user inputs
+            $model->load($postData);
+            // init value
+            $model->scenario = MasterValueUtils::SCENARIO_UPDATE;
+            // render GUI
+            $renderData = ['model'=>$model, 'fmShortDatePhp'=>$fmShortDatePhp, 'fmShortDateJui'=>$fmShortDateJui, 'arrAccount'=>$arrAccount];
+            switch ($submitMode) {
+                case MasterValueUtils::SM_MODE_INPUT:
+                    $isValid = $model->validate();
+                    if ($isValid) {
+                        $renderView = 'confirm';
+                        $renderData['formMode'] = [MasterValueUtils::PG_MODE_NAME=>MasterValueUtils::PG_MODE_EDIT];
+                    }
+                    break;
+                case MasterValueUtils::SM_MODE_CONFIRM:
+                    $isValid = $model->validate();
+                    if ($isValid) {
+                        $result = $this->updatePayment($model, $fmShortDatePhp);
+                        if ($result === true) {
+                            Yii::$app->session->setFlash(MasterValueUtils::FLASH_SUCCESS, Yii::t('common', '{record} has been saved successfully.', ['record'=>Yii::t('jar.models', 'Payment')]));
+                            return Yii::$app->getResponse()->redirect(Url::to(['update', 'id'=>$id]));
+                        } else {
+                            // restore Data for View
+                            $model->entry_date = DateTimeUtils::parse($model->entry_date, DateTimeUtils::FM_DB_DATE, $fmShortDatePhp);
+                            // render View
+                            Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, $result);
+                            $renderView = 'confirm';
+                            $renderData['formMode'] = [MasterValueUtils::PG_MODE_NAME=>MasterValueUtils::PG_MODE_EDIT];
+                        }
+                    }
+                    break;
+                case MasterValueUtils::SM_MODE_BACK:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // render GUI
+        return $this->render($renderView, $renderData);
+    }
+
+    /**
+     * update Payment
+     * @param $payment JarPayment
+     * @param $fmShortDatePhp
+     * @throws Exception
+     * @return string|true
+     */
+    private function updatePayment($payment, $fmShortDatePhp) {
+        // modify data for DB
+        $payment->entry_date = DateTimeUtils::parse($payment->entry_date, $fmShortDatePhp, DateTimeUtils::FM_DB_DATE);
+
+        $transaction = Yii::$app->db->beginTransaction();
+        $save = true;
+        $message = null;
+
+        // begin transaction
+        try {
+            $accountSource = JarAccount::findOne($payment->account_source);
+            $accountTarget = JarAccount::findOne($payment->account_target);
+            if ($payment->account_source == 0 || $payment->account_target == 0) {
+                // save source
+                if (!is_null($accountSource) && ($save !== false)) {
+                    $accountSource->real_balance = $accountSource->real_balance - $payment->entry_adjust;
+                    $accountSource->useable_balance = $accountSource->useable_balance - $payment->entry_adjust;
+                    $save = $accountSource->save();
+                }
+                // save target
+                if (!is_null($accountTarget) && ($save !== false)) {
+                    $accountTarget->real_balance = $accountTarget->real_balance + $payment->entry_adjust;
+                    $accountTarget->useable_balance = $accountTarget->useable_balance + $payment->entry_adjust;
+                    $save = $accountTarget->save();
+                }
+            } else {
+                // save source
+                if ($save !== false) {
+                    $accountSource->useable_balance = $accountSource->useable_balance - $payment->entry_adjust;
+                    $save = $accountSource->save();
+                }
+                // save target
+                if ($save !== false) {
+                    $accountTarget->useable_balance = $accountTarget->useable_balance + $payment->entry_adjust;
+                    $save = $accountTarget->save();
+                }
+            }
+            // save payment
+            if ($save !== false) {
+                $payment->entry_value = $payment->entry_value + $payment->entry_adjust;
+                $save = $payment->save();
+            }
+        } catch(Exception $e) {
+            $save = false;
+            $message = Yii::t('common', 'Unable to save {record}.', ['record'=>Yii::t('jar.models', 'Payment')]);
+        }
+
+        // end transaction
+        try {
+            if ($save === false) {
+                $transaction->rollback();
+                return $message;
+            } else {
+                $transaction->commit();
+            }
+        } catch(Exception $e) {
+            throw Exception(Yii::t('common', 'Unable to excute Transaction.'));
+        }
+
+        return true;
     }
 }

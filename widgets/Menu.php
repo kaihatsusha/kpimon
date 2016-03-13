@@ -51,7 +51,7 @@ class Menu extends \yii\widgets\Menu
 
         $paths = [];
         $moduleId = isset($moduleObj->id) ? $moduleObj->id : false;
-        if ($moduleId && (in_array($moduleId, ['fin', 'net', 'jar']))) {
+        if ($moduleId && (in_array($moduleId, ['fin', 'net', 'jar', 'oef']))) {
             $paths[] = $moduleId;
         }
         $paths[] = $controller->id;
