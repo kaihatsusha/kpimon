@@ -4,12 +4,12 @@
     use app\components\MasterValueUtils;
     use kartik\datetime\DateTimePicker;
 
-    $this->title = Yii::t('oef.nav', 'Create Nav');
+    $this->title = Yii::t('oef.nav', 'Edit Nav');
 ?>
 
-<div class="row"><div class="col-md-12"><div class="box box-widget widget-detail">
+<?php if ($model): ?><div class="row"><div class="col-md-12"><div class="box box-widget widget-detail">
     <div class="widget-detail-header bg-maroon"><h3 class="widget-detail-title"><?= Yii::t('fin.form', 'Input Values'); ?></h3></div>
-    <div class="box-footer" id="oefNavCreateForm">
+    <div class="box-footer" id="oefNavUpdateForm">
         <?php $form = ActiveForm::begin(['requiredCssClass' => 'form-group-required']); ?>
         <?= $form->field($model, 'trade_date')->widget(DateTimePicker::className(), ['type'=>1,
             'pluginOptions'=>['autoclose'=>true, 'format'=>$fmShortDateJui, 'startView'=>2, 'minView'=>2, 'todayHighlight'=>true]
@@ -25,4 +25,4 @@
         </div>
         <?php ActiveForm::end(); ?>
     </div>
-</div></div></div>
+</div></div></div><?php endif; ?>

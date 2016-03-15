@@ -3,7 +3,6 @@ namespace app\modules\oef\controllers;
 
 use Yii;
 use yii\base\Exception;
-use yii\db\Query;
 use yii\helpers\Url;
 use app\components\DateTimeUtils;
 use app\components\MasterValueUtils;
@@ -26,14 +25,65 @@ class NavController extends MobiledetectController {
     }
 
     public function actionIndex() {
+        // master value
+        $fmShortDatePhp = DateTimeUtils::getDateFormat(DateTimeUtils::FM_KEY_PHP, null);
+        $fmShortDateJui = DateTimeUtils::getDateFormat(DateTimeUtils::FM_KEY_JUI, null);
+        OefNav::$_PHP_FM_SHORTDATE = $fmShortDatePhp;
+        $searchModel = new OefNav();
+
+        // submit data
+        $postData = Yii::$app->request->post();
+
+        // populate model attributes with user inputs
+        $searchModel->load($postData);
+
+        // init value
+        $today = DateTimeUtils::getNow();
+        if (Yii::$app->request->getIsGet()) {
+            $tdInfo = getdate($today->getTimestamp());
+            $searchModel->trade_date_to = $today->format($fmShortDatePhp);
+            $searchModel->trade_date_from = DateTimeUtils::parse(($tdInfo[DateTimeUtils::FN_KEY_GETDATE_YEAR] - 1) . '0101', DateTimeUtils::FM_DEV_DATE, $fmShortDatePhp);
+        }
+        $searchModel->scenario = MasterValueUtils::SCENARIO_LIST;
+
+        // query for dataprovider
+        $dataQuery = null;
+        if ($searchModel->validate()) {
+            $dataQuery = OefNav::find()->where(['delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+
+            if (!empty($searchModel->trade_date_from)) {
+                $dataQuery->andWhere(['>=', 'trade_date', $searchModel->trade_date_from]);
+            }
+            if (!empty($searchModel->trade_date_to)) {
+                $dataQuery->andWhere(['<=', 'trade_date', $searchModel->trade_date_to]);
+            }
+            $dataQuery->orderBy('trade_date DESC');
+        } else {
+            $dataQuery = OefNav::find()->where(['nav_id'=>-1]);
+        }
+
         // render GUI
-        $renderData = [];
+        $renderData = ['searchModel'=>$searchModel, 'fmShortDatePhp'=>$fmShortDatePhp, 'fmShortDateJui'=>$fmShortDateJui, 'dataQuery'=>$dataQuery];
 
         return $this->render('index', $renderData);
     }
 
     public function actionView($id) {
+        $this->objectId = $id;
+        $model = OefNav::findOne(['nav_id'=>$id, 'delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
 
+        $renderView = 'view';
+        if (is_null($model)) {
+            $model = false;
+            $renderData = ['model'=>$model];
+            Yii::$app->session->setFlash(MasterValueUtils::FLASH_ERROR, Yii::t('common', 'The requested {record} does not exist.', ['record'=>Yii::t('oef.models', 'Nav')]));
+        } else {
+            // data for rendering
+            $renderData = ['model'=>$model];
+        }
+
+        // render GUI
+        return $this->render($renderView, $renderData);
     }
 
     public function actionCreate() {
