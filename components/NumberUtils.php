@@ -1,8 +1,6 @@
 <?php
 namespace app\components;
 
-use app\components\StringUtils;
-
 class NumberUtils {
 	const NUM_ROUND = 1;
 	const NUM_FLOOR = 2;

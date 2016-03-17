@@ -10,11 +10,13 @@ use app\components\MasterValueUtils;
  *
  * @property string $id
  * @property string $purchase_date
+ * @property integer $purchase_type
+ * @property string $sip_date
  * @property string $account
  * @property integer $purchase
- * @property integer $purchase_fee
  * @property double $purchase_fee_rate
  * @property integer $purchase_fee_rule
+ * @property double $discount_rate
  * @property double $nav
  * @property double $found_stock_sold
  * @property double $found_stock
@@ -30,6 +32,7 @@ use app\components\MasterValueUtils;
 class OefPurchase extends \yii\db\ActiveRecord {
     public $purchase_date_from = null;
     public $purchase_date_to = null;
+    public $purchase_fee = 0;
 
     public static $_PHP_FM_SHORTDATE = 'Y-m-d';
 
@@ -45,14 +48,17 @@ class OefPurchase extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['purchase_date', 'purchase_date_from', 'purchase_date_to'], 'safe'],
-            [['purchase_date', 'account', 'nav'], 'required'],
-            [['purchase', 'purchase_fee', 'purchase_fee_rule', 'found_stock_rule', 'transfer_fee', 'other_fee', 'fin_entry_id'], 'integer'],
-            [['purchase_fee_rate', 'nav', 'found_stock_sold', 'found_stock'], 'number'],
+            [['purchase_date', 'purchase_date_from', 'purchase_date_to', 'purchase_type', 'sip_date', 'nav', 'transfer_fee', 'purchase'], 'safe'],
+            [['purchase_fee', 'purchase_fee_rule', 'found_stock_rule', 'other_fee', 'fin_entry_id'], 'integer'],
+            [['purchase_fee_rate', 'discount_rate', 'found_stock_sold', 'found_stock'], 'number'],
             [['account'], 'string', 'max' => 50],
             [['description'], 'string', 'max' => 100],
             [['delete_flag'], 'string', 'max' => 1],
-            [['purchase_date_from', 'purchase_date_to'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_LIST]]
+            [['purchase_date_from', 'purchase_date_to'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_LIST]],
+            [['purchase_date', 'purchase_type', 'purchase', 'nav'], 'required', 'on' => [MasterValueUtils::SCENARIO_CREATE]],
+            [['purchase_date', 'sip_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_CREATE]],
+            [['purchase_type', 'purchase', 'transfer_fee'], 'integer', 'on' => [MasterValueUtils::SCENARIO_CREATE]],
+            [['nav'], 'number', 'on' => [MasterValueUtils::SCENARIO_CREATE]]
         ];
     }
 
@@ -65,12 +71,15 @@ class OefPurchase extends \yii\db\ActiveRecord {
             'purchase_date' => Yii::t('oef.models', 'Purchase Date'),
             'purchase_date_from' => Yii::t('oef.models', 'Purchase Date From'),
             'purchase_date_to' => Yii::t('oef.models', 'Purchase Date To'),
+            'purchase_type' => Yii::t('oef.models', 'Purchase Type'),
+            'sip_date' => Yii::t('oef.models', 'SIP Date'),
             'account' => Yii::t('oef.models', 'Account'),
-            'purchase' => Yii::t('oef.models', 'Purchase'),
+            'purchase' => Yii::t('oef.models', 'Request Purchase'),
             'purchase_fee' => Yii::t('oef.models', 'Purchase Fee'),
             'purchase_fee_rate' => Yii::t('oef.models', 'Purchase Fee Rate'),
             'purchase_fee_rule' => Yii::t('oef.models', 'Purchase Fee Rule'),
-            'nav' => Yii::t('oef.models', 'Nav'),
+            'discount_rate' => Yii::t('oef.models', 'Discount Rate'),
+            'nav' => Yii::t('oef.models', 'NAV'),
             'found_stock_sold' => Yii::t('oef.models', 'Sold'),
             'found_stock' => Yii::t('oef.models', 'Found Stock'),
             'found_stock_rule' => Yii::t('oef.models', 'Found Stock Rule'),

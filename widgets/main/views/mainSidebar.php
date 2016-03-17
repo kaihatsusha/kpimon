@@ -182,7 +182,7 @@
 			[
 				'label'=>Yii::t('oef.menuLeft', 'NAV'),
 				'url'=>['#'],
-				'icon'=>'<i class="fa fa-file"></i>',
+				'icon'=>'<i class="fa fa-tree"></i>',
 				'right-icon'=>'<i class="fa fa-angle-left pull-right"></i>',
 				'items'=>[
 					[
@@ -204,6 +204,76 @@
 					[
 						'label'=>Yii::t('oef.menuLeft', 'Edit'),
 						'url'=>['/oef/nav/update'],
+						'requireId'=>true,
+						'icon'=>'<i class="fa fa-circle-o text-green"></i>'
+					]
+				]
+			],
+			[
+				'label'=>Yii::t('oef.menuLeft', 'Purchase'),
+				'url'=>['#'],
+				'icon'=>'<i class="fa fa-calendar"></i>',
+				'right-icon'=>'<i class="fa fa-angle-left pull-right"></i>',
+				'items'=>[
+					[
+						'label'=>Yii::t('oef.menuLeft', 'Tool'),
+						'url'=>['/oef/purchase/tool'],
+						'icon'=>'<i class="fa fa-circle-o text-green"></i>'
+					],
+					[
+						'label'=>Yii::t('oef.menuLeft', 'List'),
+						'url'=>['/oef/purchase/index'],
+						'icon'=>'<i class="fa fa-circle-o text-green"></i>'
+					],
+					[
+						'label'=>Yii::t('oef.menuLeft', 'Create'),
+						'url'=>['/oef/purchase/create'],
+						'icon'=>'<i class="fa fa-circle-o text-green"></i>'
+					],
+					[
+						'label'=>Yii::t('oef.menuLeft', 'View'),
+						'url'=>['/oef/purchase/view'],
+						'requireId'=>true,
+						'icon'=>'<i class="fa fa-circle-o text-green"></i>'
+					],
+					[
+						'label'=>Yii::t('oef.menuLeft', 'Edit'),
+						'url'=>['/oef/purchase/update'],
+						'requireId'=>true,
+						'icon'=>'<i class="fa fa-circle-o text-green"></i>'
+					]
+				]
+			],
+			[
+				'label'=>Yii::t('oef.menuLeft', 'Sale'),
+				'url'=>['#'],
+				'icon'=>'<i class="fa fa-car"></i>',
+				'right-icon'=>'<i class="fa fa-angle-left pull-right"></i>',
+				'items'=>[
+					[
+						'label'=>Yii::t('oef.menuLeft', 'Tool'),
+						'url'=>['/oef/sale/tool'],
+						'icon'=>'<i class="fa fa-circle-o text-green"></i>'
+					],
+					[
+						'label'=>Yii::t('oef.menuLeft', 'List'),
+						'url'=>['/oef/sale/index'],
+						'icon'=>'<i class="fa fa-circle-o text-green"></i>'
+					],
+					[
+						'label'=>Yii::t('oef.menuLeft', 'Create'),
+						'url'=>['/oef/sale/create'],
+						'icon'=>'<i class="fa fa-circle-o text-green"></i>'
+					],
+					[
+						'label'=>Yii::t('oef.menuLeft', 'View'),
+						'url'=>['/oef/sale/view'],
+						'requireId'=>true,
+						'icon'=>'<i class="fa fa-circle-o text-green"></i>'
+					],
+					[
+						'label'=>Yii::t('oef.menuLeft', 'Edit'),
+						'url'=>['/oef/sale/update'],
 						'requireId'=>true,
 						'icon'=>'<i class="fa fa-circle-o text-green"></i>'
 					]
