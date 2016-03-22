@@ -4,6 +4,8 @@ namespace app\models;
 use Yii;
 use yii\db\Expression;
 use app\components\MasterValueUtils;
+use app\components\NumberUtils;
+use app\components\ParamUtils;
 
 /**
  * This is the model class for table "oef_purchase".
@@ -12,8 +14,8 @@ use app\components\MasterValueUtils;
  * @property string $purchase_date
  * @property integer $purchase_type
  * @property string $sip_date
- * @property string $account
  * @property integer $purchase
+ * @property integer $purchase_fee
  * @property double $purchase_fee_rate
  * @property integer $purchase_fee_rule
  * @property double $discount_rate
@@ -24,6 +26,7 @@ use app\components\MasterValueUtils;
  * @property integer $transfer_fee
  * @property integer $other_fee
  * @property string $fin_entry_id
+ * @property string $jar_payment_id
  * @property string $description
  * @property string $create_date
  * @property string $update_date
@@ -32,7 +35,10 @@ use app\components\MasterValueUtils;
 class OefPurchase extends \yii\db\ActiveRecord {
     public $purchase_date_from = null;
     public $purchase_date_to = null;
-    public $purchase_fee = 0;
+    public $investment_old = null;
+    public $total_fee_rate = null;
+    public $real_purchase = null;
+    public $investment = null;
 
     public static $_PHP_FM_SHORTDATE = 'Y-m-d';
 
@@ -49,16 +55,17 @@ class OefPurchase extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['purchase_date', 'purchase_date_from', 'purchase_date_to', 'purchase_type', 'sip_date', 'nav', 'transfer_fee', 'purchase'], 'safe'],
-            [['purchase_fee', 'purchase_fee_rule', 'found_stock_rule', 'other_fee', 'fin_entry_id'], 'integer'],
+            [['purchase_fee', 'purchase_fee_rule', 'found_stock_rule', 'other_fee', 'fin_entry_id', 'jar_payment_id'], 'integer'],
             [['purchase_fee_rate', 'discount_rate', 'found_stock_sold', 'found_stock'], 'number'],
-            [['account'], 'string', 'max' => 50],
             [['description'], 'string', 'max' => 100],
             [['delete_flag'], 'string', 'max' => 1],
             [['purchase_date_from', 'purchase_date_to'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_LIST]],
-            [['purchase_date', 'purchase_type', 'purchase', 'nav'], 'required', 'on' => [MasterValueUtils::SCENARIO_CREATE]],
+            [['purchase_date', 'purchase_type', 'purchase', 'purchase_fee', 'nav'], 'required', 'on' => [MasterValueUtils::SCENARIO_CREATE]],
             [['purchase_date', 'sip_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_CREATE]],
-            [['purchase_type', 'purchase', 'transfer_fee'], 'integer', 'on' => [MasterValueUtils::SCENARIO_CREATE]],
-            [['nav'], 'number', 'on' => [MasterValueUtils::SCENARIO_CREATE]]
+            [['purchase_type', 'purchase', 'purchase_fee', 'transfer_fee', 'other_fee'], 'integer', 'on' => [MasterValueUtils::SCENARIO_CREATE]],
+            [['nav'], 'number', 'on' => [MasterValueUtils::SCENARIO_CREATE]],
+            [['other_fee', 'transfer_fee', 'purchase_type'], 'default', 'value' => 0, 'on' => [MasterValueUtils::SCENARIO_CREATE]],
+            [['purchase_type'], 'validatePurchaseTypeSipDate', 'on' => [MasterValueUtils::SCENARIO_CREATE]]
         ];
     }
 
@@ -73,12 +80,14 @@ class OefPurchase extends \yii\db\ActiveRecord {
             'purchase_date_to' => Yii::t('oef.models', 'Purchase Date To'),
             'purchase_type' => Yii::t('oef.models', 'Purchase Type'),
             'sip_date' => Yii::t('oef.models', 'SIP Date'),
-            'account' => Yii::t('oef.models', 'Account'),
             'purchase' => Yii::t('oef.models', 'Request Purchase'),
+            'real_purchase' => Yii::t('oef.models', 'Real Purchase'),
             'purchase_fee' => Yii::t('oef.models', 'Purchase Fee'),
             'purchase_fee_rate' => Yii::t('oef.models', 'Purchase Fee Rate'),
             'purchase_fee_rule' => Yii::t('oef.models', 'Purchase Fee Rule'),
             'discount_rate' => Yii::t('oef.models', 'Discount Rate'),
+            'total_fee_rate' => Yii::t('oef.models', 'Total Fee Rate'),
+            'investment' => Yii::t('oef.models', 'Investment'),
             'nav' => Yii::t('oef.models', 'NAV'),
             'found_stock_sold' => Yii::t('oef.models', 'Sold'),
             'found_stock' => Yii::t('oef.models', 'Found Stock'),
@@ -86,6 +95,7 @@ class OefPurchase extends \yii\db\ActiveRecord {
             'transfer_fee' => Yii::t('oef.models', 'Transfer Fee'),
             'other_fee' => Yii::t('oef.models', 'Other Fee'),
             'fin_entry_id' => Yii::t('oef.models', 'Entry ID'),
+            'jar_payment_id' => Yii::t('oef.models', 'Entry ID'),
             'description' => Yii::t('oef.models', 'Description'),
             'create_date' => Yii::t('oef.models', 'Create Date'),
             'update_date' => Yii::t('oef.models', 'Update Date'),
@@ -107,5 +117,40 @@ class OefPurchase extends \yii\db\ActiveRecord {
                 'value' => new Expression('NOW()'),
             ],
         ];
+    }
+
+    public function validatePurchaseTypeSipDate() {
+        if ($this->purchase_type == MasterValueUtils::MV_OEF_PERCHASE_TYPE_SIP && empty($this->sip_date)) {
+            $this->addError('sip_date', Yii::t('common', 'Sip Date must be inputed.'));
+            return false;
+        }
+        return true;
+    }
+
+    public static function getModel($id) {
+        $result = OefPurchase::findOne(['id'=>$id, 'delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+        if (!is_null($result)) {
+            $result->investment = $result->purchase + $result->transfer_fee + $result->other_fee;
+            $result->investment_old = $result->investment;
+            $result->total_fee_rate = $result->purchase_fee_rate * (100 - $result->discount_rate) / 100;
+            $result->real_purchase = $result->purchase - $result->purchase_fee;
+        }
+        return $result;
+    }
+
+    public function calculate() {
+        $this->purchase_fee_rate = ParamUtils::getPurchaseFeeRate($this->purchase);
+        $this->discount_rate = ParamUtils::getPurchaseFeeDiscountRate($this->purchase_type);
+        $this->total_fee_rate = $this->purchase_fee_rate * (100 - $this->discount_rate) / 100;
+        $this->purchase_fee_rule = ParamUtils::getPurchaseFeeRule();
+        $this->purchase_fee = NumberUtils::rounds(($this->purchase * $this->total_fee_rate) / 100, $this->purchase_fee_rule);
+        $this->real_purchase = $this->purchase - $this->purchase_fee;
+        $this->found_stock_rule = ParamUtils::getFoundStockRule();
+        $this->found_stock = NumberUtils::rounds(100 * ($this->real_purchase / $this->nav), $this->found_stock_rule) / 100;
+        $this->investment = $this->purchase + $this->transfer_fee + $this->other_fee;
+        if ($this->purchase_type == MasterValueUtils::MV_OEF_PERCHASE_TYPE_DIVIDEND) {
+            $this->fin_entry_id = 0;
+            $this->jar_payment_id = 0;
+        }
     }
 }

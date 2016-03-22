@@ -29,6 +29,8 @@ class MasterValueUtils {
 	const CSS_COLOR_ODD = 'success';	// row % 2 == 1
 	
 	const MV_FIN_ACCOUNT_NONE = 0;	// NONE
+	const MV_FIN_ACCOUNT_ATM_VCB = 2;
+	const MV_FIN_ACCOUNT_VCBF_TBF = 11;
 	
 	const MV_FIN_ACCOUNT_TYPE_CASH = 1;			// Cash
 	const MV_FIN_ACCOUNT_TYPE_CURRENT = 2;		// Current account
@@ -42,8 +44,10 @@ class MasterValueUtils {
 	const MV_FIN_ENTRY_TYPE_DEPOSIT = 2;			// Deposits
 	const MV_FIN_ENTRY_TYPE_INTEREST_DEPOSIT = 3;	// Interest of Deposits
 	const MV_FIN_ENTRY_TYPE_COST_INTERNET = 4;		// Cost of Internet
+	const MV_FIN_ENTRY_TYPE_INTEREST_VCBF_TBF = 5;	// Cost of Internet
 
 	const MV_FIN_ENTRY_LOG_INTEREST = 13;	// Interest of Deposits
+	const MV_FIN_ENTRY_LOG_TRANSFER = 14;	// Transfer
 	const MV_FIN_ENTRY_LOG_SAVING = 15;		// Saving
 
 	const MV_FIN_TIMEDP_TRANTYPE_ADDING = 1;		// Adding funds
@@ -62,10 +66,16 @@ class MasterValueUtils {
 	const MV_JAR_ACCOUNT_TYPE_TEMP = 2;	// Current account
 
 	const MV_JAR_ACCOUNT_NONE = 0;	// NONE
+	const MV_JAR_ACCOUNT_LTSS = 4;	// TEMP (VCBF_TBF, ...)
 	const MV_JAR_ACCOUNT_TEMP = 9;	// TEMP
 
 	const MV_JAR_ENTRY_TYPE_SIMPLE = 1;	// Simple
 	const MV_JAR_ENTRY_TYPE_TEMP = 2;	// Temp
+
+	const MV_OEF_PERCHASE_TYPE_NORMAL	= 1;
+	const MV_OEF_PERCHASE_TYPE_SIP		= 2;
+	const MV_OEF_PERCHASE_TYPE_DIVIDEND	= 3;
+	const MV_OEF_PERCHASE_TYPE_IPO		= 4;
 	
 	/**
 	 * get color of a row

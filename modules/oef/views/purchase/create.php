@@ -19,12 +19,13 @@
                 'pluginOptions'=>['autoclose'=>true, 'format'=>$fmShortDateJui, 'startView'=>2, 'minView'=>2, 'todayHighlight'=>true]
             ]); ?>
             <?= $form->field($model, 'purchase_type')->dropDownList($arrPurchaseType, ['prompt'=>'']); ?>
-            <?= $form->field($model, 'sip_date')->widget(DateTimePicker::className(), ['type'=>1,
+            <?= $form->field($model, 'sip_date')->widget(DateTimePicker::className(), ['type'=>1, 'options' => ['data-backup'=>$model->sip_date],
                 'pluginOptions'=>['autoclose'=>true, 'format'=>$fmShortDateJui, 'startView'=>2, 'minView'=>2, 'todayHighlight'=>true]
             ]); ?>
             <?= $form->field($model, 'nav')->textInput(['type'=>'number', 'step'=>'any']); ?>
             <?= $form->field($model, 'purchase')->textInput(['type'=>'number']); ?>
             <?= $form->field($model, 'transfer_fee')->textInput(['type'=>'number']); ?>
+            <?= $form->field($model, 'other_fee')->textInput(['type'=>'number']); ?>
             <div class="form-group">
                 <?= Html::resetButton(Yii::t('button', 'Reset'), ['class'=>'btn btn-default']); ?>
                 <?= Html::submitButton(Yii::t('button', 'Confirm'), ['class'=>'btn btn-info', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_INPUT]); ?>
