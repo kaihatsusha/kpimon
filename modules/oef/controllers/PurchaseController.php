@@ -30,7 +30,36 @@ class PurchaseController extends MobiledetectController {
     }
 
     public function actionTool() {
+        // master value
+        $arrPurchaseType = MasterValueUtils::getArrData('oef_purchase_type');
 
+        // submit data
+        $postData = Yii::$app->request->post();
+        $submitMode = isset($postData[MasterValueUtils::SM_MODE_NAME]) ? $postData[MasterValueUtils::SM_MODE_NAME] : false;
+
+        // populate model attributes with user inputs
+        $model = new OefPurchase();
+        $model->load($postData);
+
+        // init value
+        $model->scenario = MasterValueUtils::SCENARIO_TOOL;
+
+        // render GUI
+        $renderView = 'tool';
+        $renderData = ['model'=>$model, 'arrPurchaseType'=>$arrPurchaseType];
+        switch ($submitMode) {
+            case MasterValueUtils::SM_MODE_INPUT:
+                $isValid = $model->validate();
+                if ($isValid) {
+                    $model->calculate();
+                }
+                break;
+            default:
+                break;
+        }
+
+        // render GUI
+        return $this->render($renderView, $renderData);
     }
 
     public function actionIndex() {

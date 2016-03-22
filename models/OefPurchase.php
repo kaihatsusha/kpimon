@@ -60,12 +60,14 @@ class OefPurchase extends \yii\db\ActiveRecord {
             [['description'], 'string', 'max' => 100],
             [['delete_flag'], 'string', 'max' => 1],
             [['purchase_date_from', 'purchase_date_to'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_LIST]],
-            [['purchase_date', 'purchase_type', 'purchase', 'purchase_fee', 'nav'], 'required', 'on' => [MasterValueUtils::SCENARIO_CREATE]],
-            [['purchase_date', 'sip_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_CREATE]],
-            [['purchase_type', 'purchase', 'purchase_fee', 'transfer_fee', 'other_fee'], 'integer', 'on' => [MasterValueUtils::SCENARIO_CREATE]],
-            [['nav'], 'number', 'on' => [MasterValueUtils::SCENARIO_CREATE]],
-            [['other_fee', 'transfer_fee', 'purchase_type'], 'default', 'value' => 0, 'on' => [MasterValueUtils::SCENARIO_CREATE]],
-            [['purchase_type'], 'validatePurchaseTypeSipDate', 'on' => [MasterValueUtils::SCENARIO_CREATE]]
+            [['purchase_date', 'purchase_type', 'purchase', 'nav'], 'required', 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]],
+            [['purchase_date', 'sip_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]],
+            [['purchase_type', 'purchase', 'purchase_fee', 'transfer_fee', 'other_fee'], 'integer', 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]],
+            [['nav'], 'number', 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE, MasterValueUtils::SCENARIO_TOOL]],
+            [['other_fee', 'transfer_fee', 'purchase_type'], 'default', 'value' => 0, 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]],
+            [['purchase_type'], 'validatePurchaseTypeSipDate', 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]],
+            [['purchase_type', 'purchase', 'nav'], 'required', 'on' => [MasterValueUtils::SCENARIO_TOOL]],
+            [['purchase_type', 'purchase'], 'integer', 'on' => [MasterValueUtils::SCENARIO_TOOL]]
         ];
     }
 

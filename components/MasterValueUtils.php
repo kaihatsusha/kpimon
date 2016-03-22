@@ -21,6 +21,7 @@ class MasterValueUtils {
 	const SCENARIO_CREATE = 'create';
 	const SCENARIO_UPDATE = 'update';
 	const SCENARIO_COPY = 'copy';
+	const SCENARIO_TOOL = 'tool';
 	
 	const FLASH_SUCCESS = 'success';
 	const FLASH_ERROR = 'error';

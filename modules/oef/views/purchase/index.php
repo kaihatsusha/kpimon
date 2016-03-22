@@ -104,6 +104,7 @@
                     'format'=>'raw',
                     'value'=>function($model) use ($arrPurchaseType) {
                         $html = $arrPurchaseType[$model->purchase_type];
+                        $html .= is_null($model->sip_date) ? '' : ' ' . DateTimeUtils::htmlDateFormatFromDB($model->sip_date, DateTimeUtils::FM_VIEW_DATE, true);
                         $html .= '<br/>' . NumberUtils::format($model->purchase);
                         return $html;
                     },
