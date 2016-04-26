@@ -6,6 +6,7 @@ use yii\base\Exception;
 use yii\helpers\Url;
 use app\components\DateTimeUtils;
 use app\components\MasterValueUtils;
+use app\components\NumberUtils;
 use app\controllers\MobiledetectController;
 use app\models\OefNav;
 
@@ -14,7 +15,7 @@ class NavController extends MobiledetectController {
         return [
             'access' => [
                 'class' => \yii\filters\AccessControl::className(),
-                'only' => ['index', 'view', 'create', 'update'],
+                'only' => ['index', 'view', 'create', 'update', 'ajaxchart'],
                 'rules' => [
                     [
                         'allow' => true, 'roles' => ['@']
@@ -22,6 +23,39 @@ class NavController extends MobiledetectController {
                 ]
             ]
         ];
+    }
+
+    public function actionAjaxchart() {
+        // master value
+        $fmShortDatePhp = DateTimeUtils::getDateFormat(DateTimeUtils::FM_KEY_PHP, null);
+        $searchTradeDateFrom = isset($_POST['trade_date_from']) ? DateTimeUtils::parse($_POST['trade_date_from'], $fmShortDatePhp, DateTimeUtils::FM_DB_DATE) : false;
+        $searchTradeDateTo = isset($_POST['trade_date_to']) ? DateTimeUtils::parse($_POST['trade_date_to'], $fmShortDatePhp, DateTimeUtils::FM_DB_DATE) : false;
+        $searchMaxItemsChart = isset($_POST['max_items_chart']) ? $_POST['max_items_chart'] : 10;
+        $dataQuery = OefNav::find()->where(['delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE]);
+        if (!empty($searchTradeDateFrom)) {
+            $dataQuery->andWhere(['>=', 'trade_date', $searchTradeDateFrom]);
+        }
+        if (!empty($searchTradeDateTo)) {
+            $dataQuery->andWhere(['<=', 'trade_date', $searchTradeDateTo]);
+        }
+        $dataQuery->orderBy('trade_date DESC')->limit($searchMaxItemsChart);
+
+        $arrData = $dataQuery->all();
+        $count = count($arrData);
+        $arrDataChart = [];
+        $arrDataChartAlias = [];
+        $arrLabelChart = [];
+        while ($count > 0) {
+            $count--;
+            $data = $arrData[$count];
+            $arrDataChart[] = $data->nav_value;
+            $arrDataChartAlias[] = NumberUtils::format($data->nav_value, 2);
+            $arrLabelChart[] = DateTimeUtils::formatDateFromDB($data->trade_date, $fmShortDatePhp);
+        }
+        $renderData['chartData'] = count($arrDataChart) > 0 ? json_encode(
+            ['nav'=>$arrDataChart, 'label'=>$arrLabelChart, 'alias'=>$arrDataChartAlias], JSON_NUMERIC_CHECK) : false;
+
+        return $this->renderPartial('ajaxchart', $renderData);
     }
 
     public function actionIndex() {

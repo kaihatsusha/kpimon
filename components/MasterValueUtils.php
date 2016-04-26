@@ -31,6 +31,7 @@ class MasterValueUtils {
 	
 	const MV_FIN_ACCOUNT_NONE = 0;	// NONE
 	const MV_FIN_ACCOUNT_ATM_VCB = 2;
+	const MV_FIN_ACCOUNT_OTHER_FOUND = 9;
 	const MV_FIN_ACCOUNT_VCBF_TBF = 11;
 	
 	const MV_FIN_ACCOUNT_TYPE_CASH = 1;			// Cash

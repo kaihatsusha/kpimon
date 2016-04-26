@@ -221,7 +221,7 @@ class PurchaseController extends MobiledetectController {
             $finPayment = new FinAccountEntry();
             $finPayment->entry_date = $purchase->purchase_date;
             $finPayment->entry_value = $purchase->investment;
-            $finPayment->account_source = MasterValueUtils::MV_FIN_ACCOUNT_ATM_VCB;
+            $finPayment->account_source = MasterValueUtils::MV_FIN_ACCOUNT_OTHER_FOUND;
             $finPayment->account_target = MasterValueUtils::MV_FIN_ACCOUNT_VCBF_TBF;
             $finPayment->entry_status = MasterValueUtils::MV_FIN_ENTRY_TYPE_INTEREST_VCBF_TBF;
             $finPayment->description = serialize([MasterValueUtils::MV_FIN_ENTRY_LOG_TRANSFER]);

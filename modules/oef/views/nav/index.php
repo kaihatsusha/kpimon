@@ -9,7 +9,14 @@
     use app\components\MasterValueUtils;
     use app\components\NumberUtils;
     use app\components\StringUtils;
+    use app\modules\oef\views\MoreAsset;
     use kartik\datetime\DateTimePicker;
+
+    // css & js
+    MoreAsset::$CONTEXT = ['js'=>['js/oef/navIndex.js', 'js/fin/report.js'], 'depends'=>['app\assets\ChartSparklineAsset']];
+    MoreAsset::register($this);
+
+    $ajaxNavChartUrl = BaseUrl::toRoute(['nav/ajaxchart']);
 
     $this->title = Yii::t('oef.nav', 'Navs List');
 ?>
@@ -17,6 +24,19 @@
 <div class="row"><div class="col-md-12"><div class="box">
     <div class="box-header with-border">
         <h3 class="box-title"><?= Yii::t('oef.nav', 'Transaction'); ?></h3>
+        <div class="box-tools">
+        <div style="width: 150px;" class="input-group input-group-sm">
+            <select id="max-items-chart" class="pull-right form-control">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30" selected="selected">30</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+            </select>
+            <div class="input-group-btn">
+                <button id="btnGetChart" class='btn btn-default' type='button' onclick='getNavChart("<?= $ajaxNavChartUrl; ?>")'><i class="fa fa-bar-chart-o"></i></button>
+            </div>
+        </div>
     </div>
     <div class="box-body"><?php $form = ActiveForm::begin(['requiredCssClass' => 'form-group-required']); ?>
         <div class="row">
@@ -33,6 +53,9 @@
             <div class="col-md-6"><div class="form-group">
                     <?= Html::submitButton(Yii::t('button', 'Search'), ['class'=>'btn btn-info', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_INPUT]); ?>
             </div></div>
+        </div>
+        <div class="row">
+            <div id="navChart" class="col-md-12"></div>
         </div>
         <div class="row"><?php Pjax::begin(); ?><?= GridView::widget([
             'options'=>['class'=>'grid-view col-xs-12 table-responsive'],

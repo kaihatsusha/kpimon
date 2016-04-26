@@ -19,7 +19,7 @@
     $htmlFooterFoundStockSold = NumberUtils::format($sumPurchaseValue['found_stock_sold'], 2);
     $htmlFooterFoundStock = NumberUtils::format($sumPurchaseValue['found_stock'], 2);
     $htmlFooterTransferFee = NumberUtils::format($sumPurchaseValue['transfer_fee']);
-    $htmlFooterRealPurchase = NumberUtils::format($sumPurchaseValue['purchase'] - $sumPurchaseValue['transfer_fee']);
+    $htmlFooterRealPurchase = NumberUtils::format($sumPurchaseValue['purchase'] - $sumPurchaseValue['purchase_fee']);
     $otherFee = $sumPurchaseValue['transfer_fee'] + $sumPurchaseValue['other_fee'];
     $htmlFooterOtherFee = NumberUtils::format($otherFee);
     $htmlFooterInvestment = NumberUtils::format($sumPurchaseValue['purchase'] + $otherFee);
