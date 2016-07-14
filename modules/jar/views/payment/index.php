@@ -29,12 +29,14 @@
                     'pluginOptions'=>['autoclose'=>true, 'format'=>$fmShortDateJui, 'startView'=>2, 'minView'=>2, 'todayHighlight'=>true]
                 ]); ?>
                 <?= $form->field($searchModel, 'account_source')->dropDownList($arrAccount, ['prompt'=>'']); ?>
+                <?= $form->field($searchModel, 'entry_status')->inline(true)->checkboxList($arrEntryLog); ?>
             </div>
             <div class="col-md-6">
                 <?= $form->field($searchModel, 'entry_date_to')->widget(DateTimePicker::className(), ['type'=>1,
                     'pluginOptions'=>['autoclose'=>true, 'format'=>$fmShortDateJui, 'startView'=>2, 'minView'=>2, 'todayHighlight'=>true]
                 ]); ?>
                 <?= $form->field($searchModel, 'account_target')->dropDownList($arrAccount, ['prompt'=>'']); ?>
+                <?= $form->field($searchModel, 'description')->textInput(); ?>
             </div>
             <div class="col-md-6"><div class="form-group">
                 <?= Html::submitButton(Yii::t('button', 'Search'), ['class'=>'btn btn-info', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_INPUT]); ?>
@@ -62,7 +64,7 @@
                     'headerOptions'=>['style'=>'text-align: center'],
                     'footerOptions'=>['style'=>'text-align: right', 'colspan'=>2],
                     'contentOptions'=>function($model, $key, $index) {
-                        return ['style'=>'vertical-align: middle; text-align: center', 'class'=>($model->entry_status == MasterValueUtils::MV_JAR_ENTRY_TYPE_TEMP ? 'danger' : MasterValueUtils::getColorRow($index))];
+                        return ['style'=>'vertical-align: middle; text-align: center', 'class'=>MasterValueUtils::getJarPaymentStatusColorRow($model->entry_status, $index)];
                     },
                     'value'=>function($model, $key, $index, $column) {
                         $pagination = $column->grid->dataProvider->pagination;
@@ -76,7 +78,7 @@
                     'headerOptions'=>['style'=>'text-align: center'],
                     'footerOptions'=>['colspan'=>0],
                     'contentOptions'=>function($model, $key, $index) {
-                        return ['style'=>'vertical-align: middle; text-align: center', 'class'=>($model->entry_status == MasterValueUtils::MV_JAR_ENTRY_TYPE_TEMP ? 'danger' : MasterValueUtils::getColorRow($index))];
+                        return ['style'=>'vertical-align: middle; text-align: center', 'class'=>MasterValueUtils::getJarPaymentStatusColorRow($model->entry_status, $index)];
                     },
                     'value'=>function($model) {
                         return str_pad($model->id, 6, '0', STR_PAD_LEFT);
@@ -87,7 +89,7 @@
                     'headerOptions'=>['style'=>'text-align: center'],
                     'footerOptions'=>['style'=>'text-align: right'],
                     'contentOptions'=>function($model, $key, $index) {
-                        return ['style'=>'vertical-align: middle; text-align: center', 'class'=>($model->entry_status == MasterValueUtils::MV_JAR_ENTRY_TYPE_TEMP ? 'danger' : MasterValueUtils::getColorRow($index))];
+                        return ['style'=>'vertical-align: middle; text-align: center', 'class'=>MasterValueUtils::getJarPaymentStatusColorRow($model->entry_status, $index)];
                     },
                     'format'=>'raw',
                     'value'=>function($model) {
@@ -100,7 +102,7 @@
                     'headerOptions'=>['style'=>'text-align: center'],
                     'footerOptions'=>['style'=>'text-align: right', 'colspan'=>2],
                     'contentOptions'=>function($model, $key, $index) {
-                        return ['style'=>'vertical-align: middle; text-align: left', 'class'=>($model->entry_status == MasterValueUtils::MV_JAR_ENTRY_TYPE_TEMP ? 'danger' : MasterValueUtils::getColorRow($index))];
+                        return ['style'=>'vertical-align: middle; text-align: left', 'class'=>MasterValueUtils::getJarPaymentStatusColorRow($model->entry_status, $index)];
                     },
                     'value'=>function($model) use ($arrAccount) {
                         return isset($arrAccount[$model->account_source]) ? $arrAccount[$model->account_source] : '';
@@ -113,7 +115,7 @@
                     'headerOptions'=>['style'=>'text-align: center'],
                     'footerOptions'=>['colspan'=>0],
                     'contentOptions'=>function($model, $key, $index) {
-                        return ['style'=>'vertical-align: middle; text-align: right', 'class'=>($model->entry_status == MasterValueUtils::MV_JAR_ENTRY_TYPE_TEMP ? 'danger' : MasterValueUtils::getColorRow($index))];
+                        return ['style'=>'vertical-align: middle; text-align: right', 'class'=>MasterValueUtils::getJarPaymentStatusColorRow($model->entry_status, $index)];
                     },
                     'value'=>function($model) {
                         $amount = $model->account_source == 0 ? '' : NumberUtils::format($model->entry_value);
@@ -125,7 +127,7 @@
                     'headerOptions'=>['style'=>'text-align: center'],
                     'footerOptions'=>['style'=>'text-align: right', 'colspan'=>2],
                     'contentOptions'=>function($model, $key, $index) {
-                        return ['style'=>'vertical-align: middle; text-align: left', 'class'=>($model->entry_status == MasterValueUtils::MV_JAR_ENTRY_TYPE_TEMP ? 'danger' : MasterValueUtils::getColorRow($index))];
+                        return ['style'=>'vertical-align: middle; text-align: left', 'class'=>MasterValueUtils::getJarPaymentStatusColorRow($model->entry_status, $index)];
                     },
                     'value'=>function($model) use ($arrAccount) {
                         return isset($arrAccount[$model->account_target]) ? $arrAccount[$model->account_target] : '';
@@ -138,7 +140,7 @@
                     'headerOptions'=>['style'=>'text-align: center'],
                     'footerOptions'=>['colspan'=>0],
                     'contentOptions'=>function($model, $key, $index) {
-                        return ['style'=>'vertical-align: middle; text-align: right', 'class'=>($model->entry_status == MasterValueUtils::MV_JAR_ENTRY_TYPE_TEMP ? 'danger' : MasterValueUtils::getColorRow($index))];
+                        return ['style'=>'vertical-align: middle; text-align: right', 'class'=>MasterValueUtils::getJarPaymentStatusColorRow($model->entry_status, $index)];
                     },
                     'value'=>function($model) {
                         $amount = $model->account_target == 0 ? '' : NumberUtils::format($model->entry_value);
@@ -151,7 +153,7 @@
                     'headerOptions'=>['style'=>'text-align: center'],
                     'footerOptions'=>['style'=>'text-align: right'],
                     'contentOptions'=>function($model, $key, $index) {
-                        return ['style'=>'vertical-align: middle; text-align: left', 'class'=>($model->entry_status == MasterValueUtils::MV_JAR_ENTRY_TYPE_TEMP ? 'danger' : MasterValueUtils::getColorRow($index))];
+                        return ['style'=>'vertical-align: middle; text-align: left', 'class'=>MasterValueUtils::getJarPaymentStatusColorRow($model->entry_status, $index)];
                     },
                     'enableSorting'=>false
                 ],
@@ -159,7 +161,7 @@
                     'label'=>Yii::t('fin.grid', 'Action'),
                     'headerOptions'=>['style'=>'text-align: center; width: 100px;'],
                     'contentOptions'=>function($model, $key, $index) {
-                        return ['style'=>'vertical-align: middle; text-align: center', 'class'=>($model->entry_status == MasterValueUtils::MV_JAR_ENTRY_TYPE_TEMP ? 'danger' : MasterValueUtils::getColorRow($index))];
+                        return ['style'=>'vertical-align: middle; text-align: center', 'class'=>MasterValueUtils::getJarPaymentStatusColorRow($model->entry_status, $index)];
                     },
                     'format'=>'raw',
                     'value'=>function($model, $key, $index) {

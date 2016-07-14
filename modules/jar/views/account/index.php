@@ -19,6 +19,7 @@
             <th style="text-align: center"><?= Yii::t('fin.grid', 'Share'); ?></th>
             <th style="text-align: center"><?= Yii::t('fin.grid', 'Useable'); ?></th>
             <th style="text-align: center"><?= Yii::t('fin.grid', 'Real'); ?></th>
+            <th style="text-align: center"><?= Yii::t('fin.grid', 'Interest'); ?></th>
             <th style="text-align: center"><?= Yii::t('fin.grid', 'Description'); ?></th>
         </tr>
         <?php foreach($arrAccount as $account): ?>
@@ -32,6 +33,7 @@
                 <td style="text-align: right"><?= $account->share_unit; ?> %</td>
                 <td style="text-align: right"><?= NumberUtils::getIncDecNumber($account->useable_balance, $numberHtmlConfig); ?></td>
                 <td style="text-align: right"><?= NumberUtils::getIncDecNumber($account->real_balance, $numberHtmlConfig); ?></td>
+                <td style="text-align: right"><?= NumberUtils::format($account->real_balance - $account->useable_balance); ?></td>
                 <td style="text-align: left"><?= $account->description; ?></td>
             </tr>
         <?php endforeach; ?>
@@ -40,11 +42,11 @@
             <th style="text-align: right"><?= $sumAccountValue['share']; ?> %</th>
             <th style="text-align: right"><?= NumberUtils::getIncDecNumber($sumAccountValue['useable_balance'], $numberHtmlConfig); ?></th>
             <th style="text-align: right"><?= NumberUtils::getIncDecNumber($sumAccountValue['real_balance'], $numberHtmlConfig); ?></th>
-            <th>
+            <th style="text-align: right">
+                <?= NumberUtils::getIncDecNumber($tempAccount->useable_balance, $numberHtmlConfig); ?>
+            </th>
+            <th style="text-align: left">
                 <?= $tempAccount->account_name; ?>
-                <?= NumberUtils::getIncDecNumber($tempAccount->useable_balance, $numberHtmlConfig); ?> +
-                <?= NumberUtils::getIncDecNumber($sumAccountValue['useable_balance'], $numberHtmlConfig); ?> =
-                <?= NumberUtils::getIncDecNumber($tempAccount->useable_balance + $sumAccountValue['useable_balance'], $numberHtmlConfig); ?>
             </th>
         </tr>
     </tbody></table></div>

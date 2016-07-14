@@ -71,8 +71,10 @@ class MasterValueUtils {
 	const MV_JAR_ACCOUNT_LTSS = 4;	// TEMP (VCBF_TBF, ...)
 	const MV_JAR_ACCOUNT_TEMP = 9;	// TEMP
 
-	const MV_JAR_ENTRY_TYPE_SIMPLE = 1;	// Simple
-	const MV_JAR_ENTRY_TYPE_TEMP = 2;	// Temp
+	const MV_JAR_ENTRY_TYPE_SIMPLE = 1;	// Simple (normal)
+	const MV_JAR_ENTRY_TYPE_TEMP = 2;	// Temp (debit)
+	const MV_JAR_ENTRY_TYPE_CREDIT = 3;	// Credit
+	const MV_JAR_ENTRY_TYPE_PAID = 4;	// Paid
 
 	const MV_OEF_PERCHASE_TYPE_NORMAL	= 1;
 	const MV_OEF_PERCHASE_TYPE_SIP		= 2;
@@ -86,6 +88,31 @@ class MasterValueUtils {
 	 */
 	public static function getColorRow($index) {
 		return ($index % 2 == 0) ? self::CSS_COLOR_EVEN : self::CSS_COLOR_ODD;
+	}
+
+	/**
+	 * get JarPayment Color Row by Status
+	 * @param $status
+	 * @param $index
+	 * @return String
+	 */
+	public static function getJarPaymentStatusColorRow($status, $index) {
+		$result = '';
+		switch ($status) {
+			case self::MV_JAR_ENTRY_TYPE_SIMPLE:
+				$result = self::getColorRow($index);
+				break;
+			case self::MV_JAR_ENTRY_TYPE_TEMP:
+				$result = 'danger';
+				break;
+			case self::MV_JAR_ENTRY_TYPE_CREDIT:
+				$result = 'warning';
+				break;
+			case self::MV_JAR_ENTRY_TYPE_PAID:
+				$result = 'active';
+				break;
+		}
+		return $result;
 	}
 	
 	/**

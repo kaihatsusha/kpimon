@@ -19,6 +19,7 @@
             <?= $form->field($model, 'entry_value')->textInput(['type'=>'number', 'disabled'=>'disabled', 'name'=>'']); ?>
             <?= $form->field($model, 'entry_adjust')->textInput(['type'=>'number']); ?>
             <?= $form->field($model, 'description')->textInput(); ?>
+            <?= $form->field($model, 'entry_status')->inline(true)->radioList($arrEntryLog); ?>
             <div class="form-group">
                 <?= Html::resetButton(Yii::t('button', 'Reset'), ['class'=>'btn btn-default btn-lg btn-block']); ?>
                 <?= Html::submitButton(Yii::t('button', 'Confirm'), ['class'=>'btn btn-info btn-lg btn-block', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_INPUT]); ?>

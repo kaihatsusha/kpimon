@@ -37,6 +37,8 @@
             ]); ?>
             <?= $form->field($searchModel, 'account_source')->dropDownList($arrAccount, ['prompt'=>'']); ?>
             <?= $form->field($searchModel, 'account_target')->dropDownList($arrAccount, ['prompt'=>'']); ?>
+            <?= $form->field($searchModel, 'entry_status')->inline(true)->checkboxList($arrEntryLog); ?>
+            <?= $form->field($searchModel, 'description')->textInput(); ?>
             <div class="form-group">
                 <?= Html::submitButton(Yii::t('button', 'Search'), ['class'=>'btn btn-info btn-lg btn-block', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_INPUT]); ?>
             </div>

@@ -33,6 +33,10 @@
                 <?= $model->getAttributeLabel('description'); ?>
                 <span class="pull-right"><?= $model->description; ?></span>
             </a></li>
+            <li><a href="javascript:void(0);">
+                <?= $model->getAttributeLabel('entry_status'); ?>
+                <span class="pull-right"><?= isset($arrEntryLog[$model->entry_status]) ? $arrEntryLog[$model->entry_status] : ''; ?></span>
+            </a></li>
         </ul>
     </div>
 </div></div></div><?php endif; ?>

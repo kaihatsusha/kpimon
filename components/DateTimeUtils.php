@@ -442,5 +442,17 @@ class DateTimeUtils {
 
 		return StringUtils::format($fulltag, [$css, $datestr]);
 	}
+
+	/**
+	 * @param Datetime $d1
+	 * @param Datetime $d2
+	 * @param boolean $day
+	 * @return int
+	 */
+	public static function diffMonths($d1, $d2, $day = true) {
+		$interval = $d1->diff($d2);
+		$result = $interval->y * 12 + $interval->m + ($day ? $interval->d / 30 : 0);
+		return $result;
+	}
 }
 ?>

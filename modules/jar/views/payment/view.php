@@ -33,6 +33,10 @@
                 <th class="warning"><?= $model->getAttributeLabel('description'); ?></th>
                 <td class="info"><?= $model->description; ?></td>
             </tr>
+            <tr>
+                <th class="warning"><?= $model->getAttributeLabel('entry_status'); ?></th>
+                <td class="info"><?= isset($arrEntryLog[$model->entry_status]) ? $arrEntryLog[$model->entry_status] : ''; ?></td>
+            </tr>
         </table>
     </div></div></div>
 </div><?php endif; ?>

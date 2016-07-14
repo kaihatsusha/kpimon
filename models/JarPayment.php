@@ -40,15 +40,16 @@ class JarPayment extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['entry_adjust', 'entry_date', 'entry_date_from', 'entry_date_to', 'create_date', 'update_date'], 'safe'],
-            [['entry_value', 'account_source', 'account_target', 'share_id', 'entry_status'], 'integer'],
+            [['entry_adjust', 'entry_date', 'entry_date_from', 'entry_date_to', 'create_date', 'update_date', 'entry_status'], 'safe'],
+            [['entry_value', 'account_source', 'account_target', 'share_id'], 'integer'],
             [['description'], 'string', 'max' => 100],
             [['delete_flag'], 'string', 'max' => 1],
             [['entry_date_from', 'entry_date_to'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_LIST]],
             [['account_source', 'account_target'], 'default', 'value' => 0, 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE, MasterValueUtils::SCENARIO_LIST]],
-            [['entry_date'], 'required', 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]],
+            [['entry_date', 'entry_status'], 'required', 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]],
             [['entry_value'], 'required', 'on' => [MasterValueUtils::SCENARIO_CREATE]],
             [['entry_value'], 'integer', 'min' => 0, 'on' => [MasterValueUtils::SCENARIO_CREATE]],
+            [['entry_status'], 'integer', 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]],
             [['account_source'], 'validateSourceRelatedTarget', 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]],
             [['account_source'], 'validateEntryAdjust', 'on' => [MasterValueUtils::SCENARIO_UPDATE]],
             [['entry_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_CREATE, MasterValueUtils::SCENARIO_UPDATE]]

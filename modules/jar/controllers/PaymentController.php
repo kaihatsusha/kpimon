@@ -34,6 +34,7 @@ class PaymentController extends MobiledetectController {
         $arrAccount = ModelUtils::getArrData(JarAccount::find()->select(['account_id', 'account_name'])
             ->where(['delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE])
             ->orderBy('account_type, status, order_num'), 'account_id', 'account_name');
+        $arrEntryLog = MasterValueUtils::getArrData('jar_payment_status');
         $searchModel = new JarPayment();
 
         // submit data
@@ -80,6 +81,14 @@ class PaymentController extends MobiledetectController {
                 $dataQuery->andWhere(['<=', 'entry_date', $searchModel->entry_date_to]);
                 $sumEntryQuery->andWhere(['<=', 'entry_date', $searchModel->entry_date_to]);
             }
+            if (is_array($searchModel->entry_status)) {
+                $dataQuery->andWhere(['entry_status'=>$searchModel->entry_status]);
+                $sumEntryQuery->andWhere(['entry_status'=>$searchModel->entry_status]);
+            }
+            if (!empty($searchModel->description)) {
+                $dataQuery->andWhere(['like', 'description', $searchModel->description]);
+                $sumEntryQuery->andWhere(['like', 'description', $searchModel->description]);
+            }
             if ($searchModel->account_source > 0) {
                 $dataQuery->andWhere(['=', 'account_source', $searchModel->account_source]);
             }
@@ -93,7 +102,7 @@ class PaymentController extends MobiledetectController {
         }
 
         // render GUI
-        $renderData = ['searchModel'=>$searchModel, 'fmShortDatePhp'=>$fmShortDatePhp, 'fmShortDateJui'=>$fmShortDateJui,
+        $renderData = ['searchModel'=>$searchModel, 'fmShortDatePhp'=>$fmShortDatePhp, 'fmShortDateJui'=>$fmShortDateJui, 'arrEntryLog'=>$arrEntryLog,
             'arrAccount'=>$arrAccount, 'dataQuery'=>$dataQuery, 'sumEntryValue'=>$sumEntryValue, 'sumCurrentMonthData'=>$sumCurrentMonthData];
 
         return $this->render('index', $renderData);
@@ -111,8 +120,9 @@ class PaymentController extends MobiledetectController {
         } else {
             // master value
             $arrAccount = ModelUtils::getArrData(JarAccount::find()->select(['account_id', 'account_name']), 'account_id', 'account_name');
+            $arrEntryLog = MasterValueUtils::getArrData('jar_payment_status');
             // data for rendering
-            $renderData = ['model'=>$model, 'arrAccount'=>$arrAccount];
+            $renderData = ['model'=>$model, 'arrAccount'=>$arrAccount, 'arrEntryLog'=>$arrEntryLog];
         }
 
         // render GUI
@@ -127,6 +137,7 @@ class PaymentController extends MobiledetectController {
         $arrAccount = ModelUtils::getArrData(JarAccount::find()->select(['account_id', 'account_name'])
             ->where(['delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE, 'status'=>MasterValueUtils::MV_JAR_ACCOUNT_STATUS_ON])
             ->orderBy('account_type, order_num'), 'account_id', 'account_name');
+        $arrEntryLog = MasterValueUtils::getArrData('jar_payment_status');
 
         // submit data
         $postData = Yii::$app->request->post();
@@ -137,6 +148,7 @@ class PaymentController extends MobiledetectController {
         $model->load($postData);
         if (Yii::$app->request->getIsGet()) {
             $model->entry_date = DateTimeUtils::formatNow($fmShortDatePhp);
+            $model->entry_status = MasterValueUtils::MV_JAR_ENTRY_TYPE_SIMPLE;
         }
 
         // init value
@@ -144,7 +156,7 @@ class PaymentController extends MobiledetectController {
 
         // render GUI
         $renderView = 'create';
-        $renderData = ['model'=>$model, 'fmShortDatePhp'=>$fmShortDatePhp, 'fmShortDateJui'=>$fmShortDateJui, 'arrAccount'=>$arrAccount];
+        $renderData = ['model'=>$model, 'fmShortDatePhp'=>$fmShortDatePhp, 'fmShortDateJui'=>$fmShortDateJui, 'arrAccount'=>$arrAccount, 'arrEntryLog'=>$arrEntryLog];
         switch ($submitMode) {
             case MasterValueUtils::SM_MODE_INPUT:
                 $isValid = $model->validate();
@@ -227,7 +239,6 @@ class PaymentController extends MobiledetectController {
             // save payment
             if ($save !== false) {
                 $payment->share_id = MasterValueUtils::MV_JAR_ACCOUNT_NONE;
-                $payment->entry_status = MasterValueUtils::MV_JAR_ENTRY_TYPE_SIMPLE;
                 $save = $payment->save();
             }
         } catch(Exception $e) {
@@ -271,6 +282,7 @@ class PaymentController extends MobiledetectController {
             $arrAccount = ModelUtils::getArrData(JarAccount::find()->select(['account_id', 'account_name'])
                 ->where(['delete_flag'=>MasterValueUtils::MV_FIN_FLG_DELETE_FALSE])
                 ->orderBy('account_type, order_num'), 'account_id', 'account_name');
+            $arrEntryLog = MasterValueUtils::getArrData('jar_payment_status');
             // submit data
             $postData = Yii::$app->request->post();
             $submitMode = isset($postData[MasterValueUtils::SM_MODE_NAME]) ? $postData[MasterValueUtils::SM_MODE_NAME] : false;
@@ -279,7 +291,7 @@ class PaymentController extends MobiledetectController {
             // init value
             $model->scenario = MasterValueUtils::SCENARIO_UPDATE;
             // render GUI
-            $renderData = ['model'=>$model, 'fmShortDatePhp'=>$fmShortDatePhp, 'fmShortDateJui'=>$fmShortDateJui, 'arrAccount'=>$arrAccount];
+            $renderData = ['model'=>$model, 'fmShortDatePhp'=>$fmShortDatePhp, 'fmShortDateJui'=>$fmShortDateJui, 'arrAccount'=>$arrAccount, 'arrEntryLog'=>$arrEntryLog];
             switch ($submitMode) {
                 case MasterValueUtils::SM_MODE_INPUT:
                     $isValid = $model->validate();

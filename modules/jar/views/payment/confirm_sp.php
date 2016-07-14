@@ -52,6 +52,10 @@
                 <?= $model->getAttributeLabel('description'); ?>
                 <span class="pull-right"><?= $model->description; ?></span>
             </a></li>
+            <li><a href="javascript:void(0);">
+                <?= $model->getAttributeLabel('entry_status'); ?>
+                <span class="pull-right"><?= isset($arrEntryLog[$model->entry_status]) ? $arrEntryLog[$model->entry_status] : ''; ?></span>
+            </a></li>
         </ul>
         <div style="display: none">
             <?= $form->field($model, 'entry_date')->hiddenInput(); ?>
@@ -60,6 +64,7 @@
             <?= $form->field($model, 'entry_value')->hiddenInput(); ?>
             <?= $form->field($model, 'entry_adjust')->hiddenInput(); ?>
             <?= $form->field($model, 'description')->hiddenInput(); ?>
+            <?= $form->field($model, 'entry_status')->hiddenInput(); ?>
         </div>
         <div class="form-group">
             <?= Html::submitButton(Yii::t('button', 'Back'), ['class'=>'btn btn-default btn-lg btn-block', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_BACK]); ?>
