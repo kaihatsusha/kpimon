@@ -80,6 +80,9 @@ class MasterValueUtils {
 	const MV_OEF_PERCHASE_TYPE_SIP		= 2;
 	const MV_OEF_PERCHASE_TYPE_DIVIDEND	= 3;
 	const MV_OEF_PERCHASE_TYPE_IPO		= 4;
+
+	const MV_OEF_FOUND_CERTIFICATE_SELLABLE = 1;
+	const MV_OEF_FOUND_CERTIFICATE_SOLD = 2;
 	
 	/**
 	 * get color of a row

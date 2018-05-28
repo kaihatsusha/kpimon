@@ -67,6 +67,7 @@ class PurchaseController extends MobiledetectController {
         $fmShortDatePhp = DateTimeUtils::getDateFormat(DateTimeUtils::FM_KEY_PHP, null);
         $fmShortDateJui = DateTimeUtils::getDateFormat(DateTimeUtils::FM_KEY_JUI, null);
         $arrPurchaseType = MasterValueUtils::getArrData('oef_purchase_type');
+        $arrFoundCertificateStatus = MasterValueUtils::getArrData('oef_found_certificate_status');
         OefPurchase::$_PHP_FM_SHORTDATE = $fmShortDatePhp;
         $searchModel = new OefPurchase();
 
@@ -103,6 +104,15 @@ class PurchaseController extends MobiledetectController {
                 $dataQuery->andWhere(['<=', 'purchase_date', $searchModel->purchase_date_to]);
                 $sumPurchaseQuery->andWhere(['<=', 'purchase_date', $searchModel->purchase_date_to]);
             }
+
+            $simpleStatus = is_array($searchModel->found_certificate_status) && count($searchModel->found_certificate_status) == 1;
+            if ($simpleStatus && in_array(MasterValueUtils::MV_OEF_FOUND_CERTIFICATE_SELLABLE, $searchModel->found_certificate_status)) {
+                $dataQuery->andWhere('found_stock > found_stock_sold');
+                $sumPurchaseQuery->andWhere('found_stock > found_stock_sold');
+            } elseif ($simpleStatus && in_array(MasterValueUtils::MV_OEF_FOUND_CERTIFICATE_SOLD, $searchModel->found_certificate_status)) {
+                $dataQuery->andWhere('found_stock = found_stock_sold');
+                $sumPurchaseQuery->andWhere('found_stock = found_stock_sold');
+            }
             $dataQuery->orderBy('purchase_date DESC');
             $sumPurchaseValue = $sumPurchaseQuery->createCommand()->queryOne();
         } else {
@@ -111,7 +121,7 @@ class PurchaseController extends MobiledetectController {
 
         // render GUI
         $renderData = ['searchModel'=>$searchModel, 'fmShortDateJui'=>$fmShortDateJui, 'dataQuery'=>$dataQuery,
-            'sumPurchaseValue'=>$sumPurchaseValue, 'arrPurchaseType'=>$arrPurchaseType];
+            'sumPurchaseValue'=>$sumPurchaseValue, 'arrPurchaseType'=>$arrPurchaseType, 'arrFoundCertificateStatus'=>$arrFoundCertificateStatus];
 
         return $this->render('index', $renderData);
     }

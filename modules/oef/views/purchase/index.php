@@ -35,15 +35,16 @@
                 <?= $form->field($searchModel, 'purchase_date_from')->widget(DateTimePicker::className(), ['type'=>1,
                     'pluginOptions'=>['autoclose'=>true, 'format'=>$fmShortDateJui, 'startView'=>2, 'minView'=>2, 'todayHighlight'=>true]
                 ]); ?>
+                <div class="form-group">
+                    <?= Html::submitButton(Yii::t('button', 'Search'), ['class'=>'btn btn-info', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_INPUT]); ?>
+                </div>
             </div>
             <div class="col-md-6">
                 <?= $form->field($searchModel, 'purchase_date_to')->widget(DateTimePicker::className(), ['type'=>1,
                     'pluginOptions'=>['autoclose'=>true, 'format'=>$fmShortDateJui, 'startView'=>2, 'minView'=>2, 'todayHighlight'=>true]
                 ]); ?>
+                <?= $form->field($searchModel, 'found_certificate_status')->inline(true)->checkboxList($arrFoundCertificateStatus); ?>
             </div>
-            <div class="col-md-6"><div class="form-group">
-                <?= Html::submitButton(Yii::t('button', 'Search'), ['class'=>'btn btn-info', 'name'=>MasterValueUtils::SM_MODE_NAME, 'value'=>MasterValueUtils::SM_MODE_INPUT]); ?>
-            </div></div>
         </div>
         <div class="row"><?php Pjax::begin(); ?><?= GridView::widget([
             'options'=>['class'=>'grid-view col-xs-12 table-responsive'],

@@ -39,35 +39,33 @@
                 $sumProfitBeforeTaxes = NumberUtils::format($model->profit_before_taxes, 2);
                 $sumProfitAfterTaxes = NumberUtils::format($model->profit_after_taxes, 2);
                 $sumIncomeTax = NumberUtils::format($model->income_tax, 2);
-                $sumInvestmentResult = NumberUtils::format($model->investment_result, 2);
+                $otherFee = 50600;
+                $sumInvestmentResult = NumberUtils::format($model->investment_result - $otherFee, 2);
+                $sumOtherFee = NumberUtils::format($otherFee, 2);
             ?>
-            <div class="row"><div id="w3"><div class="grid-view col-xs-6 table-responsive" id="w4"><table class="table table-bordered">
+            <div class="row"><div id="w3"><div class="grid-view col-xs-9 table-responsive" id="w4"><table class="table table-bordered">
                 <tr>
                     <th class="danger" style="width: 160px"><?= Yii::t('oef.grid', 'Investment'); ?> <sup>(1)</sup></th>
                     <td class="info" style="text-align: right"><?= $sumInvestment; ?></td>
+                    <th class="danger" style="width: 160px"><?= Yii::t('oef.grid', 'Income Taxes'); ?> <sup>(5)</sup></th>
+                    <td class="info" style="text-align: right"><?= $sumIncomeTax; ?></td>
                 </tr>
                 <tr>
                     <th class="danger"><?= Yii::t('oef.grid', 'Revenue'); ?> <sup>(2)</sup></th>
                     <td class="info" style="text-align: right"><?= $sumRevenue; ?></td>
-                </tr>
-                <tr>
-                    <th class="danger"><?= Yii::t('oef.grid', 'Sell Fee'); ?> <sup>(3)</sup></th>
-                    <td class="info" style="text-align: right"><?= $sumSellFee; ?></td>
-                </tr>
-                <tr>
-                    <th class="danger"><?= Yii::t('oef.grid', 'Profit Before Taxes'); ?> <sup>(4) = (2) - (3)</sup></th>
-                    <td class="info" style="text-align: right"><?= $sumProfitBeforeTaxes; ?></td>
-                </tr>
-                <tr>
-                    <th class="danger"><?= Yii::t('oef.grid', 'Income Taxes'); ?> <sup>(5)</sup></th>
-                    <td class="info" style="text-align: right"><?= $sumIncomeTax; ?></td>
-                </tr>
-                <tr>
                     <th class="danger"><?= Yii::t('oef.grid', 'Profit After Taxes'); ?> <sup>(6) = (4) - (5)</sup></th>
                     <td class="info" style="text-align: right"><?= $sumProfitAfterTaxes; ?></td>
                 </tr>
                 <tr>
-                    <th class="danger"><?= Yii::t('oef.grid', 'Investment Result'); ?> <sup>(7) = (6) - (1)</sup></th>
+                    <th class="danger"><?= Yii::t('oef.grid', 'Sell Fee'); ?> <sup>(3)</sup></th>
+                    <td class="info" style="text-align: right"><?= $sumSellFee; ?></td>
+                    <th class="danger"><?= Yii::t('oef.grid', 'Other Fee (Transfer money ...)'); ?> <sup>(7)</sup></th>
+                    <td class="info" style="text-align: right"><?= $sumOtherFee; ?></td>
+                </tr>
+                <tr>
+                    <th class="danger"><?= Yii::t('oef.grid', 'Profit Before Taxes'); ?> <sup>(4) = (2) - (3)</sup></th>
+                    <td class="info" style="text-align: right"><?= $sumProfitBeforeTaxes; ?></td>
+                    <th class="danger"><?= Yii::t('oef.grid', 'Investment Result'); ?> <sup>(8) = (6) - (1) - (7)</sup></th>
                     <td class="info" style="text-align: right"><?= $sumInvestmentResult; ?></td>
                 </tr>
             </table></div></div></div>
@@ -112,7 +110,7 @@
                         $purchaseDate = $fundCertificate4Sell->purchase_date->format(DateTimeUtils::FM_VIEW_DATE);
                         $purchaseType = StringUtils::format('{0}{1}{2}</br>{3}', [$arrPurchaseType[$fundCertificate4Sell->purchase_type],
                             is_null($fundCertificate4Sell->sip_date) ? '' : ' ' . $fundCertificate4Sell->sip_date->format(DateTimeUtils::FM_VIEW_DATE),
-                            is_null($fundCertificate4Sell->sip_months) ? '' : ' (' . NumberUtils::format($fundCertificate4Sell->sip_months, 1) . ' Months)',
+                            is_null($fundCertificate4Sell->sip_months) ? '' : ' (' . NumberUtils::format($fundCertificate4Sell->sip_months, 1) . ' M)',
                             NumberUtils::format($fundCertificate4Sell->investment, 2)]);
                         $sellableCertificate = NumberUtils::format($fundCertificate4Sell->sellable_certificate, 2);
                         $sellCertificate = NumberUtils::format($fundCertificate4Sell->sell_certificate, 2);

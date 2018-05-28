@@ -46,6 +46,8 @@ class PaymentController extends MobiledetectController {
 		// init value
 		$today = new \DateTime();
 		if (Yii::$app->request->getIsGet()) {
+			var_dump(Yii::$app->request);
+			//die();
 			$searchModel->entry_date_to = $today->format($phpFmShortDate);
 			$lastMonth = DateTimeUtils::getNow(DateTimeUtils::FM_DEV_YM . '01', DateTimeUtils::FM_DEV_DATE);
 			DateTimeUtils::subDateTime($lastMonth, 'P1M', null, false);

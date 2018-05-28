@@ -73,7 +73,7 @@ class OefFundCertificate extends Model {
     public function rules() {
         return [
             [['sell_date', 'sell_certificate', 'income_tax_rate', 'nav'], 'safe'],
-            [['sell_date', 'sell_certificate', 'income_tax_rate', 'nav'], 'required', 'on' => [MasterValueUtils::SCENARIO_TOOL]],
+            [['sell_date', 'sell_certificate', 'income_tax_rate'], 'required', 'on' => [MasterValueUtils::SCENARIO_TOOL]],
             [['sell_certificate', 'income_tax_rate', 'nav'], 'number', 'on' => [MasterValueUtils::SCENARIO_TOOL]],
             [['sell_date'], 'date', 'format' => 'php:' . self::$_PHP_FM_SHORTDATE, 'on' => [MasterValueUtils::SCENARIO_TOOL]]
         ];

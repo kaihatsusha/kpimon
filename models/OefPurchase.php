@@ -39,6 +39,7 @@ class OefPurchase extends \yii\db\ActiveRecord {
     public $total_fee_rate = null;
     public $real_purchase = null;
     public $investment = null;
+    public $found_certificate_status = null;
 
     public static $_PHP_FM_SHORTDATE = 'Y-m-d';
 
@@ -54,7 +55,7 @@ class OefPurchase extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['purchase_date', 'purchase_date_from', 'purchase_date_to', 'purchase_type', 'sip_date', 'nav', 'transfer_fee', 'purchase'], 'safe'],
+            [['purchase_date', 'purchase_date_from', 'purchase_date_to', 'purchase_type', 'sip_date', 'nav', 'transfer_fee', 'purchase', 'found_certificate_status'], 'safe'],
             [['purchase_fee', 'purchase_fee_rule', 'found_stock_rule', 'other_fee', 'fin_entry_id', 'jar_payment_id'], 'integer'],
             [['purchase_fee_rate', 'discount_rate', 'found_stock_sold', 'found_stock'], 'number'],
             [['description'], 'string', 'max' => 100],
@@ -93,6 +94,7 @@ class OefPurchase extends \yii\db\ActiveRecord {
             'nav' => Yii::t('oef.models', 'NAV'),
             'found_stock_sold' => Yii::t('oef.models', 'Sold'),
             'found_stock' => Yii::t('oef.models', 'Found Stock'),
+            'found_certificate_status' => Yii::t('oef.models', 'Status'),
             'found_stock_rule' => Yii::t('oef.models', 'Found Stock Rule'),
             'transfer_fee' => Yii::t('oef.models', 'Transfer Fee'),
             'other_fee' => Yii::t('oef.models', 'Other Fee'),
