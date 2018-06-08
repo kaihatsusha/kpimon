@@ -56,7 +56,7 @@ class ReportController extends MobiledetectController {
             $submitMode = isset($postData[MasterValueUtils::SM_MODE_NAME]) ? $postData[MasterValueUtils::SM_MODE_NAME] : false;
             switch ($submitMode) {
                 case MasterValueUtils::SM_MODE_INPUT:
-                    $reportMonthStr = DateTimeUtils::parse($model->fmonth, $fmKeyPhp, DateTimeUtils::FM_DEV_YM) . '01';
+                    $reportMonthStr = DateTimeUtils::parseYm($model->fmonth, $fmKeyPhp, DateTimeUtils::FM_DEV_YM) . '01';
                     $reportMonthObj = DateTimeUtils::parse($reportMonthStr, DateTimeUtils::FM_DEV_DATE);
                     $reportMonthInfo = getdate($reportMonthObj->getTimestamp());
                     $year = $reportMonthInfo[DateTimeUtils::FN_KEY_GETDATE_YEAR];
@@ -223,7 +223,7 @@ class ReportController extends MobiledetectController {
             $submitMode = isset($postData[MasterValueUtils::SM_MODE_NAME]) ? $postData[MasterValueUtils::SM_MODE_NAME] : false;
             switch ($submitMode) {
                 case MasterValueUtils::SM_MODE_INPUT:
-                    $reportMonthStr = DateTimeUtils::parse($model->fmonth, $fmKeyPhp, DateTimeUtils::FM_DEV_YM) . '01';
+                    $reportMonthStr = DateTimeUtils::parseYm($model->fmonth, $fmKeyPhp, DateTimeUtils::FM_DEV_YM) . '01';
                     $reportMonthObj = DateTimeUtils::parse($reportMonthStr, DateTimeUtils::FM_DEV_DATE);
                     $reportMonthInfo = getdate($reportMonthObj->getTimestamp());
                     $year = $reportMonthInfo[DateTimeUtils::FN_KEY_GETDATE_YEAR];
@@ -429,7 +429,7 @@ class ReportController extends MobiledetectController {
             $submitMode = isset($postData[MasterValueUtils::SM_MODE_NAME]) ? $postData[MasterValueUtils::SM_MODE_NAME] : false;
             switch ($submitMode) {
                 case MasterValueUtils::SM_MODE_INPUT:
-                    $reportMonthStr = DateTimeUtils::parse($model->fmonth, $fmKeyPhp, DateTimeUtils::FM_DEV_YM) . '01';
+                    $reportMonthStr = DateTimeUtils::parseYm($model->fmonth, $fmKeyPhp, DateTimeUtils::FM_DEV_YM) . '01';
                     $reportMonthObj = DateTimeUtils::parse($reportMonthStr, DateTimeUtils::FM_DEV_DATE);
                     $reportMonthInfo = getdate($reportMonthObj->getTimestamp());
                     $year = $reportMonthInfo[DateTimeUtils::FN_KEY_GETDATE_YEAR];

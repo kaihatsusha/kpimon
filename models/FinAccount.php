@@ -18,6 +18,7 @@ use app\components\MasterValueUtils;
  * @property double $noterm_interest_rate
  * @property double $term_interest_rate
  * @property integer $interest_method
+ * @property integer $days_of_year
  * @property string $capital
  * @property string $order_num
  * @property string $delete_flag
@@ -36,7 +37,7 @@ class FinAccount extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['account_name'], 'required'],
-            [['account_type', 'bank_id', 'opening_balance', 'closing_balance', 'interest_method', 'capital', 'order_num'], 'integer'],
+            [['account_type', 'bank_id', 'opening_balance', 'closing_balance', 'interest_method', 'capital', 'order_num', 'days_of_year'], 'integer'],
             [['opening_date', 'closing_date'], 'safe'],
             [['noterm_interest_rate', 'term_interest_rate'], 'number'],
             [['account_name'], 'string', 'max' => 200],
@@ -63,6 +64,7 @@ class FinAccount extends \yii\db\ActiveRecord {
             'capital' => Yii::t('fin.models', 'Capital'),
 			'order_num' => Yii::t('fin.models', 'Order Num'),
             'delete_flag' => Yii::t('fin.models', 'Delete Flag'),
+			'days_of_year' => Yii::t('fin.models', 'Days of year'),
         ];
     }
 	
@@ -94,6 +96,9 @@ class FinAccount extends \yii\db\ActiveRecord {
             case MasterValueUtils::MV_FIN_ACCOUNT_TYPE_CCQ :
                 $result = new extended\FinAccount07I00();
                 break;
+			case MasterValueUtils::MV_FIN_ACCOUNT_TYPE_VI :
+				$result = new extended\FinAccount08I00();
+				break;
 		}
 		
 		if (is_null($result)) {

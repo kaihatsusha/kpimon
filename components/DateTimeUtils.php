@@ -224,6 +224,13 @@ class DateTimeUtils {
 		$dt = \DateTime::createFromFormat($informat, $datetime);
 		return is_null($outformat) ? $dt : $dt->format($outformat);
 	}
+
+	public static function parseYm($datetime, $informat, $outformat = null) {
+		$informat .= 'd';
+		$datetime .= '01';
+		$dt = \DateTime::createFromFormat($informat, $datetime);
+		return is_null($outformat) ? $dt : $dt->format($outformat);
+	}
 	
 	/**
 	 * create datetime from Timestamp

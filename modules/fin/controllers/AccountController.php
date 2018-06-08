@@ -11,6 +11,7 @@ use app\models\extended\FinAccount04I00;
 use app\models\extended\FinAccount05I00;
 use app\models\extended\FinAccount06I00;
 use app\models\extended\FinAccount07I00;
+use app\models\extended\FinAccount08I00;
 
 class AccountController extends MobiledetectController {
 	public function behaviors() {
@@ -37,6 +38,7 @@ class AccountController extends MobiledetectController {
 		$arrCredit = [];
 		$arrLunchFound = [];
 		$arrOtherFound = [];
+		$arrVi = [];
 		$sumTmAtm = ['opening_balance'=>0, 'closing_balance'=>0, 'now_balance'=>0];
 		$sumTmAtmDeposit = ['opening_balance'=>0, 'closing_balance'=>0, 'now_balance'=>0];
 		$sumTotal = ['opening_balance'=>0, 'closing_balance'=>0, 'now_balance'=>0];
@@ -117,12 +119,21 @@ class AccountController extends MobiledetectController {
 				$sumTotal['opening_balance'] += $instance->opening_balance;
 				$sumTotal['closing_balance'] += $instance->closing_balance;
 				$sumTotal['now_balance'] += $instance->now_balance;
+			} elseif ($instance instanceof FinAccount08I00) {
+				// add instance VI MOMO
+				$arrVi[] = $instance;
+
+				// sum Total
+				$sumTotal['opening_balance'] += $instance->opening_balance;
+				$sumTotal['closing_balance'] += $instance->closing_balance;
+				$sumTotal['now_balance'] += $instance->now_balance;
 			}
 		}
 		
 		return $this->render('index', ['arrDeposits'=>$arrDeposits, 'sumDeposits'=>$sumDeposits, 'minClosingTimestamp'=>$minClosingTimestamp,
 			'arrTmAtm'=>$arrTmAtm, 'sumTmAtm'=>$sumTmAtm, 'sumTmAtmDeposit'=>$sumTmAtmDeposit,
-			'arrCredit'=>$arrCredit, 'arrLunchFound'=>$arrLunchFound, 'arrOtherFound'=>$arrOtherFound, 'sumTotal'=>$sumTotal]);
+			'arrCredit'=>$arrCredit, 'arrLunchFound'=>$arrLunchFound, 'arrOtherFound'=>$arrOtherFound,
+			'sumTotal'=>$sumTotal, 'arrVi'=>$arrVi]);
 	}
 }
 ?>

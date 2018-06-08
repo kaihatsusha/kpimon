@@ -211,10 +211,10 @@
 				<th style="text-align: center"><?= Yii::t('fin.grid', 'Opening'); ?></th>
 				<th style="text-align: center"><?= Yii::t('fin.grid', 'Closing'); ?></th>
 			</tr>
-			<?php foreach($arrLunchFound as $lunchFound): ?><tr class="info">
-				<td style="text-align: left"><?= $lunchFound->account_name; ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($lunchFound->opening_balance); ?></td>
-				<td style="text-align: right"><?= NumberUtils::format($lunchFound->closing_balance); ?></td>
+			<?php foreach($arrVi as $vi): ?><tr class="info">
+				<td style="text-align: left"><?= $vi->account_name; ?></td>
+				<td style="text-align: right"><?= NumberUtils::format($vi->opening_balance); ?></td>
+				<td style="text-align: right"><?= NumberUtils::format($vi->closing_balance); ?></td>
 			</tr><?php endforeach; ?>
 			<?php foreach($arrCredit as $credit): ?><tr class="success">
 				<td style="text-align: left"><?= $credit->account_name; ?></td>

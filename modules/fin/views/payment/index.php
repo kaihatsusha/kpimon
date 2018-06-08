@@ -60,7 +60,7 @@
 			'footerRowOptions'=>['class'=>'warning', 'style'=>'font-weight:bold'],
 			'dataProvider'=>new ActiveDataProvider([
 				'query'=>$dataQuery,
-				'pagination'=>['pagesize'=>20]
+				'pagination'=>['pagesize'=>50]
 			]),
 			'columns'=>[
 				[

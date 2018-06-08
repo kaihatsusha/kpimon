@@ -41,6 +41,7 @@ class MasterValueUtils {
 	const MV_FIN_ACCOUNT_TYPE_ADVANCE = 5;		// Advances
 	const MV_FIN_ACCOUNT_TYPE_OIR = 6;			// Other internal receivables
 	const MV_FIN_ACCOUNT_TYPE_CCQ = 7;			// CCQ
+	const MV_FIN_ACCOUNT_TYPE_VI = 8;			// VI (MOMO, ...)
 	
 	const MV_FIN_ENTRY_TYPE_SIMPLE = 1;				// Simple
 	const MV_FIN_ENTRY_TYPE_DEPOSIT = 2;			// Deposits
