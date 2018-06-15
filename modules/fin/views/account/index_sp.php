@@ -64,7 +64,10 @@
                         </tr>
                         <?php $rowindex = 0; ?>
                         <?php foreach($arrDeposits as $deposits): ?>
-                        	<?php $rowindex++; ?>
+                        	<?php
+								$rowindex++;
+								$pastTimeStyle = $deposits->past_time ? 'style="color: red"' : '';
+							?>
                         	<tr>
 								<td style="text-align: center; vertical-align: middle;"><?= $rowindex; ?></td>
 								<td style="text-align: right; vertical-align: middle;">
@@ -73,7 +76,8 @@
 								</td>
 								<td style="text-align: right; vertical-align: middle;">
 									<?= $deposits->closing_diff; ?> <?= Yii::t('fin.grid', '(days)'); ?><br/>
-									<?= DateTimeUtils::formatDateTimeFromDB($deposits->closing_date, DateTimeUtils::FM_VIEW_DATE); ?></td>
+									<span <?= $pastTimeStyle; ?>><?= DateTimeUtils::formatDateTimeFromDB($deposits->closing_date, DateTimeUtils::FM_VIEW_DATE); ?></span>
+								</td>
 								<td style="text-align: right; vertical-align: middle;">
 									<?= NumberUtils::format($deposits->closing_interest); ?><br/>
 									<?= NumberUtils::format($deposits->closing_balance); ?>

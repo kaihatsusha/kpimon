@@ -2,6 +2,7 @@
 namespace app\models\extended;
 
 use app\components\DateTimeUtils;
+use app\components\MasterValueUtils;
 use app\components\NumberUtils;
 use app\models\FinAccount;
 
@@ -13,12 +14,23 @@ class FinAccount04I00 extends FinAccount {
 	public $now_interest_unit = null;
 	public $now_interest = null;
 	public $result_interest = null;
+	public $past_time = null;
 	
 	public function initialize() {
 		$oTime = DateTimeUtils::getDateTimeFromDB($this->opening_date);
 		$cTime = DateTimeUtils::getDateTimeFromDB($this->closing_date);
 		$now = new \DateTime();
-		
+
+		// check in the past time
+		$pastDateInterval = $now->diff($cTime);
+		$this->past_time = ($pastDateInterval->invert == 1) && ($pastDateInterval->days > 0);
+
+		// check Time deposits OFF
+		if (MasterValueUtils::MV_FIN_ACCOUNT_TIME_DEPOSIT_FLAG_ON != $this->time_deposit_flag) {
+			$this->term_interest_rate = 0;
+			$this->noterm_interest_rate = 0;
+		}
+
 		$this->closing_diff = $cTime->diff($oTime)->days;
 		$this->now_diff = $now->diff($oTime)->days;
 		

@@ -11,6 +11,7 @@ use app\components\MasterValueUtils;
  * @property string $account_name
  * @property integer $account_type
  * @property integer $bank_id
+ * @property string $time_deposit_flag
  * @property string $opening_date
  * @property string $closing_date
  * @property string $opening_balance
@@ -41,7 +42,7 @@ class FinAccount extends \yii\db\ActiveRecord {
             [['opening_date', 'closing_date'], 'safe'],
             [['noterm_interest_rate', 'term_interest_rate'], 'number'],
             [['account_name'], 'string', 'max' => 200],
-            [['delete_flag'], 'string', 'max' => 1]
+            [['delete_flag', 'time_deposit_flag'], 'string', 'max' => 1]
         ];
     }
 
@@ -65,6 +66,7 @@ class FinAccount extends \yii\db\ActiveRecord {
 			'order_num' => Yii::t('fin.models', 'Order Num'),
             'delete_flag' => Yii::t('fin.models', 'Delete Flag'),
 			'days_of_year' => Yii::t('fin.models', 'Days of year'),
+			'time_deposit_flag' => Yii::t('fin.models', 'Time Deposit Flag'),
         ];
     }
 	

@@ -42,6 +42,9 @@ class MasterValueUtils {
 	const MV_FIN_ACCOUNT_TYPE_OIR = 6;			// Other internal receivables
 	const MV_FIN_ACCOUNT_TYPE_CCQ = 7;			// CCQ
 	const MV_FIN_ACCOUNT_TYPE_VI = 8;			// VI (MOMO, ...)
+
+	const MV_FIN_ACCOUNT_TIME_DEPOSIT_FLAG_ON = 1;	// Time deposits ON (It just means when account_type is 4)
+	const MV_FIN_ACCOUNT_TIME_DEPOSIT_FLAG_OFF = 0;	// Time deposits OFF (It just means when account_type is 4)
 	
 	const MV_FIN_ENTRY_TYPE_SIMPLE = 1;				// Simple
 	const MV_FIN_ENTRY_TYPE_DEPOSIT = 2;			// Deposits

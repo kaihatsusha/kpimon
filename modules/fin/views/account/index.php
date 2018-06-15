@@ -26,13 +26,14 @@
 		<?php foreach($arrDeposits as $deposits): ?>
 			<?php
 				$rowindex++;
+				$pastTimeStyle = $deposits->past_time ? 'color: red;' : '';
 			?>
 			<tr>
 				<td class="info" style="text-align: center"><?= $rowindex; ?></td>
 				<td class="info" style="text-align: left"><?= $deposits->account_name; ?></td>
 				<td class="danger" style="text-align: center"><?= DateTimeUtils::formatDateTimeFromDB($deposits->opening_date, DateTimeUtils::FM_VIEW_DATE); ?></td>
 				<td class="danger" style="text-align: right"><?= NumberUtils::format($deposits->opening_balance); ?></td>
-				<td class="success" style="text-align: center"><?= DateTimeUtils::formatDateTimeFromDB($deposits->closing_date, DateTimeUtils::FM_VIEW_DATE); ?></td>
+				<td class="success" style="text-align: center; <?= $pastTimeStyle; ?>"><?= DateTimeUtils::formatDateTimeFromDB($deposits->closing_date, DateTimeUtils::FM_VIEW_DATE); ?></td>
 				<td class="success" style="text-align: center"><?= $deposits->closing_diff; ?></td>
 				<td class="success" style="text-align: right"><?= NumberUtils::format($deposits->closing_interest); ?></td>
 				<td class="success" style="text-align: right"><?= NumberUtils::format($deposits->closing_balance); ?></td>

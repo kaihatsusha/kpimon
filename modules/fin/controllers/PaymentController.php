@@ -347,7 +347,7 @@ class PaymentController extends MobiledetectController {
 			$paymentModel->entry_value = $paymentModel->entry_updated;
 			// save payment
 			if ($save) {
-				$save = $paymentModel->update();
+				$save = $paymentModel->update(false);
 			}
 			// save source
 			if ($paymentModel->account_source == $paymentModel->account_source_old) {

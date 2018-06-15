@@ -33,6 +33,7 @@ class AccountController extends MobiledetectController {
 		$sumDeposits = ['opening_balance'=>0, 'closing_interest_unit'=>0, 'closing_interest'=>0, 'closing_balance'=>0,
 			'now_interest_unit'=>0, 'now_interest'=>0, 'capital'=>0, 'result_interest'=>0];
 		$minClosingTimestamp = null;
+		$nowTimestamp = DateTimeUtils::getNow()->getTimestamp();
 		
 		$arrTmAtm = [];
 		$arrCredit = [];
@@ -100,7 +101,7 @@ class AccountController extends MobiledetectController {
 				
 				// next closing
 				$timestamp = DateTimeUtils::getDateTimeFromDB($instance->closing_date)->getTimestamp();
-				if (is_null($minClosingTimestamp) || ($minClosingTimestamp > $timestamp)) {
+				if ((is_null($minClosingTimestamp) || ($minClosingTimestamp > $timestamp)) && ($timestamp >= $nowTimestamp)) {
 					$minClosingTimestamp = $timestamp;
 				}
 			} elseif ($instance instanceof FinAccount05I00) {
@@ -128,6 +129,10 @@ class AccountController extends MobiledetectController {
 				$sumTotal['closing_balance'] += $instance->closing_balance;
 				$sumTotal['now_balance'] += $instance->now_balance;
 			}
+		}
+
+		if (is_null($minClosingTimestamp)) {
+			$minClosingTimestamp = $nowTimestamp;
 		}
 		
 		return $this->render('index', ['arrDeposits'=>$arrDeposits, 'sumDeposits'=>$sumDeposits, 'minClosingTimestamp'=>$minClosingTimestamp,
